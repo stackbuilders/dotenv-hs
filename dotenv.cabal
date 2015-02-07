@@ -1,0 +1,57 @@
+name:                dotenv
+version:             0.1.0.0
+synopsis:            Loads environment variables from `.env`
+description:
+  .
+  This project is modelled after the Ruby and Python packages for
+  loading files from a dotfile. It can be used as a standalone program,
+  or embedded inside of web servers like Yesod and Snap.
+license:             MIT
+license-file:        LICENSE
+author:              Justin Leitgeb
+maintainer:          justin@stackbuilders.com
+copyright:           2015 Stack Builders Inc.
+category:            Configuration
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.10
+
+executable dotenv
+  main-is:             Main.hs
+  -- other-modules:
+  -- other-extensions:
+  build-depends:         base >=4.5 && <4.8
+                       , optparse-applicative >=0.11 && <0.12
+                       , parsec >= 3.1.0 && <= 3.2
+                       , process
+
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+
+library
+  exposed-modules:    Configuration.Dotenv.Parse
+                    , Configuration.Dotenv
+
+  build-depends:         base >=4.5 && <4.8
+                       , parsec >= 3.1.0 && <= 3.2
+
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+
+
+test-suite dotenv-test
+  type: exitcode-stdio-1.0
+  hs-source-dirs: spec, src
+  main-is: Spec.hs
+  build-depends:       base >=4.5 && <4.8
+                       , parsec >= 3.1.0 && <= 3.2
+
+                       , hspec
+
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+
+source-repository head
+  type:     git
+  location: https://github.com/stackbuilders/dotenv-hs
