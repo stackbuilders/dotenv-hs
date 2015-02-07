@@ -1,6 +1,6 @@
 name:                dotenv
-version:             0.1.0.0
-synopsis:            Loads environment variables dotenv files
+version:             0.1.0.1
+synopsis:            Loads environment variables from dotenv files
 
 description:
   .
