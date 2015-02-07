@@ -17,6 +17,10 @@ import Text.Parsec.Combinator (eof)
 
 import Control.Applicative ((<*), (*>), (<$>))
 
+-- | Returns a parser for a Dotenv configuration file.
+-- Accepts key and value arguments separated by "=".
+-- Comments are allowed on lines by themselves and on
+-- blank lines.
 configParser :: Parser [(String, String)]
 configParser = catMaybes <$> many lineWithArguments
 

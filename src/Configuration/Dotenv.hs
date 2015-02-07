@@ -6,17 +6,16 @@ import Configuration.Dotenv.Parse (configParser)
 
 import Text.Parsec (parse)
 
--- | Loads the given list of options into the environment.
--- Any existing settings will take priority.
+-- | Loads the given list of options into the environment. Optionally
+-- override existing variables with values from Dotenv files.
 load ::
   Bool -- ^ Override existing settings?
-
-  -- ^ A list of tuples in the form (key, value) to be set in the environment
-  -> [(String, String)]
+  -> [(String, String)] -- ^ List of values to be set in environment
   -> IO ()
 load override = mapM_ (applySetting override)
 
--- | Loads the options in the given file to the environment.
+-- | Loads the options in the given file to the environment. Optionally
+-- override existing variables with values from Dotenv files.
 loadFile ::
   Bool        -- ^ Override existing settings?
   -> FilePath -- ^ A file containing options to load into the environment
