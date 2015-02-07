@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/stackbuilders/dotenv-hs.svg?branch=master)](https://travis-ci.org/stackbuilders/dotenv-hs)
 
+[![Hackage](https://img.shields.io/hackage/v/lens.svg)]()
+
 # Dotenv files for Haskell
 
 In most applications,
