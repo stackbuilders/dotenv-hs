@@ -45,7 +45,8 @@ executable dotenv
   main-is:             Main.hs
   -- other-modules:
   -- other-extensions:
-  build-depends:         base >=4.7 && <4.8
+  build-depends:         base >=4.5 && <4.8
+                       , base-compat >= 0.4
                        , optparse-applicative >=0.11 && <0.12
                        , parsec >= 3.1.0 && <= 3.2
                        , process
@@ -57,7 +58,8 @@ library
   exposed-modules:    Configuration.Dotenv.Parse
                     , Configuration.Dotenv
 
-  build-depends:         base >=4.7 && <4.8
+  build-depends:         base >=4.5 && <4.8
+                       , base-compat >= 0.4
                        , parsec >= 3.1.0 && <= 3.2
 
   hs-source-dirs:      src
@@ -69,7 +71,8 @@ test-suite dotenv-test
   type: exitcode-stdio-1.0
   hs-source-dirs: spec, src
   main-is: Spec.hs
-  build-depends:       base >=4.7 && <4.8
+  build-depends:       base >=4.5 && <4.8
+                       , base-compat >= 0.4
                        , parsec >= 3.1.0 && <= 3.2
 
                        , hspec

@@ -4,7 +4,7 @@ import Configuration.Dotenv (load, loadFile)
 
 import Test.Hspec (it, describe, shouldBe, Spec)
 
-import System.Environment (lookupEnv, setEnv, unsetEnv)
+import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
 

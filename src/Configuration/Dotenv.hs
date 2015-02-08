@@ -1,6 +1,6 @@
 module Configuration.Dotenv (load, loadFile) where
 
-import System.Environment (lookupEnv, setEnv)
+import System.Environment.Compat (lookupEnv, setEnv)
 
 import Configuration.Dotenv.Parse (configParser)
 
