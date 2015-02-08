@@ -52,7 +52,7 @@ spec = do
       afterSet <- lookupEnv "DOTENV"
       afterSet `shouldBe` Just "true"
 
-      unsetEnv "DOTENV"
+      unsetEnv "DOTENV" -- unset tested vars to clean test state
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"
@@ -62,7 +62,7 @@ spec = do
       afterSet <- lookupEnv "DOTENV"
       afterSet `shouldBe` Just "preset"
 
-      unsetEnv "DOTENV"
+      unsetEnv "DOTENV" -- unset tested vars to clean test state
 
     it "overrides predefined settings when overload is true" $ do
       setEnv "DOTENV" "preset"
@@ -72,4 +72,4 @@ spec = do
       afterSet <- lookupEnv "DOTENV"
       afterSet `shouldBe` Just "true"
 
-      unsetEnv "DOTENV"
+      unsetEnv "DOTENV" -- unset tested vars to clean test state
