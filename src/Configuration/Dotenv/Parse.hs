@@ -1,13 +1,14 @@
 module Configuration.Dotenv.Parse (configParser) where
 
-import Data.Maybe (catMaybes)
-import Text.Parsec.String (Parser)
-import Text.ParserCombinators.Parsec.Prim (GenParser)
-import Text.ParserCombinators.Parsec.Char (space, newline, oneOf, noneOf)
-import Control.Monad (liftM2)
-import Text.Parsec.Combinator (eof)
-import Control.Applicative ((<*), (*>), (<$>))
 import Text.Parsec ((<|>), many, try, manyTill, char, anyChar)
+import Text.Parsec.Combinator (eof)
+import Text.Parsec.String (Parser)
+import Text.ParserCombinators.Parsec.Char (space, newline, oneOf, noneOf)
+import Text.ParserCombinators.Parsec.Prim (GenParser)
+
+import Control.Applicative ((<*), (*>), (<$>))
+import Data.Maybe (catMaybes)
+import Control.Monad (liftM2)
 
 -- | Returns a parser for a Dotenv configuration file.
 -- Accepts key and value arguments separated by "=".
