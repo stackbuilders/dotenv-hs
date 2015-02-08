@@ -7,7 +7,7 @@ import Text.ParserCombinators.Parsec.Char (space, newline, oneOf, noneOf)
 import Control.Monad (liftM2)
 import Text.Parsec.Combinator (eof)
 import Control.Applicative ((<*), (*>), (<$>))
-import Text.Parsec ((<|>), many, try, manyTill, char, anyChar, many1)
+import Text.Parsec ((<|>), many, try, manyTill, char, anyChar)
 
 -- | Returns a parser for a Dotenv configuration file.
 -- Accepts key and value arguments separated by "=".
@@ -19,10 +19,11 @@ configParser = catMaybes <$> many envLine
 
 envLine :: Parser (Maybe (String, String))
 envLine =
-  comment *> return Nothing
-  <|> newline *> return Nothing
-  <|> many1 verticalSpace *> return Nothing
+  (comment <|> blankLine) *> return Nothing
   <|> Just <$> configurationOptionWithArguments
+
+blankLine :: Parser ()
+blankLine = many verticalSpace *> newline *> return ()
 
 configurationOptionWithArguments :: Parser (String, String)
 configurationOptionWithArguments = liftM2 (,)
