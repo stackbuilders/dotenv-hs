@@ -27,7 +27,8 @@ spec = describe "parse" $ do
     parseConfig "FOO='bar'" `shouldBe` Right [("FOO", "bar")]
 
   it "parses escaped double quotes" $
-    parseConfig "FOO=\"escaped\\\"bar\"" `shouldBe` Right [("FOO", "escaped\"bar")]
+    parseConfig "FOO=\"escaped\\\"bar\"" `shouldBe`
+    Right [("FOO", "escaped\"bar")]
 
   it "parses empty values" $
     parseConfig "FOO=" `shouldBe` Right [("FOO", "")]
