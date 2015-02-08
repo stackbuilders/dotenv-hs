@@ -22,8 +22,8 @@ envLine :: Parser (Maybe (String, String))
 envLine = (comment <|> blankLine) *> return Nothing
           <|> Just <$> configurationOptionWithArguments
 
-blankLine :: Parser ()
-blankLine = many verticalSpace *> newline *> return ()
+blankLine :: Parser String
+blankLine = many verticalSpace <* newline
 
 configurationOptionWithArguments :: Parser (String, String)
 configurationOptionWithArguments = liftM2 (,)
@@ -38,7 +38,7 @@ quotedArgument = quotedWith '\'' <|> quotedWith '\"'
 
 unquotedArgument :: Parser String
 unquotedArgument = manyTill anyChar
-                   (comment <|> many verticalSpace *> endOfLineOrInput)
+                   (comment <|> many verticalSpace <* endOfLineOrInput)
 
 -- | Based on a commented-string parser in:
 -- http://hub.darcs.net/navilan/XMonadTasks/raw/Data/Config/Lexer.hs
@@ -48,10 +48,9 @@ quotedWith c = char c *> many chr <* char c
   where chr = esc <|> noneOf [c]
         esc = escape *> char c
 
-comment :: Parser ()
+comment :: Parser String
 comment = try (many verticalSpace *> char '#')
           *> manyTill anyChar endOfLineOrInput
-          *> return ()
 
 endOfLineOrInput :: Parser ()
 endOfLineOrInput = newline *> return () <|> eof
