@@ -6,6 +6,8 @@ import Test.Hspec (it, describe, shouldBe, Spec)
 
 import System.Environment (lookupEnv, setEnv, unsetEnv)
 
+{-# ANN module "HLint: ignore Reduce duplication" #-}
+
 spec :: Spec
 spec = do
   describe "load" $ do
