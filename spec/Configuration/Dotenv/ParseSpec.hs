@@ -56,7 +56,7 @@ spec = describe "parse" $ do
     Right [("foo", "bar#baz")]
 
   it "ignores comment lines" $
-    parseConfig "\n\n\n # HERE GOES FOO \nfoo=bar" `shouldBe`
+    parseConfig "\n\t \n\n # HERE GOES FOO \nfoo=bar" `shouldBe`
     Right [("foo", "bar")]
 
 

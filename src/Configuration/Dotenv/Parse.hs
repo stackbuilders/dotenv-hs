@@ -7,49 +7,46 @@ import Text.ParserCombinators.Parsec.Char (space, newline, oneOf, noneOf)
 import Control.Monad (liftM2)
 import Text.Parsec.Combinator (eof)
 import Control.Applicative ((<*), (*>), (<$>))
-import Text.Parsec
-  ((<|>), many, try, lookAhead, manyTill, char, anyChar, many1)
-
+import Text.Parsec ((<|>), many, try, manyTill, char, anyChar, many1)
 
 -- | Returns a parser for a Dotenv configuration file.
 -- Accepts key and value arguments separated by "=".
 -- Comments are allowed on lines by themselves and on
 -- blank lines.
 configParser :: Parser [(String, String)]
-configParser = catMaybes <$> many lineWithArguments
+configParser = catMaybes <$> many envLine
 
 
-lineWithArguments :: Parser (Maybe (String, String))
-lineWithArguments =
+envLine :: Parser (Maybe (String, String))
+envLine =
   comment *> return Nothing
   <|> newline *> return Nothing
-  <|> many1 (oneOf "\t ") *> return Nothing
+  <|> many1 verticalSpace *> return Nothing
   <|> Just <$> configurationOptionWithArguments
 
 configurationOptionWithArguments :: Parser (String, String)
 configurationOptionWithArguments = liftM2 (,)
-  (many space *> manyTill1 (noneOf "\n ") keywordArgSeparator)
+  (many space *> manyTill1 anyChar keywordArgSeparator)
   argumentParser
 
 argumentParser :: Parser String
 argumentParser = quotedArgument <|> unquotedArgument
-
--- | Based on a commented-string parser in:
--- http://hub.darcs.net/navilan/XMonadTasks/raw/Data/Config/Lexer.hs
-quotedWith :: Char -> Parser String
-quotedWith c =
-  char c *> many chr <* char c
-
-  where chr = esc <|> noneOf [c]
-        esc = escape *> char c
 
 quotedArgument :: Parser String
 quotedArgument = quotedWith '\'' <|> quotedWith '\"'
 
 unquotedArgument :: Parser String
 unquotedArgument =
-  many (noneOf " \t\n#") <* (comment <|> try verticalSpace *> return ()
-                             <|> lookAhead (try endOfLineOrInput))
+  manyTill anyChar
+  (comment <|> many verticalSpace *> endOfLineOrInput)
+
+-- | Based on a commented-string parser in:
+-- http://hub.darcs.net/navilan/XMonadTasks/raw/Data/Config/Lexer.hs
+quotedWith :: Char -> Parser String
+quotedWith c = char c *> many chr <* char c
+
+  where chr = esc <|> noneOf [c]
+        esc = escape *> char c
 
 comment :: Parser ()
 comment = try (many verticalSpace *> char '#')
