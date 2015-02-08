@@ -18,7 +18,7 @@ spec = describe "parse" $ do
   it "parses values with spaces around equal signs" $ do
     parseConfig "FOO =bar" `shouldBe` Right [("FOO", "bar")]
     parseConfig "FOO= bar" `shouldBe` Right [("FOO", "bar")]
-    parseConfig "FOO = bar" `shouldBe` Right [("FOO", "bar")]
+    parseConfig "FOO =\t bar" `shouldBe` Right [("FOO", "bar")]
 
   it "parses double-quoted values" $
     parseConfig "FOO=\"bar\"" `shouldBe` Right [("FOO", "bar")]
@@ -48,8 +48,11 @@ spec = describe "parse" $ do
     parseConfig "\n \t  \nfoo=bar\n \nfizz=buzz" `shouldBe`
     Right [("foo", "bar"), ("fizz", "buzz")]
 
-  it "ignores inline comments" $
+  it "ignores inline comments after unquoted arguments" $
     parseConfig "FOO=bar # this is foo" `shouldBe` Right [("FOO", "bar")]
+
+  it "ignores inline comments after quoted arguments" $
+    parseConfig "FOO=\"bar\" # this is foo" `shouldBe` Right [("FOO", "bar")]
 
   it "allows # in quoted values" $
     parseConfig "foo=\"bar#baz\" # comment" `shouldBe`
