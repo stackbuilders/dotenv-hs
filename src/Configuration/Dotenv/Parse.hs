@@ -38,9 +38,8 @@ variableName =
 
   (many
    (letter <|> char '_' <|> digit <?>
-    unwords
-    [ "valid non-leading shell variable character (alphanumeric, "
-    , "digit or underscore)" ]))
+    unwords [ "valid non-leading shell variable character (alphanumeric,"
+            , "digit or underscore)" ]))
 
   <?> unwords [ "shell variable name (letter or underscore followed"
               , "by alphanumeric characters or underscores)" ]
