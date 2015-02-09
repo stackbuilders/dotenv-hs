@@ -74,6 +74,9 @@ spec = describe "parse" $ do
     parseConfig "\n\t \n\n # HERE GOES FOO \nfoo=bar" `shouldBe`
     Right [("foo", "bar")]
 
+  it "doesn't allow more configuration options after a quoted value" $
+    isLeft (parse configParser "null" "foo='bar'baz='buz'") `shouldBe` True
+
 
 isLeft :: Either a b -> Bool
 isLeft ( Left _ ) = True

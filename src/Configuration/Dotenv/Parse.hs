@@ -43,8 +43,10 @@ value :: Parser String
 value = quotedValue <|> unquotedValue <?> "variable value"
 
 quotedValue :: Parser String
-quotedValue = quotedWith '\'' <|> quotedWith '\"'
-              <?> "variable value surrounded with single or double quotes"
+quotedValue =
+  (quotedWith '\'' <|> quotedWith '\"')
+  <* (comment *> return () <|> endOfLineOrInput)
+  <?> "variable value surrounded with single or double quotes"
 
 unquotedValue :: Parser String
 unquotedValue =
