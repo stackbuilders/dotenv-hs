@@ -50,6 +50,9 @@ spec = describe "parse" $ do
   it "parses variables with digits after the first character" $
     parseConfig "FOO_BAR_12=foobar" `shouldBe` Right [("FOO_BAR_12", "foobar")]
 
+  it "allows vertical spaces after a quoted variable" $
+    parseConfig "foo='bar' " `shouldBe` Right [("foo", "bar")]
+
   it "does not parse variable names beginning with a digit" $
     isLeft (parse configParser "null" "45FOO_BAR=foobar") `shouldBe` True
 
