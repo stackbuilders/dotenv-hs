@@ -9,7 +9,6 @@ import Text.ParserCombinators.Parsec.Char
 import Control.Applicative ((<*), (*>), (<$>))
 import Data.Maybe (catMaybes)
 import Control.Monad (liftM2)
-import Data.List (intercalate)
 
 -- | Returns a parser for a Dotenv configuration file.  Accepts key
 -- and value arguments separated by "=".  Comments are allowed on
@@ -39,12 +38,12 @@ variableName =
 
   (many
    (letter <|> char '_' <|> digit <?>
-    intercalate " "
+    unwords
     [ "valid non-leading shell variable character (alphanumeric, "
     , "digit or underscore)" ]))
 
-  <?> intercalate " " [ "shell variable name (letter or underscore followed"
-                      , "by alphanumeric characters or underscores)" ]
+  <?> unwords [ "shell variable name (letter or underscore followed"
+              , "by alphanumeric characters or underscores)" ]
 
 value :: Parser String
 value = quotedValue <|> unquotedValue <?> "variable value"
