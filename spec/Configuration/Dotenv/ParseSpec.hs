@@ -33,14 +33,25 @@ spec = describe "parse" $ do
   it "parses empty values" $
     parseConfig "FOO=" `shouldBe` Right [("FOO", "")]
 
-  it "does not parse if line format is incorrect" $
+  it "does not parse if line format is incorrect" $ do
     isLeft (parseConfig "lol$wut") `shouldBe` True
+    isLeft (parseConfig "KEY=\nVALUE") `shouldBe` True
+    isLeft (parseConfig "KEY\n=VALUE") `shouldBe` True
 
   it "expands newlines in quoted strings" $
     parseConfig "FOO=\"bar\nbaz\"" `shouldBe` Right [("FOO", "bar\nbaz")]
 
-  it "parses variables with '.' in the name" $
-    parseConfig "FOO.BAR=foobar" `shouldBe` Right [("FOO.BAR", "foobar")]
+  it "does not parse variables with hyphens in the name" $
+    isLeft (parseConfig "FOO-BAR=foobar") `shouldBe` True
+
+  it "parses variables with '_' in the name" $
+    parseConfig "FOO_BAR=foobar" `shouldBe` Right [("FOO_BAR", "foobar")]
+
+  it "parses variables with digits after the first character" $
+    parseConfig "FOO_BAR_12=foobar" `shouldBe` Right [("FOO_BAR_12", "foobar")]
+
+  it "does not parse variable names beginning with a digit" $ do
+    isLeft (parse configParser "null" "45FOO_BAR=foobar") `shouldBe` True
 
   it "strips unquoted values" $
     parseConfig "foo=bar " `shouldBe` Right [("foo", "bar")]

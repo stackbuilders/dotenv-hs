@@ -1,34 +1,38 @@
 module Configuration.Dotenv.Parse (configParser) where
 
-import Text.Parsec ((<|>), many, try, manyTill, char, anyChar)
+import Text.Parsec ((<|>), anyChar, char, many, manyTill, try)
 import Text.Parsec.Combinator (eof)
 import Text.Parsec.String (Parser)
-import Text.ParserCombinators.Parsec.Char (space, newline, oneOf, noneOf)
-import Text.ParserCombinators.Parsec.Prim (GenParser)
+import Text.ParserCombinators.Parsec.Char
+  (digit, letter, newline, noneOf, oneOf)
 
 import Control.Applicative ((<*), (*>), (<$>))
 import Data.Maybe (catMaybes)
 import Control.Monad (liftM2)
 
--- | Returns a parser for a Dotenv configuration file.
--- Accepts key and value arguments separated by "=".
--- Comments are allowed on lines by themselves and on
--- blank lines.
+-- | Returns a parser for a Dotenv configuration file.  Accepts key
+-- and value arguments separated by "=".  Comments are allowed on
+-- lines by themselves and on blank lines.
 configParser :: Parser [(String, String)]
-configParser = catMaybes <$> many envLine
+configParser = catMaybes <$> many envLine <* eof
 
 
 envLine :: Parser (Maybe (String, String))
-envLine = (comment <|> blankLine) *> return Nothing
-          <|> Just <$> configurationOptionWithArguments
+envLine = (comment <|> blankLine) *> return Nothing <|> Just <$> optionLine
 
 blankLine :: Parser String
 blankLine = many verticalSpace <* newline
 
-configurationOptionWithArguments :: Parser (String, String)
-configurationOptionWithArguments = liftM2 (,)
-  (many space *> manyTill1 anyChar keywordArgSeparator)
+optionLine :: Parser (String, String)
+optionLine = liftM2 (,)
+  (many verticalSpace *> variableName <* keywordArgSeparator)
   argumentParser
+
+-- | Variables must start with a letter or underscore, and may contain
+-- letters, digits or '_' character after the first character.
+variableName :: Parser String
+variableName =
+  liftM2 (:) (letter <|> char '_') (many (letter <|> char '_' <|> digit))
 
 argumentParser :: Parser String
 argumentParser = quotedArgument <|> unquotedArgument
@@ -37,8 +41,8 @@ quotedArgument :: Parser String
 quotedArgument = quotedWith '\'' <|> quotedWith '\"'
 
 unquotedArgument :: Parser String
-unquotedArgument = manyTill anyChar
-                   (comment <|> many verticalSpace <* endOfLineOrInput)
+unquotedArgument =
+  manyTill anyChar (comment <|> many verticalSpace <* endOfLineOrInput)
 
 -- | Based on a commented-string parser in:
 -- http://hub.darcs.net/navilan/XMonadTasks/raw/Data/Config/Lexer.hs
@@ -54,9 +58,6 @@ comment = try (many verticalSpace *> char '#')
 
 endOfLineOrInput :: Parser ()
 endOfLineOrInput = newline *> return () <|> eof
-
-manyTill1 :: GenParser tok st a -> GenParser tok st end -> GenParser tok st [a]
-manyTill1 p end = liftM2 (:) p (manyTill p end)
 
 keywordArgSeparator :: Parser ()
 keywordArgSeparator =
