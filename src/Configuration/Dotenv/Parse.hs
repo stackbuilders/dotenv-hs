@@ -31,15 +31,10 @@ optionLine = liftM2 (,)
 -- | Variables must start with a letter or underscore, and may contain
 -- letters, digits or '_' character after the first character.
 variableName :: Parser String
-variableName =
-  liftM2 (:)
-
-  (letter <|> char '_')
-
-  (many
-   (letter <|> char '_' <|> digit <?>
-    unwords [ "valid non-leading shell variable character (alphanumeric,"
-            , "digit or underscore)" ]))
+variableName = liftM2 (:) (letter <|> char '_')
+  (many (letter <|> char '_' <|> digit <?>
+         unwords [ "valid non-leading shell variable character (alphanumeric,"
+                 , "digit or underscore)" ]))
 
   <?> unwords [ "shell variable name (letter or underscore followed"
               , "by alphanumeric characters or underscores)" ]
