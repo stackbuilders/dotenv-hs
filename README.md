@@ -35,7 +35,7 @@ Then, calling Dotenv.load from your Haskell program reads the above
 settings into the environment.:
 
 ```haskell
-import Configuration.Dotenv
+import qualified Configuration.Dotenv as Dotenv
 Dotenv.loadFile False "/path/to/your/file"
 ```
 
