@@ -85,9 +85,15 @@ isLeft :: Either a b -> Bool
 isLeft ( Left _ ) = True
 isLeft _          = False
 
-
+#if MIN_VERSION_parsec(3,1,9)
+-- Parsec's ParseError already contains Eq definition, no need to add.
+-- Note that the Eq instance was added in 3.1.9.
+-- https://github.com/aslatter/parsec/commit/3fb40aaa683fd90f3f0dd9f3c32c6ba707fb24b1
+#else
 instance Eq ParseError where
   a == b = errorMessages a == errorMessages b
+#endif
+
 
 parseConfig :: String -> Either ParseError [(String, String)]
 parseConfig = parse configParser "(unknown)"

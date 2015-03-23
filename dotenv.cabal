@@ -80,6 +80,7 @@ test-suite dotenv-test
 
   default-language:    Haskell2010
   ghc-options:         -Wall
+  extensions: CPP
 
 source-repository head
   type:     git
