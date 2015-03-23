@@ -40,6 +40,7 @@ category:            Configuration
 build-type:          Simple
 extra-source-files:  spec/fixtures/.dotenv
 cabal-version:       >=1.10
+bug-reports:         https://github.com/stackbuilders/dotenv-hs/issues
 
 executable dotenv
   main-is:             Main.hs
