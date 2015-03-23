@@ -7,7 +7,8 @@ import Configuration.Dotenv.Parse (configParser)
 import Test.Hspec (it, describe, shouldBe, Spec)
 
 import Text.Parsec (ParseError, parse)
-import Text.ParserCombinators.Parsec.Error(errorMessages)
+import Text.ParserCombinators.Parsec.Error
+  (errorMessages, errorPos, messageString)
 
 
 spec :: Spec
@@ -91,7 +92,9 @@ isLeft _          = False
 -- https://github.com/aslatter/parsec/commit/3fb40aaa683fd90f3f0dd9f3c32c6ba707fb24b1
 #else
 instance Eq ParseError where
-  a == b = errorMessages a == errorMessages b
+  l == r
+       = errorPos l == errorPos r && messageStrs l == messageStrs r
+    where messageStrs = map messageString . errorMessages
 #endif
 
 
