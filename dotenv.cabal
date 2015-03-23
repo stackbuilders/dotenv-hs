@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.1.0.6
+version:             0.1.0.7
 synopsis:            Loads environment variables from dotenv files
 
 description:
