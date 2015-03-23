@@ -84,4 +84,4 @@ test-suite dotenv-test
 
 source-repository head
   type:     git
-  location: https://github.com/stackbuilders/dotenv-hs
+  location: git@github.com:stackbuilders/dotenv-hs.git
