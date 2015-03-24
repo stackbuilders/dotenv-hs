@@ -8,6 +8,8 @@ import Test.Hspec (it, describe, shouldBe, Spec)
 
 import Text.Parsec (ParseError, parse)
 
+import Text.ParseErrorEq ()
+
 spec :: Spec
 spec = describe "parse" $ do
   it "parses unquoted values" $
