@@ -1,7 +1,7 @@
 name:                dotenv
 version:             0.1.0.7
 synopsis:            Loads environment variables from dotenv files
-
+homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
   .
   In most applications,
