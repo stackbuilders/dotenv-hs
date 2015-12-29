@@ -2,6 +2,8 @@ module Configuration.Dotenv (load, loadFile) where
 
 import System.Environment.Compat (lookupEnv, setEnv)
 
+import qualified System.Posix.Env as Posix
+
 import Configuration.Dotenv.Parse (configParser)
 
 import Text.Parsec (parse)
@@ -37,5 +39,8 @@ applySetting override (key, value) =
     res <- lookupEnv key
 
     case res of
-      Nothing -> setEnv key value
+      Nothing ->
+          case value of
+            "" -> Posix.setEnv key value False
+            _ -> setEnv key value
       Just _  -> return ()

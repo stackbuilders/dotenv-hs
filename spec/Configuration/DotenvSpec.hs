@@ -10,13 +10,20 @@ import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
 
 spec :: Spec
 spec = do
-  describe "load" $ after_ (unsetEnv "foo") $ do
+  describe "load" $ after_ (unsetEnv "foo") $ after_ (unsetEnv "bar") $ do
     it "loads the given list of configuration options to the environment" $ do
       lookupEnv "foo" `shouldReturn` Nothing
 
       load False [("foo", "bar")]
 
       lookupEnv "foo" `shouldReturn` Just "bar"
+
+    it "loads the given list of empty configuration options to the environment" $ do
+      lookupEnv "bar" `shouldReturn` Nothing
+
+      load False [("bar", "")]
+
+      lookupEnv "bar" `shouldReturn` Just ""
 
     it "preserves existing settings when overload is false" $ do
       setEnv "foo" "preset"
@@ -32,13 +39,20 @@ spec = do
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
 
-  describe "loadFile" $ after_ (unsetEnv "DOTENV") $ do
+  describe "loadFile" $ after_ (unsetEnv "DOTENV") $ after_ (unsetEnv "DOTEMPTYENV") $ do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
       loadFile False "spec/fixtures/.dotenv"
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
+
+    it "loads the empty configuration options to the environment from a file" $ do
+      lookupEnv "DOTEMPTYENV" `shouldReturn` Nothing
+
+      loadFile False "spec/fixtures/.dotenv"
+
+      lookupEnv "DOTEMPTYENV" `shouldReturn` Just ""
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"

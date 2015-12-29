@@ -20,6 +20,9 @@ spec = describe "parse" $ do
     parseConfig "FOO= bar" `shouldBe` Right [("FOO", "bar")]
     parseConfig "FOO =\t bar" `shouldBe` Right [("FOO", "bar")]
 
+  it "parses empty environmental variables" $
+    parseConfig "FOO=\"\"" `shouldBe` Right [("FOO", "")]
+
   it "parses double-quoted values" $
     parseConfig "FOO=\"bar\"" `shouldBe` Right [("FOO", "bar")]
 
