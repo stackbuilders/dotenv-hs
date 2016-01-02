@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 module Configuration.DotenvSpec (spec) where
 
 import Configuration.Dotenv (load, loadFile)
@@ -18,12 +20,15 @@ spec = do
 
       lookupEnv "foo" `shouldReturn` Just "bar"
 
+# ifdef mingw32_HOST_OS
+# else
     it "loads the given list of empty configuration options to the environment" $ do
       lookupEnv "bar" `shouldReturn` Nothing
 
       load False [("bar", "")]
 
       lookupEnv "bar" `shouldReturn` Just ""
+# endif
 
     it "preserves existing settings when overload is false" $ do
       setEnv "foo" "preset"
@@ -47,12 +52,15 @@ spec = do
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
+# ifdef mingw32_HOST_OS
+# else
     it "loads the empty configuration options to the environment from a file" $ do
       lookupEnv "DOTEMPTYENV" `shouldReturn` Nothing
 
       loadFile False "spec/fixtures/.dotenv"
 
       lookupEnv "DOTEMPTYENV" `shouldReturn` Just ""
+# endif
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"

@@ -1,8 +1,13 @@
+{-# LANGUAGE CPP #-}
+
 module Configuration.Dotenv (load, loadFile) where
 
 import System.Environment.Compat (lookupEnv, setEnv)
 
+# ifdef mingw32_HOST_OS
+# else
 import qualified System.Posix.Env as Posix
+# endif
 
 import Configuration.Dotenv.Parse (configParser)
 
@@ -40,7 +45,11 @@ applySetting override (key, value) =
 
     case res of
       Nothing ->
+# ifdef mingw32_HOST_OS
+	  setEnv key value
+# else
           case value of
             "" -> Posix.setEnv key value False
             _ -> setEnv key value
+# endif
       Just _  -> return ()
