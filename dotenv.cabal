@@ -51,6 +51,8 @@ executable dotenv
                        , optparse-applicative >=0.12 && < 0.13
                        , parsec >= 3.1.0 && <= 3.2
                        , process
+  if !os(windows)
+      build-depends: unix
 
   hs-source-dirs:      src
   default-language:    Haskell2010
@@ -62,6 +64,8 @@ library
   build-depends:         base >=4.5 && <4.9
                        , base-compat >= 0.4
                        , parsec >= 3.1.0 && <= 3.2
+  if !os(windows)
+      build-depends: unix
 
   hs-source-dirs:      src
   default-language:    Haskell2010
@@ -80,6 +84,8 @@ test-suite dotenv-test
                        , parsec >= 3.1.0 && <= 3.2
                        , parseerror-eq
                        , hspec
+  if !os(windows)
+      build-depends: unix
 
   default-language:    Haskell2010
   ghc-options:         -Wall
