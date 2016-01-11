@@ -72,6 +72,9 @@ test-suite dotenv-test
   type: exitcode-stdio-1.0
   hs-source-dirs: spec, src
   main-is: Spec.hs
+  other-modules:         Configuration.DotenvSpec
+                       , Configuration.Dotenv.ParseSpec
+
   build-depends:       base >=4.5 && <4.9
                        , base-compat >= 0.4
                        , parsec >= 3.1.0 && <= 3.2
