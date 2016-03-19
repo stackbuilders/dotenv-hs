@@ -1,6 +1,6 @@
 module Configuration.DotenvSpec (main, spec) where
 
-import Configuration.Dotenv (load, loadFile, loadFile')
+import Configuration.Dotenv (load, loadFile, parseFile)
 
 import Test.Hspec
 
@@ -57,8 +57,10 @@ spec = do
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
-  describe "loadFile'" $ after_ (unsetEnv "DOTENV") $
+  describe "parseFile" $ after_ (unsetEnv "DOTENV") $
     it "returns environments from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      loadFile' "spec/fixtures/.dotenv" `shouldReturn` [("DOTENV", "true")]
+      parseFile "spec/fixtures/.dotenv" `shouldReturn` [("DOTENV", "true")]
+
+      lookupEnv "DOTENV" `shouldReturn` Nothing

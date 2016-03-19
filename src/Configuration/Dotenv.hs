@@ -1,4 +1,4 @@
-module Configuration.Dotenv (load, loadFile, loadFile') where
+module Configuration.Dotenv (load, loadFile, parseFile) where
 
 import System.Environment.Compat (lookupEnv, setEnv)
 
@@ -20,13 +20,14 @@ loadFile ::
   Bool        -- ^ Override existing settings?
   -> FilePath -- ^ A file containing options to load into the environment
   -> IO ()
-loadFile override f = load override =<< loadFile' f
+loadFile override f = load override =<< parseFile f
 
--- | Retrurns the options in the given file to the environment.
-loadFile' ::
-  FilePath -- ^ A file containing options to load into the environment
-  -> IO [(String, String)] -- ^ Environment variables
-loadFile' f = do
+-- | Parses the given dotenv file and returns values /without/ adding them to
+-- the environment.
+parseFile ::
+  FilePath -- ^ A file containing options to read
+  -> IO [(String, String)] -- ^ Variables contained in the file
+parseFile f = do
   contents <- readFile f
 
   case parse configParser f contents of
