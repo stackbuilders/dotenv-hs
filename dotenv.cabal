@@ -44,7 +44,8 @@ bug-reports:         https://github.com/stackbuilders/dotenv-hs/issues
 
 executable dotenv
   main-is:             Main.hs
-  -- other-modules:
+  other-modules:       Configuration.Dotenv
+                       Configuration.Dotenv.Parse
   -- other-extensions:
   build-depends:         base >=4.5 && <4.9
                        , base-compat >= 0.4
@@ -74,6 +75,8 @@ test-suite dotenv-test
   main-is: Spec.hs
   other-modules:         Configuration.DotenvSpec
                        , Configuration.Dotenv.ParseSpec
+                       , Configuration.Dotenv
+                       , Configuration.Dotenv.Parse
 
   build-depends:       base >=4.5 && <4.9
                        , base-compat >= 0.4
