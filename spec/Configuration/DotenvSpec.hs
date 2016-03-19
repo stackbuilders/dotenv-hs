@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Configuration.DotenvSpec (main, spec) where
 
 import Configuration.Dotenv (load, loadFile, parseFile)
@@ -7,7 +9,7 @@ import Test.Hspec
 import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
 import Control.Monad (liftM)
 
-{-# ANN module "HLint: ignore Reduce duplication" #-}
+{-# ANN module ("HLint: ignore Reduce duplication" :: String) #-}
 
 main :: IO ()
 main = hspec spec
@@ -62,13 +64,13 @@ spec = do
     it "returns variables from a file without changing the environment" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      (liftM head $ parseFile "spec/fixtures/.dotenv") `shouldReturn`
+      liftM head (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("DOTENV", "true")
 
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-  describe "parseFile" $ do
-    it "recognizes unicode characters" $ do
-      (liftM (!! 1) $ parseFile "spec/fixtures/.dotenv") `shouldReturn`
+  describe "parseFile" $
+    it "recognizes unicode characters" $
+      liftM (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("UNICODE_TEST", "Manabí")
 

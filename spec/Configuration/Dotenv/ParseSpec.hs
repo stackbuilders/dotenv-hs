@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Configuration.Dotenv.ParseSpec (main, spec) where
 
@@ -7,6 +8,8 @@ import Configuration.Dotenv.Parse (configParser)
 import Test.Hspec (it, describe, shouldBe, Spec, hspec)
 
 import Text.Megaparsec (ParseError, parse)
+
+import qualified Data.Text as T
 
 main :: IO ()
 main = hspec spec
@@ -86,5 +89,5 @@ isLeft :: Either a b -> Bool
 isLeft ( Left _ ) = True
 isLeft _          = False
 
-parseConfig :: String -> Either ParseError [(String, String)]
+parseConfig :: T.Text -> Either ParseError [(T.Text, T.Text)]
 parseConfig = parse configParser "(unknown)"
