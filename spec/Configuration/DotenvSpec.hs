@@ -1,4 +1,4 @@
-module Configuration.DotenvSpec (spec) where
+module Configuration.DotenvSpec (main, spec) where
 
 import Configuration.Dotenv (load, loadFile)
 
@@ -7,6 +7,9 @@ import Test.Hspec
 import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
+
+main :: IO ()
+main = hspec spec
 
 spec :: Spec
 spec = do
