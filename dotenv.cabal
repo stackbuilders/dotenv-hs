@@ -47,7 +47,7 @@ executable dotenv
   other-modules:       Configuration.Dotenv
                        Configuration.Dotenv.Parse
   -- other-extensions:
-  build-depends:         base >=4.5 && <4.9
+  build-depends:         base >=4.5 && <5.0
                        , base-compat >= 0.4
                        , optparse-applicative >=0.11 && < 0.13
                        , parsec >= 3.1.0 && <= 3.2
@@ -60,7 +60,7 @@ library
   exposed-modules:    Configuration.Dotenv.Parse
                     , Configuration.Dotenv
 
-  build-depends:         base >=4.5 && <4.9
+  build-depends:         base >=4.5 && <5.0
                        , base-compat >= 0.4
                        , parsec >= 3.1.0 && <= 3.2
 
@@ -78,7 +78,7 @@ test-suite dotenv-test
                        , Configuration.Dotenv
                        , Configuration.Dotenv.Parse
 
-  build-depends:       base >=4.5 && <4.9
+  build-depends:       base >=4.5 && <5.0
                        , base-compat >= 0.4
                        , parsec >= 3.1.0 && <= 3.2
                        , parseerror-eq
