@@ -21,10 +21,10 @@ configParser = catMaybes <$> many envLine <* eof
 
 
 envLine :: Parser (Maybe (T.Text, T.Text))
-envLine = liftM T.pack (comment <|> blankLine) *> return Nothing <|> Just <$> optionLine
+envLine = (comment <|> blankLine) *> return Nothing <|> Just <$> optionLine
 
-blankLine :: Parser String
-blankLine = many verticalSpace <* newline <?> "blank line"
+blankLine :: Parser T.Text
+blankLine = liftM T.pack (many verticalSpace <* newline) <?> "blank line"
 
 optionLine :: Parser (T.Text, T.Text)
 optionLine = liftM2 (,)
@@ -52,7 +52,7 @@ quotedValue = (quotedWith '\'' <|> quotedWith '\"')
 
 unquotedValue :: Parser T.Text
 unquotedValue =
-  liftM T.pack (manyTill anyChar (comment <|> many verticalSpace <* endOfLineOrInput))
+  liftM T.pack (manyTill anyChar (liftM T.unpack comment <|> many verticalSpace <* endOfLineOrInput))
 
 -- | Based on a commented-string parser in:
 -- http://hub.darcs.net/navilan/XMonadTasks/raw/Data/Config/Lexer.hs
@@ -62,9 +62,9 @@ quotedWith c = liftM T.pack (char c *> many chr <* (char c <?> "closing quote ch
   where chr = esc <|> noneOf [c]
         esc = escape *> char c <?> "escape character"
 
-comment :: Parser String
-comment = try (many verticalSpace *> char '#')
-          *> manyTill anyChar endOfLineOrInput
+comment :: Parser T.Text
+comment = liftM T.pack (try (many verticalSpace *> char '#')
+          *> manyTill anyChar endOfLineOrInput)
           <?> "comment"
 
 endOfLineOrInput :: Parser ()
