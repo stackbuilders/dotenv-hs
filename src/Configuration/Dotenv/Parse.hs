@@ -1,11 +1,13 @@
 module Configuration.Dotenv.Parse (configParser) where
 
-import Text.Megaparsec ((<|>), (<?>), anyChar, char, eof, many, manyTill, try)
+import Text.Megaparsec ((<?>), anyChar, char, eof, manyTill, try)
 import Text.Megaparsec.String (Parser)
 import Text.Megaparsec.Char
   (digitChar, letterChar, newline, noneOf, oneOf)
 
-import Control.Applicative ((<*), (*>), (<$>))
+import Control.Applicative
+import Prelude
+
 import Data.Maybe (catMaybes)
 import Control.Monad (liftM2)
 
