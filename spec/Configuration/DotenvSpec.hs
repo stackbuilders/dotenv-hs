@@ -1,12 +1,15 @@
-module Configuration.DotenvSpec (spec) where
+module Configuration.DotenvSpec (main, spec) where
 
-import Configuration.Dotenv (load, loadFile)
+import Configuration.Dotenv (load, loadFile, loadFile')
 
 import Test.Hspec
 
 import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
+
+main :: IO ()
+main = hspec spec
 
 spec :: Spec
 spec = do
@@ -53,3 +56,9 @@ spec = do
       loadFile True "spec/fixtures/.dotenv"
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
+
+  describe "loadFile'" $ after_ (unsetEnv "DOTENV") $
+    it "returns environments from a file" $ do
+      lookupEnv "DOTENV" `shouldReturn` Nothing
+
+      loadFile' "spec/fixtures/.dotenv" `shouldReturn` [("DOTENV", "true")]
