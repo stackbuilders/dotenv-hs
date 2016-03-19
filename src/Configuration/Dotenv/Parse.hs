@@ -1,7 +1,6 @@
 module Configuration.Dotenv.Parse (configParser) where
 
-import Text.Megaparsec ((<|>), (<?>), anyChar, char, many, manyTill, try)
-import Text.Megaparsec (eof)
+import Text.Megaparsec ((<|>), (<?>), anyChar, char, eof, many, manyTill, try)
 import Text.Megaparsec.String (Parser)
 import Text.Megaparsec.Char
   (digitChar, letterChar, newline, noneOf, oneOf)
