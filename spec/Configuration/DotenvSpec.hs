@@ -5,6 +5,7 @@ import Configuration.Dotenv (load, loadFile, parseFile)
 import Test.Hspec
 
 import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
+import Control.Monad (liftM)
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
 
@@ -58,9 +59,16 @@ spec = do
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
   describe "parseFile" $ after_ (unsetEnv "DOTENV") $
-    it "returns environments from a file" $ do
+    it "returns variables from a file without changing the environment" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      parseFile "spec/fixtures/.dotenv" `shouldReturn` [("DOTENV", "true")]
+      (liftM head $ parseFile "spec/fixtures/.dotenv") `shouldReturn`
+        ("DOTENV", "true")
 
       lookupEnv "DOTENV" `shouldReturn` Nothing
+
+  describe "parseFile" $ do
+    it "recognizes unicode characters" $ do
+      (liftM (!! 1) $ parseFile "spec/fixtures/.dotenv") `shouldReturn`
+        ("UNICODE_TEST", "Manabí")
+
