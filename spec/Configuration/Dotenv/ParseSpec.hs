@@ -6,9 +6,7 @@ import Configuration.Dotenv.Parse (configParser)
 
 import Test.Hspec (it, describe, shouldBe, Spec, hspec)
 
-import Text.Parsec (ParseError, parse)
-
-import Text.ParseErrorEq ()
+import Text.Megaparsec (ParseError, parse)
 
 main :: IO ()
 main = hspec spec

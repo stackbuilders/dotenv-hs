@@ -4,7 +4,7 @@ import System.Environment.Compat (lookupEnv, setEnv)
 
 import Configuration.Dotenv.Parse (configParser)
 
-import Text.Parsec (parse)
+import Text.Megaparsec (parse)
 
 -- | Loads the given list of options into the environment. Optionally
 -- override existing variables with values from Dotenv files.

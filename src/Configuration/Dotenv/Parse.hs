@@ -1,10 +1,10 @@
 module Configuration.Dotenv.Parse (configParser) where
 
-import Text.Parsec ((<|>), (<?>), anyChar, char, many, manyTill, try)
-import Text.Parsec.Combinator (eof)
-import Text.Parsec.String (Parser)
-import Text.ParserCombinators.Parsec.Char
-  (digit, letter, newline, noneOf, oneOf)
+import Text.Megaparsec ((<|>), (<?>), anyChar, char, many, manyTill, try)
+import Text.Megaparsec (eof)
+import Text.Megaparsec.String (Parser)
+import Text.Megaparsec.Char
+  (digitChar, letterChar, newline, noneOf, oneOf)
 
 import Control.Applicative ((<*), (*>), (<$>))
 import Data.Maybe (catMaybes)
@@ -31,8 +31,8 @@ optionLine = liftM2 (,)
 -- | Variables must start with a letter or underscore, and may contain
 -- letters, digits or '_' character after the first character.
 variableName :: Parser String
-variableName = liftM2 (:) (letter <|> char '_')
-  (many (letter <|> char '_' <|> digit <?>
+variableName = liftM2 (:) (letterChar <|> char '_')
+  (many (letterChar <|> char '_' <|> digitChar <?>
          unwords [ "valid non-leading shell variable character (alphanumeric,"
                  , "digit or underscore)" ]))
 
