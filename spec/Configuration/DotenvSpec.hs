@@ -60,7 +60,7 @@ spec = do
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
-  describe "parseFile" $ after_ (unsetEnv "DOTENV") $
+  describe "parseFile" $ after_ (unsetEnv "DOTENV") $ do
     it "returns variables from a file without changing the environment" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
@@ -69,8 +69,6 @@ spec = do
 
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-  describe "parseFile" $
     it "recognizes unicode characters" $
       liftM (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("UNICODE_TEST", "Manabí")
-

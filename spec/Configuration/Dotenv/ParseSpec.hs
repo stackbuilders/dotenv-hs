@@ -48,7 +48,7 @@ spec = describe "parse" $ do
   it "does not parse variables with hyphens in the name" $
     isLeft (parseConfig "FOO-BAR=foobar") `shouldBe` True
 
-  it "parses variables with '_' in the name" $
+  it "parses variables with \"_\" in the name" $
     parseConfig "FOO_BAR=foobar" `shouldBe` Right [("FOO_BAR", "foobar")]
 
   it "parses variables with digits after the first character" $
@@ -73,7 +73,7 @@ spec = describe "parse" $ do
   it "ignores inline comments after quoted arguments" $
     parseConfig "FOO=\"bar\" # this is foo" `shouldBe` Right [("FOO", "bar")]
 
-  it "allows # in quoted values" $
+  it "allows \"#\" in quoted values" $
     parseConfig "foo=\"bar#baz\" # comment" `shouldBe`
     Right [("foo", "bar#baz")]
 
