@@ -1,3 +1,14 @@
+-- |
+-- Module      :  Configuration.Dotenv.Text
+-- Copyright   :  © 2015–2016 Stack Builders Inc.
+-- License     :  MIT
+--
+-- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Provides a Data.Text interface for retrieving variables in a dotenv file.
+
 module Configuration.Dotenv.Text (parseFile) where
 
 import qualified Configuration.Dotenv
