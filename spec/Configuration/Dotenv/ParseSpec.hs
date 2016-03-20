@@ -31,6 +31,10 @@ spec = describe "parse" $ do
     parseConfig "FOO=\"escaped\\\"bar\"" `shouldBe`
     Right [("FOO", "escaped\"bar")]
 
+  it "supports CRLF line breaks" $
+    parseConfig "FOO=bar\r\nbaz=fbb" `shouldBe`
+    Right [("FOO", "bar"), ("baz", "fbb")]
+
   it "parses empty values" $
     parseConfig "FOO=" `shouldBe` Right [("FOO", "")]
 

@@ -17,7 +17,7 @@ module Configuration.Dotenv.Parse (configParser) where
 import Text.Megaparsec ((<?>), anyChar, char, eof, manyTill, try)
 import Text.Megaparsec.String (Parser)
 import Text.Megaparsec.Char
-  (digitChar, letterChar, newline, noneOf, oneOf)
+  (digitChar, letterChar, eol, noneOf, oneOf)
 
 import Control.Applicative
 import Prelude
@@ -36,7 +36,7 @@ envLine :: Parser (Maybe (String, String))
 envLine = (comment <|> blankLine) *> return Nothing <|> Just <$> optionLine
 
 blankLine :: Parser String
-blankLine = many verticalSpace <* newline <?> "blank line"
+blankLine = many verticalSpace <* eol <?> "blank line"
 
 optionLine :: Parser (String, String)
 optionLine = liftM2 (,)
@@ -80,7 +80,7 @@ comment = try (many verticalSpace *> char '#')
           <?> "comment"
 
 endOfLineOrInput :: Parser ()
-endOfLineOrInput = newline *> return () <|> eof
+endOfLineOrInput = eol *> return () <|> eof
 
 variableValueSeparator :: Parser ()
 variableValueSeparator =
