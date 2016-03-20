@@ -1,3 +1,7 @@
+## Dotenv 0.3.0.1
+
+* Remove unnecessary package dependencies.
+
 ## Dotenv 0.3.0.0
 
 * Reverted change to Data.Text in favor of String, for maintaining compatibility
