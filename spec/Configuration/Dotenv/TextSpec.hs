@@ -4,7 +4,7 @@ import Configuration.Dotenv.Text (parseFile)
 
 import Test.Hspec
 
-import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
+import System.Environment.Compat (lookupEnv, unsetEnv)
 import Control.Monad (liftM)
 import qualified Data.Text as T
 
