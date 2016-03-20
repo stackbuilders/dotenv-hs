@@ -1,3 +1,17 @@
+-- |
+-- Module      :  Configuration.Dotenv.Parse
+-- Copyright   :  © 2015–2016 Stack Builders Inc.
+-- License     :  MIT
+--
+-- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Parser for files in dotenv format. These files generally consist of lines
+-- with the form key=value. Comments and blank lines are also supported. More
+-- information on the dotenv format can be found in the project README and the
+-- test suite.
+
 module Configuration.Dotenv.Parse (configParser) where
 
 import Text.Megaparsec ((<?>), anyChar, char, eof, manyTill, try)

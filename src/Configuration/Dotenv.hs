@@ -1,3 +1,14 @@
+-- |
+-- Module      :  Configuration.Dotenv
+-- Copyright   :  © 2015–2016 Stack Builders Inc.
+-- License     :  MIT
+--
+-- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- This module contains common functions to load and read dotenv files.
+
 module Configuration.Dotenv (load, loadFile, parseFile) where
 
 import System.Environment.Compat (lookupEnv, setEnv)

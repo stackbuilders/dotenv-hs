@@ -80,4 +80,4 @@ MIT
 
 ## Copyright
 
-(C) 2015 [Stack Builders Inc.](http://www.stackbuilders.com)
+(C) 2015-2016 [Stack Builders Inc.](http://www.stackbuilders.com)

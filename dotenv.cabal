@@ -34,8 +34,8 @@ description:
 license:             MIT
 license-file:        LICENSE
 author:              Justin Leitgeb
-maintainer:          justin@stackbuilders.com
-copyright:           2016 Stack Builders Inc.
+maintainer:          hackage@stackbuilders.com
+copyright:           2015-2016 Stack Builders Inc.
 category:            Configuration
 build-type:          Simple
 extra-source-files:    spec/fixtures/.dotenv
