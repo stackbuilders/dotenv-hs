@@ -38,7 +38,8 @@ maintainer:          justin@stackbuilders.com
 copyright:           2016 Stack Builders Inc.
 category:            Configuration
 build-type:          Simple
-extra-source-files:  spec/fixtures/.dotenv
+extra-source-files:    spec/fixtures/.dotenv
+                     , CHANGELOG.md
 cabal-version:       >=1.10
 bug-reports:         https://github.com/stackbuilders/dotenv-hs/issues
 
