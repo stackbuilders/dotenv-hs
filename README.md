@@ -31,13 +31,17 @@ S3_BUCKET=YOURS3BUCKET
 SECRET_KEY=YOURSECRETKEYGOESHERE
 ```
 
-Then, calling Dotenv.load from your Haskell program reads the above
-settings into the environment.:
+Then, calling `Dotenv.load` from your Haskell program reads the above
+settings into the environment:
 
 ```haskell
 import qualified Configuration.Dotenv as Dotenv
 Dotenv.loadFile False "/path/to/your/file"
 ```
+
+After calling `Dotenv.load`, you are able to read the values set in your
+environment using standard functions from `System.Environment` such as
+`lookupEnv` and `getEnv`.
 
 ## Configuration
 
