@@ -1,9 +1,12 @@
 # Specifies the GHC version and set of packages available (e.g., lts-3.5, nightly-2015-09-21, ghc-7.10.2)
-resolver: lts-5.8
+resolver: lts-6.4
 
 # Local packages, usually specified by relative directory name
 packages:
 - '.'
+
+extra-deps:
+- megaparsec-5.0.0
 
 # Override default flag values for local packages and extra-deps
 flags: {}
