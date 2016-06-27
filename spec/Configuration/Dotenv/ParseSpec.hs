@@ -6,7 +6,7 @@ import Configuration.Dotenv.Parse (configParser)
 
 import Test.Hspec (it, describe, shouldBe, Spec, hspec)
 
-import Text.Megaparsec (ParseError, parse)
+import Text.Megaparsec (ParseError, Dec, parse)
 
 main :: IO ()
 main = hspec spec
@@ -90,5 +90,5 @@ isLeft :: Either a b -> Bool
 isLeft ( Left _ ) = True
 isLeft _          = False
 
-parseConfig :: String -> Either ParseError [(String, String)]
+parseConfig :: String -> Either (ParseError Char Dec) [(String, String)]
 parseConfig = parse configParser "(unknown)"
