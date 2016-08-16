@@ -1,4 +1,10 @@
+{-# LANGUAGE CPP #-}
+
 module Main where
+
+#if MIN_VERSION_optparse_applicative(0,13,0)
+import Data.Monoid ((<>))
+#endif
 
 import Options.Applicative
 

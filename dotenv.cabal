@@ -49,7 +49,7 @@ executable dotenv
   build-depends:         base >=4.5 && <5.0
                        , base-compat >= 0.4
                        , dotenv >= 0.3.0.2
-                       , optparse-applicative >=0.11 && < 0.13
+                       , optparse-applicative >=0.11 && < 0.14
                        , megaparsec >= 5.0 && < 6.0
                        , process
                        , text
