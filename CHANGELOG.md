@@ -1,3 +1,7 @@
+## Dotenv 0.3.0.3
+
+* Allow optparse-applicative 0.13
+
 ## Dotenv 0.3.0.1
 
 * Remove unnecessary package dependencies.

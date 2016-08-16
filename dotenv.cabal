@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.3.0.2
+version:             0.3.0.3
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
