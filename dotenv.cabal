@@ -53,6 +53,7 @@ executable dotenv
                        , megaparsec >= 5.0 && < 6.0
                        , process
                        , text
+                       , transformers >=0.4 && < 0.6
 
   hs-source-dirs:      app
   default-language:    Haskell2010
@@ -66,6 +67,7 @@ library
                        , base-compat >= 0.4
                        , megaparsec >= 5.0 && < 6.0
                        , text
+                       , transformers >=0.4 && < 0.6
 
   hs-source-dirs:      src
   default-language:    Haskell2010
@@ -88,6 +90,7 @@ test-suite dotenv-test
                      , megaparsec >= 5.0 && < 6.0
                      , hspec
                      , text
+                     , transformers >=0.4 && < 0.6
 
   default-language:    Haskell2010
   ghc-options:         -Wall
