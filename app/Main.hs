@@ -10,6 +10,8 @@ import Options.Applicative
 
 import Configuration.Dotenv (loadFile)
 
+import Control.Monad.IO.Class(MonadIO(..))
+
 import System.Process (system)
 import System.Exit (exitWith)
 
@@ -41,8 +43,8 @@ config = Options
                   <> short 'o'
                   <> help "Specify this flag to override existing variables" )
 
-dotEnv :: Options -> IO ()
-dotEnv opts = do
+dotEnv :: MonadIO m => Options -> m ()
+dotEnv opts = liftIO $ do
   mapM_ (loadFile (overload opts)) (files opts)
-  code <- system $ program opts
+  code <- system (program opts)
   exitWith code
