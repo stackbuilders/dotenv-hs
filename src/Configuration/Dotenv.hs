@@ -9,15 +9,19 @@
 --
 -- This module contains common functions to load and read dotenv files.
 
-module Configuration.Dotenv (load, loadFile, parseFile) where
-
-import System.Environment.Compat (lookupEnv, setEnv)
+module Configuration.Dotenv
+  ( load
+  , loadFile
+  , parseFile
+  , onMissingFile )
+ where
 
 import Configuration.Dotenv.Parse (configParser)
-
-import Text.Megaparsec (parse)
-
+import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
+import System.Environment.Compat (lookupEnv, setEnv)
+import System.IO.Error (isDoesNotExistError)
+import Text.Megaparsec (parse)
 
 -- | Loads the given list of options into the environment. Optionally
 -- override existing variables with values from Dotenv files.
@@ -61,3 +65,14 @@ applySetting override (key, value) =
     case res of
       Nothing -> liftIO $ setEnv key value
       Just _  -> return ()
+
+-- | The helper allows to avoid exceptions in the case of missing files and
+-- perform some action instead.
+--
+-- @since 0.3.1.0
+
+onMissingFile :: (MonadIO m, MonadCatch m)
+  => m a -- ^ Action to perform that may fail because of missing file
+  -> m a               -- ^ Action to perform if file is indeed missing
+  -> m a
+onMissingFile f h = catchIf isDoesNotExistError f (const h)
