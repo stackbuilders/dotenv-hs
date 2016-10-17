@@ -1,6 +1,6 @@
 module Configuration.DotenvSpec (main, spec) where
 
-import Configuration.Dotenv (load, loadFile, parseFile)
+import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
 
 import Test.Hspec
 
@@ -70,3 +70,13 @@ spec = do
     it "recognizes unicode characters" $
       liftM (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("UNICODE_TEST", "Manabí")
+
+  describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
+    context "when target file is present" $
+      it "loading works as usual" $ do
+        onMissingFile (loadFile True "spec/fixtures/.dotenv") (return ())
+        lookupEnv "DOTENV" `shouldReturn` Just "true"
+    context "when target file is missing" $
+      it "executes supplied handler instead" $
+        onMissingFile (True <$ loadFile True "spec/fixtures/foo") (return False)
+          `shouldReturn` False
