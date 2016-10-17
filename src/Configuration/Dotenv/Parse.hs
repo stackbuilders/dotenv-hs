@@ -12,83 +12,80 @@
 -- information on the dotenv format can be found in the project README and the
 -- test suite.
 
+{-# LANGUAGE CPP #-}
+
 module Configuration.Dotenv.Parse (configParser) where
 
-import Text.Megaparsec ((<?>), anyChar, char, eof, manyTill, try)
-import Text.Megaparsec.String (Parser)
-import Text.Megaparsec.Char
-  (digitChar, letterChar, eol, noneOf, oneOf)
-
 import Control.Applicative
-import Prelude
+import Control.Monad
+import Text.Megaparsec
+import Text.Megaparsec.String (Parser)
+import qualified Text.Megaparsec.Lexer as L
 
-import Data.Maybe (catMaybes)
-import Control.Monad (liftM2)
-
--- | Returns a parser for a Dotenv configuration file.  Accepts key
--- and value arguments separated by "=".  Comments are allowed on
--- lines by themselves and on blank lines.
+-- | Returns a parser for a Dotenv configuration file. Accepts key and value
+-- arguments separated by @=@. Comments in all positions are handled
+-- appropriately.
 configParser :: Parser [(String, String)]
-configParser = catMaybes <$> many envLine <* eof
+configParser = between scn eof (sepEndBy1 envLine (eol <* scn))
 
-
-envLine :: Parser (Maybe (String, String))
-envLine = (comment <|> blankLine) *> return Nothing <|> Just <$> optionLine
-
-blankLine :: Parser String
-blankLine = many verticalSpace <* eol <?> "blank line"
-
-optionLine :: Parser (String, String)
-optionLine = liftM2 (,)
-  (many verticalSpace *> variableName <* variableValueSeparator)
-  value
+-- | Parse a single environment variable assignment.
+envLine :: Parser (String, String)
+envLine = (,) <$> (lexeme variableName <* lexeme (char '=')) <*> lexeme value
 
 -- | Variables must start with a letter or underscore, and may contain
 -- letters, digits or '_' character after the first character.
 variableName :: Parser String
-variableName = liftM2 (:) (letterChar <|> char '_')
-  (many (letterChar <|> char '_' <|> digitChar <?>
-         unwords [ "valid non-leading shell variable character (alphanumeric,"
-                 , "digit or underscore)" ]))
+variableName = ((:) <$> firstChar <*> many otherChar) <?> "variable name"
+  where
+    firstChar = char '_'  <|> letterChar
+    otherChar = firstChar <|> digitChar
 
-  <?> unwords [ "shell variable name (letter or underscore followed"
-              , "by alphanumeric characters or underscores)" ]
-
+-- | Value: quoted or unquoted.
 value :: Parser String
-value = quotedValue <|> unquotedValue <?> "variable value"
+value = (quotedValue <|> unquotedValue) <?> "variable value"
+  where
+    quotedValue   = quotedWith '\'' <|> quotedWith '\"'
+    unquotedValue = many (noneOf "\'\" \t\n\r")
 
-quotedValue :: Parser String
-quotedValue = (quotedWith '\'' <|> quotedWith '\"')
-  <* (comment *> return () <|> many verticalSpace *> endOfLineOrInput)
-  <?> "variable value surrounded with single or double quotes"
-
-unquotedValue :: Parser String
-unquotedValue =
-  manyTill anyChar (comment <|> many verticalSpace <* endOfLineOrInput)
-
--- | Based on a commented-string parser in:
--- http://hub.darcs.net/navilan/XMonadTasks/raw/Data/Config/Lexer.hs
+-- | Parse a value quoted with given character.
 quotedWith :: Char -> Parser String
-quotedWith c = char c *> many chr <* (char c <?> "closing quote character")
+quotedWith q = between (char q) (char q) (many $ escapedChar <|> normalChar)
+  where
+    escapedChar = (char '\\' *> anyChar) <?> "escaped character"
+    normalChar  = noneOf (q : "\\") <?> "unescaped character"
 
-  where chr = esc <|> noneOf [c]
-        esc = escape *> char c <?> "escape character"
+----------------------------------------------------------------------------
+-- Boilerplate and whitespace setup
 
-comment :: Parser String
-comment = try (many verticalSpace *> char '#')
-          *> manyTill anyChar endOfLineOrInput
-          <?> "comment"
+-- | Lexeme wrapper that takes care of consuming of white space.
+lexeme :: Parser a -> Parser a
+lexeme = L.lexeme sc
+{-# INLINE lexeme #-}
 
-endOfLineOrInput :: Parser ()
-endOfLineOrInput = eol *> return () <|> eof
+-- | Space consumer. Consumes all white space including comments, but never
+-- consumes newlines.
+sc :: Parser ()
+sc = L.space (void spaceChar') skipLineComment empty
+{-# INLINE sc #-}
 
-variableValueSeparator :: Parser ()
-variableValueSeparator =
-  many verticalSpace *> (char '=' <?> "variable-value separator character (=)")
-  *> many verticalSpace *> return ()
+-- | Just like 'sc' but also eats newlines.
+scn :: Parser ()
+scn = L.space (void spaceChar) skipLineComment empty
+{-# INLINE scn #-}
 
-escape :: Parser Char
-escape = char '\\'
+-- | Just like 'spaceChar', but does not consume newlines.
+spaceChar' :: Parser Char
+spaceChar' = oneOf " \t"
+{-# INLINE spaceChar' #-}
 
-verticalSpace :: Parser Char
-verticalSpace = oneOf " \t"
+-- | Skip line comment and stop before newline character without consuming
+-- it.
+skipLineComment :: Parser ()
+#if MIN_VERSION_megaparsec(5,1,0)
+skipLineComment = L.skipLineComment "#"
+#else
+skipLineComment = p >> void (manyTill anyChar n)
+  where p = string "#"
+        n = lookAhead (void newline) <|> eof
+#endif
+{-# INLINE skipLineComment #-}
