@@ -101,7 +101,7 @@ install:
     cabal)
       cabal --version
       travis_retry cabal update
-      cabal install --only-dependencies --enable-tests --enable-benchmarks --force-reinstalls --reorder-goals --max-backjumps=-1 $CABALARGS -f dev
+      cabal install --only-dependencies --enable-tests --enable-benchmarks --force-reinstalls --reorder-goals --max-backjumps=-1 $CABALARGS
       ;;
   esac
 
@@ -109,15 +109,14 @@ script:
 - |
   case "$BUILD" in
     stack)
-      stack --no-terminal $ARGS test --haddock --no-haddock-deps
+      stack --no-terminal $ARGS test --haddock --no-haddock-deps --flag dotenv:dev
       ;;
     cabal)
-      cabal configure --enable-tests --enable-benchmarks -v2
-      cabal build -f dev
-      cabal check || [ "$CABALVER" == "1.16" ]
-      PATH=$HOME/.cabal/bin:$PATH && cabal build && cabal test -f dev --log=/dev/stdout
-      cabal sdist
-      cabal copy
+      cabal configure --enable-tests --enable-benchmarks -v2 -f dev &&
+      PATH=$HOME/.cabal/bin:$PATH && cabal build && cabal test --log=/dev/stdout
+      cabal check || [ "$CABALVER" == "1.16" ] &&
+      cabal sdist &&
+      cabal copy &&
       SRC_TGZ=$(cabal info . | awk '{print $2;exit}').tar.gz && \
         (cd dist && cabal install --force-reinstalls "$SRC_TGZ")
       ;;
