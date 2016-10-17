@@ -1,6 +1,13 @@
 ## Dotenv 0.3.1.0
 
+* Made interface more polymorphic so the functions works in any instance of
+  `MonadIO`, not only `IO`. This should reduce amount of lifting in some
+  cases.
+
 * Added `onMissingFile` helper to deal with possibly missing files.
+
+* Parser was rewritten to take full advantage of Megaparsec.
+  `hspec-megaparsec` is now used for testing of the parser.
 
 ## Dotenv 0.3.0.3
 
