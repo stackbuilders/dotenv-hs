@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 module Configuration.DotenvSpec (main, spec) where
 
 import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
@@ -6,6 +8,10 @@ import Test.Hspec
 
 import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
 import Control.Monad (liftM)
+
+#if !MIN_VERSION_base(4,8,0)
+import Control.Applicative ((<$))
+#endif
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
 

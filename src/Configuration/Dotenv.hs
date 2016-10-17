@@ -71,7 +71,7 @@ applySetting override (key, value) =
 --
 -- @since 0.3.1.0
 
-onMissingFile :: (MonadIO m, MonadCatch m)
+onMissingFile :: MonadCatch m
   => m a -- ^ Action to perform that may fail because of missing file
   -> m a               -- ^ Action to perform if file is indeed missing
   -> m a
