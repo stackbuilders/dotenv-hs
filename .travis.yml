@@ -114,7 +114,6 @@ script:
     cabal)
       cabal configure --enable-tests --enable-benchmarks -v2 -f dev &&
       PATH=$HOME/.cabal/bin:$PATH && cabal build && cabal test --log=/dev/stdout
-      cabal check || [ "$CABALVER" == "1.16" ] &&
       cabal sdist &&
       cabal copy &&
       SRC_TGZ=$(cabal info . | awk '{print $2;exit}').tar.gz && \
