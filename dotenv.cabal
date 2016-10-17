@@ -44,6 +44,11 @@ extra-source-files:    spec/fixtures/.dotenv
 cabal-version:       >=1.10
 bug-reports:         https://github.com/stackbuilders/dotenv-hs/issues
 
+flag dev
+  description:        Turn on development settings.
+  manual:             True
+  default:            False
+
 executable dotenv
   main-is:             Main.hs
   build-depends:         base >=4.5 && <5.0
@@ -56,6 +61,10 @@ executable dotenv
                        , transformers >=0.4 && < 0.6
 
   hs-source-dirs:      app
+  if flag(dev)
+    ghc-options:      -Wall -Werror
+  else
+    ghc-options:      -O2 -Wall
   default-language:    Haskell2010
 
 library
@@ -71,8 +80,12 @@ library
                        , exceptions >= 0.8 && < 0.9
 
   hs-source-dirs:      src
-  default-language:    Haskell2010
   ghc-options:         -Wall
+  if flag(dev)
+    ghc-options:      -Wall -Werror
+  else
+    ghc-options:      -O2 -Wall
+  default-language:    Haskell2010
 
 test-suite dotenv-test
   type: exitcode-stdio-1.0
@@ -95,8 +108,11 @@ test-suite dotenv-test
                      , exceptions >= 0.8 && < 0.9
                      , hspec-megaparsec >= 0.2 && < 0.4
 
+  if flag(dev)
+    ghc-options:      -Wall -Werror
+  else
+    ghc-options:      -O2 -Wall
   default-language:    Haskell2010
-  ghc-options:         -Wall
 
 source-repository head
   type:     git
