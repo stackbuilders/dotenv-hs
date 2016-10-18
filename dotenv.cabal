@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.3.0.3
+version:             0.3.1.0
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -53,7 +53,7 @@ executable dotenv
   main-is:             Main.hs
   build-depends:         base >=4.6 && <5.0
                        , base-compat >= 0.4
-                       , dotenv >= 0.3.0.2
+                       , dotenv >= 0.3.1.0
                        , optparse-applicative >=0.11 && < 0.14
                        , megaparsec >= 5.0 && < 6.0
                        , process
@@ -100,7 +100,7 @@ test-suite dotenv-test
 
   build-depends:       base >=4.6 && <5.0
                      , base-compat >= 0.4
-                     , dotenv >= 0.3.0.2
+                     , dotenv >= 0.3.1.0
                      , megaparsec >= 5.0 && < 6.0
                      , hspec
                      , text
