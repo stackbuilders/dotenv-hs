@@ -9,6 +9,8 @@
 * Parser was rewritten to take full advantage of Megaparsec.
   `hspec-megaparsec` is now used for testing of the parser.
 
+* Dropped support for GHC 7.4.
+
 ## Dotenv 0.3.0.3
 
 * Allow optparse-applicative 0.13
