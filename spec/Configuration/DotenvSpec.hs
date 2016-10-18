@@ -6,11 +6,17 @@ import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
 
 import Test.Hspec
 
-import System.Environment.Compat (lookupEnv, setEnv, unsetEnv)
+import System.Environment (lookupEnv)
 import Control.Monad (liftM)
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$))
+#endif
+
+#if MIN_VERSION_base(4,7,0)
+import System.Environment (setEnv, unsetEnv)
+#else
+import System.Environment.Compat (setEnv, unsetEnv)
 #endif
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
