@@ -16,6 +16,7 @@
 
 module Configuration.Dotenv.Parse (configParser) where
 
+import Configuration.Dotenv.ParsedVariable
 import Control.Applicative
 import Control.Monad
 import Text.Megaparsec
@@ -23,22 +24,6 @@ import Text.Megaparsec.String (Parser)
 import qualified Text.Megaparsec.Lexer as L
 
 data QuoteType = SingleQuote | DoubleQuote
-
-data ParsedVariable
-  = ParsedVariable VName VValue
-
-type VName = String
-
-data VValue
-  = Unquoted VContents
-  | SingleQuoted String
-  | DoubleQuoted VContents
-
-type VContents = [VFragment]
-
-data VFragment
-  = VInterpolation String
-  | VLiteral String
 
 -- | Returns a parser for a Dotenv configuration file. Accepts key and value
 -- arguments separated by @=@. Comments in all positions are handled
