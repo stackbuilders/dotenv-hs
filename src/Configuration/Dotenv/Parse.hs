@@ -22,37 +22,74 @@ import Text.Megaparsec
 import Text.Megaparsec.String (Parser)
 import qualified Text.Megaparsec.Lexer as L
 
+data QuoteType = SingleQuote | DoubleQuote
+
+data ParsedVariable
+  = ParsedVariable VName VValue
+
+type VName = String
+
+data VValue
+  = Unquoted VContents
+  | SingleQuoted String
+  | DoubleQuoted VContents
+
+type VContents = [VFragment]
+
+data VFragment
+  = VInterpolation String
+  | VLiteral String
+
 -- | Returns a parser for a Dotenv configuration file. Accepts key and value
 -- arguments separated by @=@. Comments in all positions are handled
 -- appropriately.
-configParser :: Parser [(String, String)]
+configParser :: Parser [ParsedVariable]
 configParser = between scn eof (sepEndBy1 envLine (eol <* scn))
 
 -- | Parse a single environment variable assignment.
-envLine :: Parser (String, String)
-envLine = (,) <$> (lexeme variableName <* lexeme (char '=')) <*> lexeme value
+envLine :: Parser ParsedVariable
+envLine = ParsedVariable <$> (lexeme variableName <* lexeme (char '=')) <*> lexeme value
 
 -- | Variables must start with a letter or underscore, and may contain
 -- letters, digits or '_' character after the first character.
-variableName :: Parser String
+variableName :: Parser VName
 variableName = ((:) <$> firstChar <*> many otherChar) <?> "variable name"
   where
     firstChar = char '_'  <|> letterChar
     otherChar = firstChar <|> digitChar
 
 -- | Value: quoted or unquoted.
-value :: Parser String
+value :: Parser VValue
 value = (quotedValue <|> unquotedValue) <?> "variable value"
   where
-    quotedValue   = quotedWith '\'' <|> quotedWith '\"'
-    unquotedValue = many (noneOf "\'\" \t\n\r")
+    quotedValue   = quotedWith SingleQuote <|> quotedWith DoubleQuote
+    unquotedValue = Unquoted <$> (many $ fragment "\'\" \t\n\r")
 
 -- | Parse a value quoted with given character.
-quotedWith :: Char -> Parser String
-quotedWith q = between (char q) (char q) (many $ escapedChar <|> normalChar)
+quotedWith :: QuoteType -> Parser VValue
+quotedWith SingleQuote = SingleQuoted <$> (between (char '\'') (char '\'') $ literalValueFragment "\'\\")
+quotedWith DoubleQuote = DoubleQuoted <$> (between (char '\"') (char '\"') $ many (fragment "\""))
+
+fragment :: [Char] -> Parser VFragment
+fragment charsToEscape = interpolatedValueFragment <|> (VLiteral <$> literalValueFragment ('$' : '\\' : charsToEscape))
+
+interpolatedValueFragment :: Parser VFragment
+interpolatedValueFragment = VInterpolation <$>
+                            ((between (symbol "${") (symbol "}") variableName) <|>
+                            (between (symbol "$") (symbol "\"") variableName) <|>
+                            (between (symbol "$") (symbol "\'") variableName) <|>
+                            (between (symbol "$") (symbol " ") variableName) <|>
+                            (between (symbol "$") (symbol "\t") variableName) <|>
+                            (between (symbol "$") (symbol "\n") variableName) <|>
+                            (between (symbol "$") (symbol "\r") variableName))
+  where
+    symbol                = L.symbol sc
+
+literalValueFragment :: [Char] -> Parser String
+literalValueFragment charsToEscape = many $ escapedChar <|> normalChar
   where
     escapedChar = (char '\\' *> anyChar) <?> "escaped character"
-    normalChar  = noneOf (q : "\\") <?> "unescaped character"
+    normalChar  = noneOf charsToEscape <?> "unescaped character"
 
 ----------------------------------------------------------------------------
 -- Boilerplate and whitespace setup
