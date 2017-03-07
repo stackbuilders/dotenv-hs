@@ -1,29 +1,28 @@
--- |
+{- |
 -- Module      :  Configuration.Dotenv.Text
--- Copyright   :  © 2015–2016 Stack Builders Inc.
+-- Copyright   :  © 2015–2017 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
 -- Stability   :  experimental
 -- Portability :  portable
 --
--- Provides a Data.Text interface for retrieving variables in a dotenv file.
+-- Provides a "Data.Text" interface for retrieving variables from a dotenv file.
+-}
 
 module Configuration.Dotenv.Text (parseFile) where
 
-import qualified Configuration.Dotenv
-
-import qualified Data.Text as T
-import Control.Arrow ((***))
-
+import Control.Arrow
 import Control.Monad (liftM)
+import Control.Monad.IO.Class
+import qualified Data.Text as T
 
-import Control.Monad.IO.Class (MonadIO(..))
+import qualified Configuration.Dotenv.File as F
 
--- | Parses the given dotenv file and returns values /without/ adding them to
+-- | @parseFile@ parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
 parseFile ::
-  MonadIO m =>
-  FilePath -- ^ A file containing options to read
+  (Functor m, MonadIO m)
+  => FilePath             -- ^ A file containing options to read
   -> m [(T.Text, T.Text)] -- ^ Variables contained in the file
-parseFile f = map (T.pack *** T.pack) `liftM` Configuration.Dotenv.parseFile f
+parseFile path = map (T.pack *** T.pack) `liftM` F.parseFile path

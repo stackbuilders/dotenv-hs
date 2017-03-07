@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Configuration.Dotenv.ParseSpec (main, spec) where
+module Configuration.Dotenv.ParseSpec (spec) where
 
 import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
@@ -11,8 +11,7 @@ import Test.Hspec (it, describe, Spec, hspec)
 import Test.Hspec.Megaparsec (shouldParse, shouldFailOn)
 import Text.Megaparsec (ParseError, parse)
 
-main :: IO ()
-main = hspec spec
+import Configuration.Dotenv.Parse
 
 spec :: Spec
 spec = describe "parse" $ do

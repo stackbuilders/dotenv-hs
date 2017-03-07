@@ -1,107 +1,75 @@
 {-# LANGUAGE CPP #-}
 
-module Configuration.DotenvSpec (main, spec) where
+module Configuration.DotenvSpec where
 
-import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
-
-import Test.Hspec
-
-import System.Environment (lookupEnv)
-import Control.Monad (liftM)
-import Data.Maybe (fromMaybe)
-#if !MIN_VERSION_base(4,8,0)
-import Data.Functor ((<$>))
-#endif
+import Control.Monad (void)
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$))
 #endif
 
 #if MIN_VERSION_base(4,7,0)
-import System.Environment (setEnv, unsetEnv)
+import System.Environment (setEnv, lookupEnv, unsetEnv)
 #else
-import System.Environment.Compat (setEnv, unsetEnv)
+import System.Environment.Compat (setEnv, lookupEnv, unsetEnv)
 #endif
+import Test.Hspec
 
-{-# ANN module "HLint: ignore Reduce duplication" #-}
+import Configuration.Dotenv (loadFile, onMissingFile)
+import Configuration.Dotenv.Types
 
-main :: IO ()
-main = hspec spec
+buildConfig :: String -> Bool -> String -> Config
+buildConfig dotenvExample allowOverride dotenv =
+  Config { configExamplePath = "spec/fixtures/" ++ dotenvExample
+         , configOverride    = allowOverride
+         , configPath        = "spec/fixtures/" ++ dotenv
+         }
 
 spec :: Spec
-spec = do
-  describe "load" $ after_ (unsetEnv "foo") $ do
-    it "loads the given list of configuration options to the environment" $ do
-      lookupEnv "foo" `shouldReturn` Nothing
+spec = after_ (mapM_ unsetEnv ["DOTENV", "UNICODE_TEST"]) $ do
+  describe "loadFile" $ do
+    context "when the env variables are defined in the environment" $ do
+      context "when config override is set to False" $
+        it "reads the env variables from the environment" $ do
+          setEnv "DOTENV" "false"
 
-      load False [("foo", "bar")]
+          let config = buildConfig ".dotenv.example" False ".dotenv"
+          loadFile config `shouldReturn` [("DOTENV", "false"), ("UNICODE_TEST", "Manabí")]
 
-      lookupEnv "foo" `shouldReturn` Just "bar"
+      context "when config override is set to True" $
+        it "reads the env variables from the dotenv file" $ do
+          setEnv "DOTENV" "false"
 
-    it "preserves existing settings when overload is false" $ do
-      setEnv "foo" "preset"
+          let config = buildConfig ".dotenv.example" True ".dotenv"
+          loadFile config `shouldReturn` [("DOTENV", "true"), ("UNICODE_TEST", "Manabí")]
 
-      load False [("foo", "new setting")]
+    context "when the env variables are not defined in the environment" $ do
+      context "when the variables are defined in the dotenv file" $
+        it "reads the env vars from the dotenv file" $ do
+          let config = buildConfig ".dotenv.example" False ".dotenv"
+          loadFile config `shouldReturn` [("DOTENV", "true"), ("UNICODE_TEST", "Manabí")]
 
-      lookupEnv "foo" `shouldReturn` Just "preset"
+      context "when the variables are not defined in the dotenv file" $
+        it "fails because of missing keys" $ do
+          let config = buildConfig ".dotenv.example" False ".incomplete.dotenv"
+          loadFile config `shouldThrow` anyIOException
 
-    it "overrides existing settings when overload is true" $ do
-      setEnv "foo" "preset"
+    it "fails when .env.example is missing" $ do
+      let config = buildConfig ".missing.dotenv.example" False ".dotenv"
+      loadFile config `shouldThrow` anyIOException
 
-      load True [("foo", "new setting")]
+    it "fails when .env.example is badly formatted" $ do
+      let config = buildConfig ".bad.dotenv.example" False ".dotenv"
+      loadFile config `shouldThrow` anyErrorCall
 
-      lookupEnv "foo" `shouldReturn` Just "new setting"
-
-  describe "loadFile" $ after_ (unsetEnv "DOTENV") $ do
-    it "loads the configuration options to the environment from a file" $ do
-      lookupEnv "DOTENV" `shouldReturn` Nothing
-
-      loadFile False "spec/fixtures/.dotenv"
-
-      lookupEnv "DOTENV" `shouldReturn` Just "true"
-
-    it "respects predefined settings when overload is false" $ do
-      setEnv "DOTENV" "preset"
-
-      loadFile False "spec/fixtures/.dotenv"
-
-      lookupEnv "DOTENV" `shouldReturn` Just "preset"
-
-    it "overrides predefined settings when overload is true" $ do
-      setEnv "DOTENV" "preset"
-
-      loadFile True "spec/fixtures/.dotenv"
-
-      lookupEnv "DOTENV" `shouldReturn` Just "true"
-
-  describe "parseFile" $ after_ (unsetEnv "DOTENV") $ do
-    it "returns variables from a file without changing the environment" $ do
-      lookupEnv "DOTENV" `shouldReturn` Nothing
-
-      (liftM head $ parseFile "spec/fixtures/.dotenv") `shouldReturn`
-        ("DOTENV", "true")
-
-      lookupEnv "DOTENV" `shouldReturn` Nothing
-
-    it "recognizes unicode characters" $
-      liftM (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
-        ("UNICODE_TEST", "Manabí")
-
-    it "recognises environment variables" $ do
-      home <- fromMaybe "" <$> lookupEnv "HOME"
-      liftM (!! 2) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
-        ("ENVIRONMENT", home)
-
-    it "recognises previous variables" $
-      liftM (!! 3) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
-        ("PREVIOUS", "true")
-
-  describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
+  describe "onMissingFile" $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        onMissingFile (loadFile True "spec/fixtures/.dotenv") (return ())
+        let config = buildConfig ".dotenv.example" True ".dotenv"
+        void $ onMissingFile (loadFile config) (return [("DOTENV", "true"), ("UNICODE_TEST", "Manabí")])
         lookupEnv "DOTENV" `shouldReturn` Just "true"
     context "when target file is missing" $
-      it "executes supplied handler instead" $
-        onMissingFile (True <$ loadFile True "spec/fixtures/foo") (return False)
-          `shouldReturn` False
+      it "executes supplied handler instead" $ do
+        let config = buildConfig ".dotenv.example" True ".missing.dotenv"
+        onMissingFile (True <$ loadFile config) (return False) `shouldReturn` False
+

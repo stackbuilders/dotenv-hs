@@ -1,5 +1,13 @@
 ## MASTER
 
+## Dotenv 0.5.0.0
+
+* Changed `loadFile` function to get `Config` with the paths for the .env file
+  and the .env.example file.
+
+* Add the `Config` type with options to override env variables, and setting the
+  path for .env and .env.example files.
+
 ## Dotenv 0.4.0.0
 
 * Use Megaparsec 6.0
