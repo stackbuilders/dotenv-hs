@@ -19,6 +19,7 @@ data Options = Options
   { files    :: [String]
   , overload :: Bool
   , program  :: String
+  , args     :: [String]
   } deriving (Show)
 
 main :: IO ()
@@ -43,8 +44,11 @@ config = Options
 
      <*> argument str (metavar "PROGRAM")
 
+     <*> many (argument str (metavar "ARG"))
+
 dotEnv :: MonadIO m => Options -> m ()
 dotEnv opts = liftIO $ do
   mapM_ (loadFile (overload opts)) (files opts)
-  code <- system (program opts)
+  -- 'system' is used, so shell expansion is made
+  code <- system (program opts ++ concatMap (" " ++) (args opts))
   exitWith code
