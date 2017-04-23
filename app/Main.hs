@@ -17,8 +17,8 @@ import System.Exit (exitWith)
 
 data Options = Options
   { files    :: [String]
-  , program  :: String
   , overload :: Bool
+  , program  :: String
   } deriving (Show)
 
 main :: IO ()
@@ -37,11 +37,11 @@ config = Options
                   <> metavar "FILE"
                   <> help "File to read for options" ))
 
-     <*> argument str (metavar "PROGRAM")
-
      <*> switch ( long "overload"
                   <> short 'o'
                   <> help "Specify this flag to override existing variables" )
+
+     <*> argument str (metavar "PROGRAM")
 
 dotEnv :: MonadIO m => Options -> m ()
 dotEnv opts = liftIO $ do
