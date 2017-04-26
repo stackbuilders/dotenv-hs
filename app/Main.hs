@@ -17,8 +17,9 @@ import System.Exit (exitWith)
 
 data Options = Options
   { files    :: [String]
-  , program  :: String
   , overload :: Bool
+  , program  :: String
+  , args     :: [String]
   } deriving (Show)
 
 main :: IO ()
@@ -37,14 +38,17 @@ config = Options
                   <> metavar "FILE"
                   <> help "File to read for options" ))
 
-     <*> argument str (metavar "PROGRAM")
-
      <*> switch ( long "overload"
                   <> short 'o'
                   <> help "Specify this flag to override existing variables" )
 
+     <*> argument str (metavar "PROGRAM")
+
+     <*> many (argument str (metavar "ARG"))
+
 dotEnv :: MonadIO m => Options -> m ()
 dotEnv opts = liftIO $ do
   mapM_ (loadFile (overload opts)) (files opts)
-  code <- system (program opts)
+  -- 'system' is used, so shell expansion is made
+  code <- system (program opts ++ concatMap (" " ++) (args opts))
   exitWith code
