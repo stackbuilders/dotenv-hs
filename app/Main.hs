@@ -49,6 +49,7 @@ config = Options
 dotEnv :: MonadIO m => Options -> m ()
 dotEnv opts = liftIO $ do
   mapM_ (loadFile (overload opts)) (files opts)
-  -- 'system' is used, so shell expansion is made
-  code <- system (program opts ++ concatMap (" " ++) (args opts))
+  code <- system (program opts ++ programArguments)
   exitWith code
+  where
+   programArguments = concatMap (" " ++) (args opts)

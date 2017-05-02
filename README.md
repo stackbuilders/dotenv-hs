@@ -69,10 +69,17 @@ from one or more dotenv file before invoking an executable:
 dotenv -f mydotenvfile myprogram
 ```
 
+Aditionally you can pass arguments and flags to the program passed to
+Dotenv:
+
+```
+dotenv -f mydotenvfile myprogram -- --myflag myargument
+```
+
 Hint: The `env` program in most Unix-like environments prints out the
 current environment settings. By invoking the program `env` in place
 of `myprogram` above you can see what the environment will look like
-after evaluating multiple  Dotenv files.
+after evaluating multiple Dotenv files.
 
 ## Author
 
@@ -84,4 +91,4 @@ MIT
 
 ## Copyright
 
-(C) 2015-2016 [Stack Builders Inc.](http://www.stackbuilders.com)
+(C) 2015-2017 [Stack Builders Inc.](http://www.stackbuilders.com)
