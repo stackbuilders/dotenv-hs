@@ -16,7 +16,6 @@ import Control.Arrow
 import Control.Monad (liftM)
 import Control.Monad.IO.Class
 import qualified Data.Text as T
-
 import qualified Configuration.Dotenv.File as F
 
 -- | @parseFile@ parses the given dotenv file and returns values /without/ adding them to

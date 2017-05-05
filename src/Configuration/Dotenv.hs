@@ -18,20 +18,17 @@ module Configuration.Dotenv
   , onMissingFile
   ) where
 
-import Configuration.Dotenv.Parse (configParser)
-import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
+import Data.List (union, intersectBy)
 import Control.Monad (liftM)
 import Control.Monad.Catch (MonadCatch, catchIf)
 import Control.Monad.IO.Class (MonadIO(..))
-import System.Environment (lookupEnv)
+import qualified Data.Traversable as DT
 import System.IO.Error (isDoesNotExistError)
-import System.IO.Error (isDoesNotExistError)
-import Text.Megaparsec (parse)
 
 #if MIN_VERSION_base(4,7,0)
-import System.Environment (getEnv, setEnv, lookupEnv)
+import System.Environment (getEnv, getEnvironment, setEnv, lookupEnv)
 #else
-import System.Environment.Compat (getEnv, setEnv, lookupEnv)
+import System.Environment.Compat (getEnv, getEnvironment, setEnv, lookupEnv)
 #endif
 
 import Configuration.Dotenv.File
@@ -43,19 +40,21 @@ import Configuration.Dotenv.Types
 -- with the values defined in the dotenv file.
 loadFile :: MonadIO m => Config -> m [(String, String)]
 loadFile Config{..} = do
-  keys      <- map fst `liftM` parseFile configExamplePath
-  maybeVars <- parseMaybeFile configPath
-  setupEnvVars configOverride keys maybeVars
-
-setupEnvVars :: MonadIO m => Bool -> [String] -> Maybe [(String, String)] -> m [(String, String)]
-setupEnvVars override keys maybeVars =
-  case maybeVars of
-    Just vars -> setVariables override keys vars
-    _         -> mapM getEnvVariable keys
-
-getEnvVariable :: MonadIO m => String -> m (String, String)
-getEnvVariable key =
-  liftM ((,) key) (liftIO (getEnv key))
+  environment <- liftIO getEnvironment
+  readedVars <- concat `liftM` DT.mapM parseFile configPath
+  neededVars <- concat `liftM` DT.mapM parseFile configExamplePath
+  let numFoundCoincidences = length $ (environment `union` readedVars) `intersectEnvs` neededVars
+      numNeededVars = length neededVars
+      intersectEnvs = intersectBy (\env1 env2 -> fst env1 == fst env2)
+      vars =
+        if configSafe
+          then
+            if numNeededVars == numFoundCoincidences
+              then readedVars
+              else error $ "Some env vars are not defined. Please, check this vars ares set: " ++ concatMap ((++) " " . fst) neededVars
+          else readedVars
+      keys = map fst vars
+  setVariables configOverride keys vars
 
 setVariables :: MonadIO m => Bool -> [String] -> [(String, String)] -> m [(String, String)]
 setVariables override keys vars =
@@ -66,6 +65,11 @@ getVariable vars key =
   case lookup key vars of
     Just var -> return (key, var)
     _        -> getEnvVariable key
+
+getEnvVariable :: MonadIO m => String -> m (String, String)
+getEnvVariable key = do
+  var <- (liftIO . getEnv) key
+  return (key, var)
 
 setVariable :: MonadIO m => Bool -> (String, String) -> m (String, String)
 setVariable override var@(key, value) =

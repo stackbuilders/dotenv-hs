@@ -75,7 +75,6 @@ library
                       , Configuration.Dotenv.Parse
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.File
-                      , Configuration.Dotenv.Parse
                       , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
 
@@ -107,10 +106,6 @@ test-suite dotenv-test
                        , Configuration.Dotenv.ParseSpec
                        , Configuration.Dotenv.TextSpec
                        , Configuration.Dotenv.ParseSpec
-                       , Configuration.Dotenv
-                       , Configuration.Dotenv.Text
-                       , Configuration.Dotenv.Parse
-                       , Configuration.Dotenv.ParsedVariable
 
   build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4
@@ -120,8 +115,7 @@ test-suite dotenv-test
                      , text
                      , transformers >=0.4 && < 0.6
                      , exceptions >= 0.8 && < 0.9
-                     , hspec-megaparsec >= 0.2 && < 0.4
-                     , dotenv
+                     , hspec-megaparsec >= 1.0 && < 2.0
 
   if flag(dev)
     ghc-options:      -Wall -Werror

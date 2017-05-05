@@ -20,9 +20,10 @@ import Configuration.Dotenv.Types
 data Options = Options
   { program           :: String -- ^ Program to run with the load env variables
   , args              :: [String] -- ^ Args for the program that is going to be executed
-  , dotenvFile        :: String -- ^ Path for the .env file
-  , dotenvExampleFile :: String -- ^ Path for the .env.example file
+  , dotenvFile        :: [String] -- ^ Paths for the .env files
+  , dotenvExampleFile :: [String] -- ^ Paths for the .env.example files
   , override          :: Bool   -- ^ Override current environment variables
+  , safe              :: Bool   -- ^ Allow dotenv-safe
   } deriving (Show)
 
 main :: IO ()
@@ -32,6 +33,7 @@ main = do
     { configExamplePath = dotenvExampleFile
     , configOverride = override
     , configPath = dotenvFile
+    , configSafe = safe
     }
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
@@ -47,24 +49,28 @@ config =
 
      <*> many (argument str (metavar "ARG"))
 
-     <*> strOption
-          ( long "dotenv"
-         <> short 'e'
-         <> value ".env"
-         <> showDefault
-         <> metavar "DOTENV"
-         <> help "File with the env variables" )
+     <*> many
+          (strOption
+             ( long "dotenv"
+            <> short 'e'
+            <> showDefault
+            <> metavar "DOTENV"
+            <> help "Files with the env variables" ))
 
-     <*> strOption
-          ( long "dotenv-example"
-         <> short 'x'
-         <> value ".env.example"
-         <> showDefault
-         <> metavar "DOTENV_EXAMPLE"
-         <> help "File with all the necesary env variables" )
+     <*> many
+          (strOption
+              ( long "dotenv-example"
+             <> short 'x'
+             <> showDefault
+             <> metavar "DOTENV_EXAMPLE"
+             <> help "Files with all the necesary env variables" ))
 
      <*> switch
           ( long "override"
          <> short 'o'
          <> help "Override existing variables" )
 
+     <*> switch
+          ( long "safe"
+         <> short 's'
+         <> help "Allow dotenv-safe" )

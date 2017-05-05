@@ -6,12 +6,11 @@ import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             VarValue(..),
                                             VarFragment(..))
-import Data.Void (Void)                                            
-import Test.Hspec (it, describe, Spec, hspec)
+
+import Data.Void (Void)
+import Test.Hspec (it, describe, Spec)
 import Test.Hspec.Megaparsec (shouldParse, shouldFailOn)
 import Text.Megaparsec (ParseError, parse)
-
-import Configuration.Dotenv.Parse
 
 spec :: Spec
 spec = describe "parse" $ do
