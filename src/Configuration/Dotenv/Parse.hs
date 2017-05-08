@@ -52,26 +52,21 @@ value = (quotedValue <|> unquotedValue) <?> "variable value"
 
 -- | Parse a value quoted with given character.
 quotedWith :: QuoteType -> Parser VValue
-quotedWith SingleQuote = SingleQuoted <$> (between (char '\'') (char '\'') $ literalValueFragment "\'\\")
+quotedWith SingleQuote = SingleQuoted <$> (between (char '\'') (char '\'') $ many (literalValueFragment "\'\\"))
 quotedWith DoubleQuote = DoubleQuoted <$> (between (char '\"') (char '\"') $ many (fragment "\""))
 
 fragment :: [Char] -> Parser VFragment
-fragment charsToEscape = interpolatedValueFragment <|> (VLiteral <$> literalValueFragment ('$' : '\\' : charsToEscape))
+fragment charsToEscape = interpolatedValueFragment <|> literalValueFragment ('$' : '\\' : charsToEscape)
 
 interpolatedValueFragment :: Parser VFragment
 interpolatedValueFragment = VInterpolation <$>
                             ((between (symbol "${") (symbol "}") variableName) <|>
-                            (between (symbol "$") (symbol "\"") variableName) <|>
-                            (between (symbol "$") (symbol "\'") variableName) <|>
-                            (between (symbol "$") (symbol " ") variableName) <|>
-                            (between (symbol "$") (symbol "\t") variableName) <|>
-                            (between (symbol "$") (symbol "\n") variableName) <|>
-                            (between (symbol "$") (symbol "\r") variableName))
+                            (char '$' >> variableName))
   where
     symbol                = L.symbol sc
 
-literalValueFragment :: [Char] -> Parser String
-literalValueFragment charsToEscape = many $ escapedChar <|> normalChar
+literalValueFragment :: [Char] -> Parser VFragment
+literalValueFragment charsToEscape = VLiteral <$> (some $ escapedChar <|> normalChar)
   where
     escapedChar = (char '\\' *> anyChar) <?> "escaped character"
     normalChar  = noneOf charsToEscape <?> "unescaped character"

@@ -16,7 +16,7 @@ type VName = String
 
 data VValue
   = Unquoted VContents
-  | SingleQuoted String
+  | SingleQuoted VContents
   | DoubleQuoted VContents
 
 type VContents = [VFragment]
@@ -32,7 +32,7 @@ addInterpolated :: [(String, String)] -> ParsedVariable -> IO [(String, String)]
 addInterpolated previous (ParsedVariable name value) = (: previous) <$> ((,) name <$> interpolate previous value)
 
 interpolate :: [(String, String)] -> VValue -> IO String
-interpolate _        (SingleQuoted contents) = return contents
+interpolate _        (SingleQuoted contents) = return $ joinContents contents
 interpolate previous (DoubleQuoted contents) = interpolateContents previous contents
 interpolate previous (Unquoted     contents) = interpolateContents previous contents
 
@@ -44,3 +44,9 @@ interpolateFragment _        (VLiteral       value  ) = return value
 interpolateFragment previous (VInterpolation varname) = fromPreviousOrEnv >>= maybe (return "") return
   where
     fromPreviousOrEnv = (lookup varname previous <|>) <$> lookupEnv varname
+
+joinContents :: VContents -> String
+joinContents = concatMap fragmentToString
+  where
+    fragmentToString (VInterpolation value) = value
+    fragmentToString (VLiteral value)       = value
