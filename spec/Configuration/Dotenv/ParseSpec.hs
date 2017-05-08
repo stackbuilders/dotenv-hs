@@ -3,7 +3,9 @@
 module Configuration.Dotenv.ParseSpec (main, spec) where
 
 import Configuration.Dotenv.Parse (configParser)
-import Configuration.Dotenv.ParsedVariable (ParsedVariable(..), VValue(..), VFragment(..))
+import Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
+                                            VValue(..),
+                                            VFragment(..))
 import Test.Hspec (it, describe, Spec, hspec)
 import Test.Hspec.Megaparsec (shouldParse, shouldFailOn)
 import Text.Megaparsec (ParseError, Dec, parse)
