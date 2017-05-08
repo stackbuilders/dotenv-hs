@@ -37,36 +37,36 @@ envLine = ParsedVariable <$> (lexeme variableName <* lexeme (char '=')) <*> lexe
 
 -- | Variables must start with a letter or underscore, and may contain
 -- letters, digits or '_' character after the first character.
-variableName :: Parser VName
+variableName :: Parser VarName
 variableName = ((:) <$> firstChar <*> many otherChar) <?> "variable name"
   where
     firstChar = char '_'  <|> letterChar
     otherChar = firstChar <|> digitChar
 
 -- | Value: quoted or unquoted.
-value :: Parser VValue
+value :: Parser VarValue
 value = (quotedValue <|> unquotedValue) <?> "variable value"
   where
     quotedValue   = quotedWith SingleQuote <|> quotedWith DoubleQuote
     unquotedValue = Unquoted <$> (many $ fragment "\'\" \t\n\r")
 
 -- | Parse a value quoted with given character.
-quotedWith :: QuoteType -> Parser VValue
+quotedWith :: QuoteType -> Parser VarValue
 quotedWith SingleQuote = SingleQuoted <$> (between (char '\'') (char '\'') $ many (literalValueFragment "\'\\"))
 quotedWith DoubleQuote = DoubleQuoted <$> (between (char '\"') (char '\"') $ many (fragment "\""))
 
-fragment :: [Char] -> Parser VFragment
+fragment :: [Char] -> Parser VarFragment
 fragment charsToEscape = interpolatedValueFragment <|> literalValueFragment ('$' : '\\' : charsToEscape)
 
-interpolatedValueFragment :: Parser VFragment
-interpolatedValueFragment = VInterpolation <$>
+interpolatedValueFragment :: Parser VarFragment
+interpolatedValueFragment = VarInterpolation <$>
                             ((between (symbol "${") (symbol "}") variableName) <|>
                             (char '$' >> variableName))
   where
     symbol                = L.symbol sc
 
-literalValueFragment :: [Char] -> Parser VFragment
-literalValueFragment charsToEscape = VLiteral <$> (some $ escapedChar <|> normalChar)
+literalValueFragment :: [Char] -> Parser VarFragment
+literalValueFragment charsToEscape = VarLiteral <$> (some $ escapedChar <|> normalChar)
   where
     escapedChar = (char '\\' *> anyChar) <?> "escaped character"
     normalChar  = noneOf charsToEscape <?> "unescaped character"

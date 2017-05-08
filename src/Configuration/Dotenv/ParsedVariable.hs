@@ -1,10 +1,10 @@
 {-# LANGUAGE CPP #-}
 
 module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
-                                            VName,
-                                            VValue(..),
-                                            VContents,
-                                            VFragment(..),
+                                            VarName,
+                                            VarValue(..),
+                                            VarContents,
+                                            VarFragment(..),
                                             interpolateParsedVariables) where
 
 import Control.Monad (foldM)
@@ -15,20 +15,20 @@ import Control.Applicative ((<|>))
 import System.Environment (lookupEnv)
 
 data ParsedVariable
-  = ParsedVariable VName VValue deriving (Show, Eq)
+  = ParsedVariable VarName VarValue deriving (Show, Eq)
 
-type VName = String
+type VarName = String
 
-data VValue
-  = Unquoted VContents
-  | SingleQuoted VContents
-  | DoubleQuoted VContents deriving (Show, Eq)
+data VarValue
+  = Unquoted VarContents
+  | SingleQuoted VarContents
+  | DoubleQuoted VarContents deriving (Show, Eq)
 
-type VContents = [VFragment]
+type VarContents = [VarFragment]
 
-data VFragment
-  = VInterpolation String
-  | VLiteral String deriving (Show, Eq)
+data VarFragment
+  = VarInterpolation String
+  | VarLiteral String deriving (Show, Eq)
 
 interpolateParsedVariables :: [ParsedVariable] -> IO [(String, String)]
 interpolateParsedVariables = fmap reverse . foldM addInterpolated []
@@ -36,22 +36,22 @@ interpolateParsedVariables = fmap reverse . foldM addInterpolated []
 addInterpolated :: [(String, String)] -> ParsedVariable -> IO [(String, String)]
 addInterpolated previous (ParsedVariable name value) = (: previous) <$> ((,) name <$> interpolate previous value)
 
-interpolate :: [(String, String)] -> VValue -> IO String
+interpolate :: [(String, String)] -> VarValue -> IO String
 interpolate _        (SingleQuoted contents) = return $ joinContents contents
 interpolate previous (DoubleQuoted contents) = interpolateContents previous contents
 interpolate previous (Unquoted     contents) = interpolateContents previous contents
 
-interpolateContents :: [(String, String)] -> VContents -> IO String
+interpolateContents :: [(String, String)] -> VarContents -> IO String
 interpolateContents previous contents = concat <$> mapM (interpolateFragment previous) contents
 
-interpolateFragment :: [(String, String)] -> VFragment -> IO String
-interpolateFragment _        (VLiteral       value  ) = return value
-interpolateFragment previous (VInterpolation varname) = fromPreviousOrEnv >>= maybe (return "") return
+interpolateFragment :: [(String, String)] -> VarFragment -> IO String
+interpolateFragment _        (VarLiteral       value  ) = return value
+interpolateFragment previous (VarInterpolation varname) = fromPreviousOrEnv >>= maybe (return "") return
   where
     fromPreviousOrEnv = (lookup varname previous <|>) <$> lookupEnv varname
 
-joinContents :: VContents -> String
+joinContents :: VarContents -> String
 joinContents = concatMap fragmentToString
   where
-    fragmentToString (VInterpolation value) = value
-    fragmentToString (VLiteral value)       = value
+    fragmentToString (VarInterpolation value) = value
+    fragmentToString (VarLiteral value)       = value
