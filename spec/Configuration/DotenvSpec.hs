@@ -8,6 +8,7 @@ import Test.Hspec
 
 import System.Environment (lookupEnv)
 import Control.Monad (liftM)
+import Data.Maybe (fromMaybe)
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$))
@@ -82,6 +83,15 @@ spec = do
     it "recognizes unicode characters" $
       liftM (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("UNICODE_TEST", "Manabí")
+
+    it "recognises environment variables" $ do
+      home <- fromMaybe "" <$> lookupEnv "HOME"
+      liftM (!! 2) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
+        ("ENVIRONMENT", home)
+
+    it "recognises previous variables" $
+      liftM (!! 3) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
+        ("PREVIOUS", "true")
 
   describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
     context "when target file is present" $

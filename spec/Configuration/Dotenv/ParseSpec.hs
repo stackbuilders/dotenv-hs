@@ -38,6 +38,24 @@ spec = describe "parse" $ do
   it "parses empty values" $
     parseConfig "FOO=" `shouldParse` [ParsedVariable "FOO" (Unquoted [])]
 
+  it "parses unquoted interpolated values" $ do
+    parseConfig "FOO=$HOME" `shouldParse` [ParsedVariable "FOO" (Unquoted [VInterpolation "HOME"])]
+    parseConfig "FOO=abc_$HOME" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "abc_", VInterpolation "HOME"])]
+    parseConfig "FOO=${HOME}" `shouldParse` [ParsedVariable "FOO" (Unquoted [VInterpolation "HOME"])]
+    parseConfig "FOO=abc_${HOME}" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "abc_", VInterpolation "HOME"])]
+
+  it "parses double-quoted interpolated values" $ do
+    parseConfig "FOO=\"$HOME\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VInterpolation "HOME"])]
+    parseConfig "FOO=\"abc_$HOME\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "abc_", VInterpolation "HOME"])]
+    parseConfig "FOO=\"${HOME}\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VInterpolation "HOME"])]
+    parseConfig "FOO=\"abc_${HOME}\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "abc_", VInterpolation "HOME"])]
+
+  it "parses single-quoted interpolated values as literals" $ do
+    parseConfig "FOO='$HOME'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "$HOME"])]
+    parseConfig "FOO='abc_$HOME'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "abc_$HOME"])]
+    parseConfig "FOO='${HOME}'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "${HOME}"])]
+    parseConfig "FOO='abc_${HOME}'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "abc_${HOME}"])]
+
   it "does not parse if line format is incorrect" $ do
     parseConfig `shouldFailOn` "lol$wut"
     parseConfig `shouldFailOn` "KEY=\nVALUE"
