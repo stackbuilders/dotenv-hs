@@ -10,20 +10,20 @@ import Control.Applicative ((<|>))
 import System.Environment (lookupEnv)
 
 data ParsedVariable
-  = ParsedVariable VName VValue
+  = ParsedVariable VName VValue deriving Show
 
 type VName = String
 
 data VValue
   = Unquoted VContents
   | SingleQuoted VContents
-  | DoubleQuoted VContents
+  | DoubleQuoted VContents deriving Show
 
 type VContents = [VFragment]
 
 data VFragment
   = VInterpolation String
-  | VLiteral String
+  | VLiteral String deriving Show
 
 interpolateParsedVariables :: [ParsedVariable] -> IO [(String, String)]
 interpolateParsedVariables = foldM addInterpolated []
