@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             VName,
                                             VValue(..),
@@ -6,7 +8,10 @@ module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             interpolateParsedVariables) where
 
 import Control.Monad (foldM)
-import Control.Applicative ((<|>), (<$>))
+#if !MIN_VERSION_base(4,8,0)
+import Data.Functor ((<$>))
+#endif
+import Control.Applicative ((<|>))
 import System.Environment (lookupEnv)
 
 data ParsedVariable
