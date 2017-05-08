@@ -6,7 +6,7 @@ module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             interpolateParsedVariables) where
 
 import Control.Monad (foldM)
-import Control.Applicative ((<|>))
+import Control.Applicative ((<|>), (<$>))
 import System.Environment (lookupEnv)
 
 data ParsedVariable

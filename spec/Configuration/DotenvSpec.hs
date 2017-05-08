@@ -9,6 +9,7 @@ import Test.Hspec
 import System.Environment (lookupEnv)
 import Control.Monad (liftM)
 import Data.Maybe (fromMaybe)
+import Data.Functor ((<$>))
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$))
