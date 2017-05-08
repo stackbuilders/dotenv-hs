@@ -14,18 +14,24 @@ main = hspec spec
 spec :: Spec
 spec = describe "parse" $ do
   it "parses unquoted values" $
-    parseConfig "FOO=bar" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
+    parseConfig "FOO=bar"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
 
   it "parses values with spaces around equal signs" $ do
-    parseConfig "FOO =bar" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
-    parseConfig "FOO= bar" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
-    parseConfig "FOO =\t bar" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
+    parseConfig "FOO =bar"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
+    parseConfig "FOO= bar"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
+    parseConfig "FOO =\t bar"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
 
   it "parses double-quoted values" $
-    parseConfig "FOO=\"bar\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "bar"])]
+    parseConfig "FOO=\"bar\""
+      `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "bar"])]
 
   it "parses single-quoted values" $
-    parseConfig "FOO='bar'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "bar"])]
+    parseConfig "FOO='bar'"
+      `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "bar"])]
 
   it "parses escaped double quotes" $
     parseConfig "FOO=\"escaped\\\"bar\""
@@ -33,28 +39,50 @@ spec = describe "parse" $ do
 
   it "supports CRLF line breaks" $
     parseConfig "FOO=bar\r\nbaz=fbb"
-      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"]), ParsedVariable "baz" (Unquoted [VLiteral "fbb"])]
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"]),
+                     ParsedVariable "baz" (Unquoted [VLiteral "fbb"])]
 
   it "parses empty values" $
-    parseConfig "FOO=" `shouldParse` [ParsedVariable "FOO" (Unquoted [])]
+    parseConfig "FOO="
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [])]
 
   it "parses unquoted interpolated values" $ do
-    parseConfig "FOO=$HOME" `shouldParse` [ParsedVariable "FOO" (Unquoted [VInterpolation "HOME"])]
-    parseConfig "FOO=abc_$HOME" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "abc_", VInterpolation "HOME"])]
-    parseConfig "FOO=${HOME}" `shouldParse` [ParsedVariable "FOO" (Unquoted [VInterpolation "HOME"])]
-    parseConfig "FOO=abc_${HOME}" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "abc_", VInterpolation "HOME"])]
+    parseConfig "FOO=$HOME"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VInterpolation "HOME"])]
+    parseConfig "FOO=abc_$HOME"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "abc_",
+                                                     VInterpolation "HOME"])
+                    ]
+    parseConfig "FOO=${HOME}"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VInterpolation "HOME"])]
+    parseConfig "FOO=abc_${HOME}"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "abc_",
+                                                     VInterpolation "HOME"])
+                    ]
 
   it "parses double-quoted interpolated values" $ do
-    parseConfig "FOO=\"$HOME\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VInterpolation "HOME"])]
-    parseConfig "FOO=\"abc_$HOME\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "abc_", VInterpolation "HOME"])]
-    parseConfig "FOO=\"${HOME}\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VInterpolation "HOME"])]
-    parseConfig "FOO=\"abc_${HOME}\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "abc_", VInterpolation "HOME"])]
+    parseConfig "FOO=\"$HOME\""
+      `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VInterpolation "HOME"])]
+    parseConfig "FOO=\"abc_$HOME\""
+      `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "abc_",
+                                                         VInterpolation "HOME"])
+                    ]
+    parseConfig "FOO=\"${HOME}\""
+      `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VInterpolation "HOME"])]
+    parseConfig "FOO=\"abc_${HOME}\""
+      `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "abc_",
+                                                         VInterpolation "HOME"])
+                    ]
 
   it "parses single-quoted interpolated values as literals" $ do
-    parseConfig "FOO='$HOME'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "$HOME"])]
-    parseConfig "FOO='abc_$HOME'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "abc_$HOME"])]
-    parseConfig "FOO='${HOME}'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "${HOME}"])]
-    parseConfig "FOO='abc_${HOME}'" `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "abc_${HOME}"])]
+    parseConfig "FOO='$HOME'"
+      `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "$HOME"])]
+    parseConfig "FOO='abc_$HOME'"
+      `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "abc_$HOME"])]
+    parseConfig "FOO='${HOME}'"
+      `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "${HOME}"])]
+    parseConfig "FOO='abc_${HOME}'"
+      `shouldParse` [ParsedVariable "FOO" (SingleQuoted [VLiteral "abc_${HOME}"])]
 
   it "does not parse if line format is incorrect" $ do
     parseConfig `shouldFailOn` "lol$wut"
@@ -62,35 +90,43 @@ spec = describe "parse" $ do
     parseConfig `shouldFailOn` "KEY\n=VALUE"
 
   it "expands newlines in quoted strings" $
-    parseConfig "FOO=\"bar\nbaz\"" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "bar\nbaz"])]
+    parseConfig "FOO=\"bar\nbaz\""
+      `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "bar\nbaz"])]
 
   it "does not parse variables with hyphens in the name" $
     parseConfig `shouldFailOn` "FOO-BAR=foobar"
 
   it "parses variables with \"_\" in the name" $
-    parseConfig "FOO_BAR=foobar" `shouldParse` [ParsedVariable "FOO_BAR" (Unquoted [VLiteral "foobar"])]
+    parseConfig "FOO_BAR=foobar"
+      `shouldParse` [ParsedVariable "FOO_BAR" (Unquoted [VLiteral "foobar"])]
 
   it "parses variables with digits after the first character" $
-    parseConfig "FOO_BAR_12=foobar" `shouldParse` [ParsedVariable "FOO_BAR_12" (Unquoted [VLiteral "foobar"])]
+    parseConfig "FOO_BAR_12=foobar"
+      `shouldParse` [ParsedVariable "FOO_BAR_12" (Unquoted [VLiteral "foobar"])]
 
   it "allows vertical spaces after a quoted variable" $
-    parseConfig "foo='bar' " `shouldParse` [ParsedVariable "foo" (SingleQuoted [VLiteral "bar"])]
+    parseConfig "foo='bar' "
+      `shouldParse` [ParsedVariable "foo" (SingleQuoted [VLiteral "bar"])]
 
   it "does not parse variable names beginning with a digit" $
     parseConfig `shouldFailOn` "45FOO_BAR=foobar"
 
   it "strips unquoted values" $
-    parseConfig "foo=bar " `shouldParse` [ParsedVariable "foo" (Unquoted [VLiteral "bar"])]
+    parseConfig "foo=bar "
+      `shouldParse` [ParsedVariable "foo" (Unquoted [VLiteral "bar"])]
 
   it "ignores empty lines" $
     parseConfig "\n \t  \nfoo=bar\n \nfizz=buzz"
-      `shouldParse` [ParsedVariable "foo" (Unquoted [VLiteral "bar"]), ParsedVariable "fizz" (Unquoted [VLiteral "buzz"])]
+      `shouldParse` [ParsedVariable "foo" (Unquoted [VLiteral "bar"]),
+                     ParsedVariable "fizz" (Unquoted [VLiteral "buzz"])]
 
   it "ignores inline comments after unquoted arguments" $
-    parseConfig "FOO=bar # this is foo" `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
+    parseConfig "FOO=bar # this is foo"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VLiteral "bar"])]
 
   it "ignores inline comments after quoted arguments" $
-    parseConfig "FOO=\"bar\" # this is foo" `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "bar"])]
+    parseConfig "FOO=\"bar\" # this is foo"
+      `shouldParse` [ParsedVariable "FOO" (DoubleQuoted [VLiteral "bar"])]
 
   it "allows \"#\" in quoted values" $
     parseConfig "foo=\"bar#baz\" # comment"
