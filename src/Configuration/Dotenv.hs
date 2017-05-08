@@ -19,6 +19,7 @@ module Configuration.Dotenv
  where
 
 import Configuration.Dotenv.Parse (configParser)
+import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
 import System.Environment (lookupEnv)
@@ -60,7 +61,7 @@ parseFile f = do
 
   case parse configParser f contents of
     Left e        -> error $ "Failed to read file" ++ show e
-    Right options -> return options
+    Right options -> liftIO $ interpolateParsedVariables options
 
 applySetting :: MonadIO m => Bool -> (String, String) -> m ()
 applySetting override (key, value) =
