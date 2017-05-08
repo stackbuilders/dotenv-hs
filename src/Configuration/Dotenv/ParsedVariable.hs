@@ -10,23 +10,23 @@ import Control.Applicative ((<|>))
 import System.Environment (lookupEnv)
 
 data ParsedVariable
-  = ParsedVariable VName VValue deriving Show
+  = ParsedVariable VName VValue deriving (Show, Eq)
 
 type VName = String
 
 data VValue
   = Unquoted VContents
   | SingleQuoted VContents
-  | DoubleQuoted VContents deriving Show
+  | DoubleQuoted VContents deriving (Show, Eq)
 
 type VContents = [VFragment]
 
 data VFragment
   = VInterpolation String
-  | VLiteral String deriving Show
+  | VLiteral String deriving (Show, Eq)
 
 interpolateParsedVariables :: [ParsedVariable] -> IO [(String, String)]
-interpolateParsedVariables = foldM addInterpolated []
+interpolateParsedVariables = fmap reverse . foldM addInterpolated []
 
 addInterpolated :: [(String, String)] -> ParsedVariable -> IO [(String, String)]
 addInterpolated previous (ParsedVariable name value) = (: previous) <$> ((,) name <$> interpolate previous value)
