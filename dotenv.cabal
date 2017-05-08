@@ -98,6 +98,7 @@ test-suite dotenv-test
                        , Configuration.Dotenv
                        , Configuration.Dotenv.Text
                        , Configuration.Dotenv.Parse
+                       , Configuration.Dotenv.ParsedVariable
 
   build-depends:       base >=4.6 && <5.0
                      , base-compat >= 0.4
