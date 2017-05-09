@@ -1,3 +1,9 @@
+## MASTER
+
+## Dotenv 0.3.3.0
+
+* Add support for variable expansion. Thanks to حبيب الامين (GitHub: habibalamin) for making this contribution.
+
 ## Dotenv 0.3.2.0
 
 * Add the option to pass arguments to the program passed to Dotenv. Thanks to
