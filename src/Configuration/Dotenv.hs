@@ -22,15 +22,10 @@ import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
-import System.Environment (lookupEnv)
 import System.IO.Error (isDoesNotExistError)
 import Text.Megaparsec (parse)
 
-#if MIN_VERSION_base(4,7,0)
-import System.Environment (setEnv)
-#else
-import System.Environment.Compat (setEnv)
-#endif
+import Environment.Portable (setEnv)
 
 -- | Loads the given list of options into the environment. Optionally
 -- override existing variables with values from Dotenv files.
@@ -65,15 +60,7 @@ parseFile f = do
 
 applySetting :: MonadIO m => Bool -> (String, String) -> m ()
 applySetting override (key, value) =
-  if override then
-    liftIO $ setEnv key value
-
-  else do
-    res <- liftIO $ lookupEnv key
-
-    case res of
-      Nothing -> liftIO $ setEnv key value
-      Just _  -> return ()
+  liftIO $ setEnv key value override
 
 -- | The helper allows to avoid exceptions in the case of missing files and
 -- perform some action instead.

@@ -17,10 +17,11 @@ import Data.Functor ((<$>))
 import Control.Applicative ((<$))
 #endif
 
+import Environment.Portable (setEnv)
 #if MIN_VERSION_base(4,7,0)
-import System.Environment (setEnv, unsetEnv)
+import System.Environment (unsetEnv)
 #else
-import System.Environment.Compat (setEnv, unsetEnv)
+import System.Environment.Compat (unsetEnv)
 #endif
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
@@ -39,14 +40,14 @@ spec = do
       lookupEnv "foo" `shouldReturn` Just "bar"
 
     it "preserves existing settings when overload is false" $ do
-      setEnv "foo" "preset"
+      setEnv "foo" "preset" True
 
       load False [("foo", "new setting")]
 
       lookupEnv "foo" `shouldReturn` Just "preset"
 
     it "overrides existing settings when overload is true" $ do
-      setEnv "foo" "preset"
+      setEnv "foo" "preset" True
 
       load True [("foo", "new setting")]
 
@@ -61,18 +62,28 @@ spec = do
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
-      setEnv "DOTENV" "preset"
+      setEnv "DOTENV" "preset" True
 
       loadFile False "spec/fixtures/.dotenv"
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
-      setEnv "DOTENV" "preset"
+      setEnv "DOTENV" "preset" True
 
       loadFile True "spec/fixtures/.dotenv"
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
+
+  describe "loadFile" $
+    before_ (unsetEnv "BLANK") $
+    after_ (unsetEnv "DOTENV") $ do
+      it "can set blank variables" $ do
+        lookupEnv "BLANK" `shouldReturn` Nothing
+  
+        loadFile True "spec/fixtures/.dotenv"
+  
+        lookupEnv "BLANK" `shouldReturn` Just ""
 
   describe "parseFile" $ after_ (unsetEnv "DOTENV") $ do
     it "returns variables from a file without changing the environment" $ do
