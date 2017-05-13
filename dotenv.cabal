@@ -72,6 +72,7 @@ library
                       , Configuration.Dotenv.Parse
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
+                      , Environment.Portable
 
   build-depends:         base >=4.6 && <5.0
                        , base-compat >= 0.4
@@ -99,6 +100,7 @@ test-suite dotenv-test
                        , Configuration.Dotenv.Text
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
+                       , Environment.Portable
 
   build-depends:       base >=4.6 && <5.0
                      , base-compat >= 0.4
