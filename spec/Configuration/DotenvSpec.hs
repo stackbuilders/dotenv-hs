@@ -17,10 +17,11 @@ import Data.Functor ((<$>))
 import Control.Applicative ((<$))
 #endif
 
+import System.Environment.Dotenv (setEnv)
 #if MIN_VERSION_base(4,7,0)
-import System.Environment (setEnv, unsetEnv)
+import System.Environment (unsetEnv)
 #else
-import System.Environment.Compat (setEnv, unsetEnv)
+import System.Environment.Compat (unsetEnv)
 #endif
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
@@ -39,18 +40,27 @@ spec = do
       lookupEnv "foo" `shouldReturn` Just "bar"
 
     it "preserves existing settings when overload is false" $ do
-      setEnv "foo" "preset"
+      setEnv "foo" "preset" True
 
       load False [("foo", "new setting")]
 
       lookupEnv "foo" `shouldReturn` Just "preset"
 
     it "overrides existing settings when overload is true" $ do
-      setEnv "foo" "preset"
+      setEnv "foo" "preset" True
 
       load True [("foo", "new setting")]
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
+
+#ifndef mingw32_HOST_OS
+    it "can set blank variable values" $ do
+      lookupEnv "foo" `shouldReturn` Nothing
+
+      load False [("foo", "")]
+
+      lookupEnv "foo" `shouldReturn` Just ""
+#endif
 
   describe "loadFile" $ after_ (unsetEnv "DOTENV") $ do
     it "loads the configuration options to the environment from a file" $ do
@@ -61,14 +71,14 @@ spec = do
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
-      setEnv "DOTENV" "preset"
+      setEnv "DOTENV" "preset" True
 
       loadFile False "spec/fixtures/.dotenv"
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
-      setEnv "DOTENV" "preset"
+      setEnv "DOTENV" "preset" True
 
       loadFile True "spec/fixtures/.dotenv"
 
