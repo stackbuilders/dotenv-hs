@@ -31,18 +31,20 @@ import System.Environment.Dotenv (setEnv)
 load ::
   MonadIO m =>
   Bool -- ^ Override existing settings?
+  -> Bool -- ^ Load blank variables?
   -> [(String, String)] -- ^ List of values to be set in environment
   -> m ()
-load override = mapM_ (applySetting override)
+load override blanks = mapM_ (applySetting override blanks)
 
 -- | Loads the options in the given file to the environment. Optionally
 -- override existing variables with values from Dotenv files.
 loadFile ::
   MonadIO m =>
   Bool        -- ^ Override existing settings?
+  -> Bool     -- ^ Load blank variables?
   -> FilePath -- ^ A file containing options to load into the environment
   -> m ()
-loadFile override f = load override =<< parseFile f
+loadFile override blanks f = load override blanks =<< parseFile f
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
@@ -57,8 +59,11 @@ parseFile f = do
     Left e        -> error $ "Failed to read file" ++ show e
     Right options -> liftIO $ interpolateParsedVariables options
 
-applySetting :: MonadIO m => Bool -> (String, String) -> m ()
-applySetting override (key, value) = liftIO $ setEnv key value override
+applySetting :: MonadIO m => Bool -> Bool -> (String, String) -> m ()
+applySetting override loadBlank (key, value) =
+  if value /= "" || loadBlank
+  then liftIO $ setEnv key value override
+  else return ()
 
 -- | The helper allows to avoid exceptions in the case of missing files and
 -- perform some action instead.
