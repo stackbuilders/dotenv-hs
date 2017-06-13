@@ -1,5 +1,9 @@
 ## MASTER
 
+## Dotenv 0.3.4.0
+
+* Allow optparse-applicative 0.14
+
 ## Dotenv 0.3.3.0
 
 * Add support for variable expansion. Thanks to حبيب الامين (GitHub: habibalamin) for making this contribution.
