@@ -17,10 +17,11 @@ import Data.Functor ((<$>))
 import Control.Applicative ((<$))
 #endif
 
+import System.Environment.Dotenv (setEnv)
 #if MIN_VERSION_base(4,7,0)
-import System.Environment (setEnv, unsetEnv)
+import System.Environment (unsetEnv)
 #else
-import System.Environment.Compat (setEnv, unsetEnv)
+import System.Environment.Compat (unsetEnv)
 #endif
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
@@ -34,43 +35,59 @@ spec = do
     it "loads the given list of configuration options to the environment" $ do
       lookupEnv "foo" `shouldReturn` Nothing
 
-      load False [("foo", "bar")]
+      load False True [("foo", "bar")]
 
       lookupEnv "foo" `shouldReturn` Just "bar"
 
     it "preserves existing settings when overload is false" $ do
-      setEnv "foo" "preset"
+      setEnv "foo" "preset" True
 
-      load False [("foo", "new setting")]
+      load False True [("foo", "new setting")]
 
       lookupEnv "foo" `shouldReturn` Just "preset"
 
     it "overrides existing settings when overload is true" $ do
-      setEnv "foo" "preset"
+      setEnv "foo" "preset" True
 
-      load True [("foo", "new setting")]
+      load True True [("foo", "new setting")]
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
+
+#ifndef mingw32_HOST_OS
+    it "can set blank variable values" $ do
+      lookupEnv "foo" `shouldReturn` Nothing
+
+      load False True [("foo", "")]
+
+      lookupEnv "foo" `shouldReturn` Just ""
+
+    it "can ignore blank variables" $ do
+      lookupEnv "foo" `shouldReturn` Nothing
+
+      load False False [("foo", "")]
+
+      lookupEnv "foo" `shouldReturn` Nothing
+#endif
 
   describe "loadFile" $ after_ (unsetEnv "DOTENV") $ do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      loadFile False "spec/fixtures/.dotenv"
+      loadFile False True "spec/fixtures/.dotenv"
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
-      setEnv "DOTENV" "preset"
+      setEnv "DOTENV" "preset" True
 
-      loadFile False "spec/fixtures/.dotenv"
+      loadFile False True "spec/fixtures/.dotenv"
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
-      setEnv "DOTENV" "preset"
+      setEnv "DOTENV" "preset" True
 
-      loadFile True "spec/fixtures/.dotenv"
+      loadFile True True "spec/fixtures/.dotenv"
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
@@ -99,9 +116,9 @@ spec = do
   describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        onMissingFile (loadFile True "spec/fixtures/.dotenv") (return ())
+        onMissingFile (loadFile True True "spec/fixtures/.dotenv") (return ())
         lookupEnv "DOTENV" `shouldReturn` Just "true"
     context "when target file is missing" $
       it "executes supplied handler instead" $
-        onMissingFile (True <$ loadFile True "spec/fixtures/foo") (return False)
+        onMissingFile (True <$ loadFile True True "spec/fixtures/foo") (return False)
           `shouldReturn` False

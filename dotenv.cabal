@@ -72,6 +72,7 @@ library
                       , Configuration.Dotenv.Parse
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
+                      , System.Environment.Dotenv
 
   build-depends:         base >=4.6 && <5.0
                        , base-compat >= 0.4
@@ -79,6 +80,9 @@ library
                        , text
                        , transformers >=0.4 && < 0.6
                        , exceptions >= 0.8 && < 0.9
+  if !os(windows)
+    build-depends:
+                       unix >= 2.7 && < 2.8
 
   hs-source-dirs:      src
   ghc-options:         -Wall
@@ -99,6 +103,7 @@ test-suite dotenv-test
                        , Configuration.Dotenv.Text
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
+                       , System.Environment.Dotenv
 
   build-depends:       base >=4.6 && <5.0
                      , base-compat >= 0.4
@@ -109,6 +114,9 @@ test-suite dotenv-test
                      , transformers >=0.4 && < 0.6
                      , exceptions >= 0.8 && < 0.9
                      , hspec-megaparsec >= 0.2 && < 0.4
+  if !os(windows)
+    build-depends:
+                       unix >= 2.7 && < 2.8
 
   if flag(dev)
     ghc-options:      -Wall -Werror
