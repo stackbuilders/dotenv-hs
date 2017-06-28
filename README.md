@@ -43,6 +43,21 @@ After calling `Dotenv.load`, you are able to read the values set in your
 environment using standard functions from `System.Environment` such as
 `lookupEnv` and `getEnv`.
 
+### NOTE: Empty environment variables
+
+If you need to have empty environment variables in your configuration, you can
+use something like the code below:
+
+```haskell
+fromMaybe "" <$> lookupEnv "ENV_VAR"
+```
+
+Currently, `dotenv-hs` don't allow you to set empty environment variables,
+because of [setEnv](https://hackage.haskell.org/package/base-4.9.1.0/docs/System-Environment.html#v:setEnv)
+from our `System.Environment`. This is bug reported in [GHC ticket](https://ghc.haskell.org/trac/ghc/ticket/12494).
+We have had many [dicussions](https://github.com/stackbuilders/dotenv-hs/issues/48)
+about this.
+
 ## Configuration
 
 The first argument to `loadFile` specifies whether you want to
