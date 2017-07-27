@@ -1,5 +1,9 @@
 ## MASTER
 
+## Dotenv 0.4.0.0
+
+* Update megaparsec to version 6.
+
 ## Dotenv 0.3.4.0
 
 * Allow optparse-applicative 0.14
