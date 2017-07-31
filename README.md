@@ -52,11 +52,12 @@ use something like the code below:
 fromMaybe "" <$> lookupEnv "ENV_VAR"
 ```
 
-Currently, `dotenv-hs` don't allow you to set empty environment variables,
+Currently, `dotenv-hs` doesn't allow you to set empty environment variables,
 because of [setEnv](https://hackage.haskell.org/package/base-4.9.1.0/docs/System-Environment.html#v:setEnv)
 from our `System.Environment`. This is bug reported in [GHC ticket](https://ghc.haskell.org/trac/ghc/ticket/12494).
 We have had many [dicussions](https://github.com/stackbuilders/dotenv-hs/issues/48)
-about this.
+about this. Fortunately, there is already some work for this issue in
+[GHC Phabricator](https://phabricator.haskell.org/D3726).
 
 ## Configuration
 
