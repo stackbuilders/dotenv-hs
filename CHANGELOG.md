@@ -1,5 +1,10 @@
 ## MASTER
 
+## Dotenv 0.4.0.0
+
+* Use Megaparsec 6.0
+* Dropped support for GHC 7.6
+
 ## Dotenv 0.3.4.0
 
 * Allow optparse-applicative 0.14

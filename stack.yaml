@@ -1,3 +1,7 @@
-resolver: lts-8.18
+resolver: lts-9.0
 packages:
 - '.'
+extra-deps:
+- megaparsec-6.0.2
+- parser-combinators-0.2.0
+- hspec-megaparsec-1.0.0
