@@ -53,7 +53,7 @@ executable dotenv
   main-is:             Main.hs
   build-depends:         base >=4.7 && <5.0
                        , base-compat >= 0.4
-                       , dotenv >= 0.3.1.0
+                       , dotenv
                        , optparse-applicative >=0.11 && < 0.15
                        , megaparsec >= 6.0 && < 7.0
                        , process
@@ -105,7 +105,7 @@ test-suite dotenv-test
 
   build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4
-                     , dotenv >= 0.3.1.0
+                     , dotenv
                      , megaparsec >= 6.0 && < 7.0
                      , hspec
                      , text
