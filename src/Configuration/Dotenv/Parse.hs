@@ -12,16 +12,20 @@
 -- information on the dotenv format can be found in the project README and the
 -- test suite.
 
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Configuration.Dotenv.Parse (configParser) where
 
-import Configuration.Dotenv.ParsedVariable
-import Control.Applicative
-import Control.Monad
-import Text.Megaparsec
-import Text.Megaparsec.String (Parser)
-import qualified Text.Megaparsec.Lexer as L
+import           Configuration.Dotenv.ParsedVariable
+import           Control.Applicative
+import           Control.Monad
+import           Data.Void                           (Void)
+import           Text.Megaparsec
+import           Text.Megaparsec.Char
+import qualified Text.Megaparsec.Char.Lexer          as L
+
+type Parser = Parsec Void String
 
 data QuoteType = SingleQuote | DoubleQuote
 
@@ -92,7 +96,7 @@ scn = L.space (void spaceChar) skipLineComment empty
 
 -- | Just like 'spaceChar', but does not consume newlines.
 spaceChar' :: Parser Char
-spaceChar' = oneOf " \t"
+spaceChar' = oneOf (" \t" :: String)
 {-# INLINE spaceChar' #-}
 
 -- | Skip line comment and stop before newline character without consuming

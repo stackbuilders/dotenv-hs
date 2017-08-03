@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.3.4.0
+version:             0.4.0.0
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -51,11 +51,11 @@ flag dev
 
 executable dotenv
   main-is:             Main.hs
-  build-depends:         base >=4.6 && <5.0
+  build-depends:         base >=4.7 && <5.0
                        , base-compat >= 0.4
                        , dotenv >= 0.3.1.0
                        , optparse-applicative >=0.11 && < 0.15
-                       , megaparsec >= 5.0 && < 6.0
+                       , megaparsec >= 6.0 && < 7.0
                        , process
                        , text
                        , transformers >=0.4 && < 0.6
@@ -73,12 +73,15 @@ library
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
 
-  build-depends:         base >=4.6 && <5.0
+  build-depends:         base >=4.7 && <5.0
                        , base-compat >= 0.4
-                       , megaparsec >= 5.0 && < 6.0
+                       , megaparsec >= 6.0 && < 7.0
                        , text
                        , transformers >=0.4 && < 0.6
                        , exceptions >= 0.8 && < 0.9
+
+  if !impl(ghc >= 7.10)
+    build-depends:      void         == 0.7.*
 
   hs-source-dirs:      src
   ghc-options:         -Wall
@@ -100,15 +103,18 @@ test-suite dotenv-test
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
 
-  build-depends:       base >=4.6 && <5.0
+  build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4
                      , dotenv >= 0.3.1.0
-                     , megaparsec >= 5.0 && < 6.0
+                     , megaparsec >= 6.0 && < 7.0
                      , hspec
                      , text
                      , transformers >=0.4 && < 0.6
                      , exceptions >= 0.8 && < 0.9
-                     , hspec-megaparsec >= 0.2 && < 0.4
+                     , hspec-megaparsec >= 1.0 && < 2.0
+
+  if !impl(ghc >= 7.10)
+    build-depends:      void         == 0.7.*
 
   if flag(dev)
     ghc-options:      -Wall -Werror

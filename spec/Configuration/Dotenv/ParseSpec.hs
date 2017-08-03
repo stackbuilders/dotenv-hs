@@ -6,9 +6,10 @@ import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             VarValue(..),
                                             VarFragment(..))
+import Data.Void (Void)                                            
 import Test.Hspec (it, describe, Spec, hspec)
 import Test.Hspec.Megaparsec (shouldParse, shouldFailOn)
-import Text.Megaparsec (ParseError, Dec, parse)
+import Text.Megaparsec (ParseError, parse)
 
 main :: IO ()
 main = hspec spec
@@ -141,5 +142,5 @@ spec = describe "parse" $ do
   it "doesn't allow more configuration options after a quoted value" $
     parseConfig `shouldFailOn` "foo='bar'baz='buz'"
 
-parseConfig :: String -> Either (ParseError Char Dec) [ParsedVariable]
+parseConfig :: String -> Either (ParseError Char Void) [ParsedVariable]
 parseConfig = parse configParser ""
