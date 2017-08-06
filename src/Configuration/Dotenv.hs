@@ -18,7 +18,7 @@ module Configuration.Dotenv
   , onMissingFile
   ) where
 
-import Data.List (union, intersectBy)
+import Data.List (union, intersectBy, unionBy)
 import Control.Monad (liftM)
 import Control.Monad.Catch (MonadCatch, catchIf)
 import Control.Monad.IO.Class (MonadIO(..))
@@ -45,13 +45,15 @@ loadFile Config{..} = do
   neededVars <- concat `liftM` DT.mapM parseFile configExamplePath
   let numFoundCoincidences = length $ (environment `union` readedVars) `intersectEnvs` neededVars
       numNeededVars = length neededVars
-      intersectEnvs = intersectBy (\env1 env2 -> fst env1 == fst env2)
+      cmpEnvs env1 env2 = fst env1 == fst env2
+      intersectEnvs = intersectBy cmpEnvs
+      unionEnvs = unionBy cmpEnvs
       vars =
         if configSafe
           then
             if numNeededVars == numFoundCoincidences
-              then readedVars
-              else error $ "Some env vars are not defined. Please, check this vars ares set: " ++ concatMap ((++) " " . fst) neededVars
+              then readedVars `unionEnvs` neededVars
+              else error $ "Some env vars are not defined. Please, check this var(s) (is/are) set: " ++ concatMap ((++) " " . fst) neededVars
           else readedVars
       keys = map fst vars
   setVariables configOverride keys vars
