@@ -10,7 +10,9 @@
 -- This module provides parsers for dotenv files.
 -}
 
-module Configuration.Dotenv.File where
+module Configuration.Dotenv.File
+  ( parseFile )
+  where
 
 import Control.Monad.IO.Class
 import Text.Megaparsec

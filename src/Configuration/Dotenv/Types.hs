@@ -10,7 +10,11 @@
 -- Provides the types with extra options for loading a dotenv file.
 -}
 
-module Configuration.Dotenv.Types where
+module Configuration.Dotenv.Types
+  ( Config(..)
+  , defaultConfig
+  )
+  where
 
 -- | Configuration Data Types with extra options for executing dotenv.
 data Config = Config
@@ -19,6 +23,8 @@ data Config = Config
   , configPath        :: [FilePath] -- ^ The paths for the .env files
   } deriving (Eq, Show)
 
+-- | Default configuration. Use .env file without .env.example strict envs and
+-- without overriding.
 defaultConfig :: Config
 defaultConfig =
   Config
