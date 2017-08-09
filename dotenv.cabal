@@ -39,6 +39,9 @@ copyright:           2015-2017 Stack Builders Inc.
 category:            Configuration
 build-type:          Simple
 extra-source-files:    spec/fixtures/.dotenv
+                     , spec/fixtures/.dotenv.example
+                     , spec/fixtures/.bad.dotenv.example
+                     , spec/fixtures/.incomplete.dotenv
                      , CHANGELOG.md
                      , README.md
 cabal-version:       >=1.10
@@ -71,7 +74,9 @@ library
   exposed-modules:      Configuration.Dotenv
                       , Configuration.Dotenv.Parse
                       , Configuration.Dotenv.ParsedVariable
+                      , Configuration.Dotenv.File
                       , Configuration.Dotenv.Text
+                      , Configuration.Dotenv.Types
 
   build-depends:         base >=4.7 && <5.0
                        , base-compat >= 0.4
@@ -79,6 +84,7 @@ library
                        , text
                        , transformers >=0.4 && < 0.6
                        , exceptions >= 0.8 && < 0.9
+                       , directory
 
   if !impl(ghc >= 7.10)
     build-depends:      void         == 0.7.*
@@ -93,15 +99,13 @@ library
 
 test-suite dotenv-test
   type: exitcode-stdio-1.0
-  hs-source-dirs: spec, src
+  hs-source-dirs: spec
   main-is: Spec.hs
   other-modules:         Configuration.DotenvSpec
+                       , Configuration.Dotenv.FileSpec
+                       , Configuration.Dotenv.ParseSpec
                        , Configuration.Dotenv.TextSpec
                        , Configuration.Dotenv.ParseSpec
-                       , Configuration.Dotenv
-                       , Configuration.Dotenv.Text
-                       , Configuration.Dotenv.Parse
-                       , Configuration.Dotenv.ParsedVariable
 
   build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4

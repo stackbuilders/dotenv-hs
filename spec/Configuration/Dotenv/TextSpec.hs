@@ -6,7 +6,6 @@ import Configuration.Dotenv.Text (parseFile)
 
 import Test.Hspec
 
-import Control.Monad (liftM)
 import System.Environment (lookupEnv)
 import qualified Data.Text as T
 
@@ -27,11 +26,11 @@ spec =
     it "returns variables from a file without changing the environment" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      liftM head (parseFile "spec/fixtures/.dotenv") `shouldReturn`
+      fmap head (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         (T.pack "DOTENV", T.pack "true")
 
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
     it "recognizes unicode characters" $
-      liftM (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
+      fmap (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         (T.pack "UNICODE_TEST", T.pack "Manabí")
