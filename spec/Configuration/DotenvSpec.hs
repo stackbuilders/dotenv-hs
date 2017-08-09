@@ -10,6 +10,7 @@ import Control.Applicative ((<$))
 
 #if MIN_VERSION_base(4,7,0)
 import System.Environment (setEnv, getEnv, lookupEnv, unsetEnv)
+import Data.Monoid (mempty)
 #else
 import System.Environment.Compat (setEnv, getEnv, lookupEnv, unsetEnv)
 #endif
