@@ -52,7 +52,7 @@ loadFile Config{..} = do
           then
             if length neededVars == length coincidences
               then readedVars `unionEnvs` neededVars
-              else error $ "Some env vars are not defined. Please, check this var(s) (is/are) set: " ++ concatMap ((++) " " . fst) neededVars
+              else error $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++ concatMap ((++) " " . fst) neededVars
           else readedVars
       keys = map fst vars
   setVariables configOverride keys vars

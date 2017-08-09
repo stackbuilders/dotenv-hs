@@ -103,12 +103,12 @@ a list of strict envs that should be defined in the environment or in your doten
 files before the execution of your program. For instance:
 
 ```shell
-$ cat. .env.example
+$ cat .env.example
 DOTENV=
 FOO=
 BAR=
 
-$ cat. .env
+$ cat .env
 DOTENV=123
 
 $ echo $FOO
@@ -118,7 +118,7 @@ $ echo $FOO
 This will fail:
 ```shell
 $ dotenv -e .env -x .env.example "myprogram --myflag myargument"
-> dotenv: Some env vars are not defined. Please, check this var(s) (is/are) set: BAR
+> dotenv: Missing env vars! Please, check (this/these) var(s) (is/are) set: BAR
 ```
 
 This will succeed:
