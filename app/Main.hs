@@ -23,7 +23,6 @@ data Options = Options
   , dotenvFile        :: [String] -- ^ Paths for the .env files
   , dotenvExampleFile :: [String] -- ^ Paths for the .env.example files
   , override          :: Bool   -- ^ Override current environment variables
-  , safe              :: Bool   -- ^ Allow dotenv-safe
   } deriving (Show)
 
 main :: IO ()
@@ -33,7 +32,6 @@ main = do
     { configExamplePath = dotenvExampleFile
     , configOverride = override
     , configPath = dotenvFile
-    , configSafe = safe
     }
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
@@ -69,8 +67,3 @@ config =
           ( long "override"
          <> short 'o'
          <> help "Override existing variables" )
-
-     <*> switch
-          ( long "safe"
-         <> short 's'
-         <> help "Allow dotenv-safe" )

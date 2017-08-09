@@ -16,15 +16,13 @@ module Configuration.Dotenv.Types where
 data Config = Config
   { configExamplePath :: [FilePath] -- ^ The paths for the .env.example files
   , configOverride    :: Bool     -- ^ Flag to allow override env variables
-  , configSafe        :: Bool     -- ^ Flag to allow dotenv-safe
   , configPath        :: [FilePath] -- ^ The paths for the .env files
   } deriving (Eq, Show)
 
 defaultConfig :: Config
 defaultConfig =
   Config
-    { configExamplePath = [ ".env.example" ]
+    { configExamplePath = []
     , configOverride = False
     , configPath = [ ".env" ]
-    , configSafe = False
     }

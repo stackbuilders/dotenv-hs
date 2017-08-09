@@ -18,12 +18,14 @@ import Test.Hspec
 import Configuration.Dotenv (loadFile, onMissingFile)
 import Configuration.Dotenv.Types
 
-buildConfig :: String -> Bool -> String -> Bool -> Config
-buildConfig dotenvExample allowOverride dotenv safetyMode =
-  Config { configExamplePath = [ "spec/fixtures/" ++ dotenvExample ]
+fixturesPath :: FilePath
+fixturesPath = "spec/fixtures/"
+
+buildConfig :: [FilePath] -> Bool -> String -> Config
+buildConfig dotenvExample allowOverride dotenv =
+  Config { configExamplePath = dotenvExample
          , configOverride    = allowOverride
-         , configPath        = [ "spec/fixtures/" ++ dotenv ]
-         , configSafe        = safetyMode
+         , configPath        = [ fixturesPath ++ dotenv ]
          }
 
 spec :: Spec
@@ -35,7 +37,7 @@ spec = after_ (mapM_ unsetEnv ["DOTENV", "UNICODE_TEST", "ANOTHER_ENV"]) $ do
           setEnv "DOTENV" "false"
           home <- getEnv "HOME"
 
-          let config = buildConfig ".dotenv.example" False ".dotenv" False
+          let config = buildConfig mempty False ".dotenv"
           loadFile config
             `shouldReturn`
               [("DOTENV", "false"), ("UNICODE_TEST", "Manabí"), ("ENVIRONMENT", home), ("PREVIOUS", "true")]
@@ -45,7 +47,7 @@ spec = after_ (mapM_ unsetEnv ["DOTENV", "UNICODE_TEST", "ANOTHER_ENV"]) $ do
           setEnv "DOTENV" "false"
           home <- getEnv "HOME"
 
-          let config = buildConfig ".dotenv.example" True ".dotenv" False
+          let config = buildConfig mempty True ".dotenv"
           loadFile config
             `shouldReturn`
               [("DOTENV", "true"), ("UNICODE_TEST", "Manabí"), ("ENVIRONMENT", home), ("PREVIOUS", "true")]
@@ -53,7 +55,7 @@ spec = after_ (mapM_ unsetEnv ["DOTENV", "UNICODE_TEST", "ANOTHER_ENV"]) $ do
     context "when the env variables are not defined in the environment" $ do
       context "when the variables are defined in the dotenv file" $
         it "reads the env vars from the dotenv file" $ do
-          let config = buildConfig ".dotenv.example" False ".dotenv" False
+          let config = buildConfig mempty False ".dotenv"
           setEnv "DOTENV" "false"
           home <- getEnv "HOME"
 
@@ -63,27 +65,27 @@ spec = after_ (mapM_ unsetEnv ["DOTENV", "UNICODE_TEST", "ANOTHER_ENV"]) $ do
 
       context "when the variables are not defined in the dotenv file" $
         it "fails because of missing keys" $ do
-          let config = buildConfig ".dotenv.example" False ".incomplete.dotenv" True
+          let config = buildConfig [fixturesPath ++ ".dotenv.example"] False ".incomplete.dotenv"
           loadFile config `shouldThrow` anyErrorCall
 
   context "when the files are missing or badly formatted" $ do
     it "fails when .env.example is missing" $ do
-      let config = buildConfig ".missing.dotenv.example" False ".dotenv" True
+      let config = buildConfig [fixturesPath ++ ".missing.dotenv.example"] False ".dotenv"
       loadFile config `shouldThrow` anyIOException
 
     it "fails when .env.example is badly formatted" $ do
-      let config = buildConfig ".bad.dotenv.example" False ".dotenv" True
+      let config = buildConfig [fixturesPath ++ ".bad.dotenv.example"] False ".dotenv"
       loadFile config `shouldThrow` anyErrorCall
 
   context "when the safety mode is on" $ do
     context "when an env var is missing in the environment or in the dotenv file" $
       it "fails because of missing env vars" $ do
-        let config = buildConfig ".dotenv.example" False ".dotenv" True
+        let config = buildConfig [fixturesPath ++ ".dotenv.example"] False ".dotenv"
         loadFile config `shouldThrow` anyErrorCall
 
     context "when all the env vars are setted" $
       it "success" $ do
-        let config = buildConfig ".dotenv.example" False ".dotenv" True
+        let config = buildConfig [fixturesPath ++ ".dotenv.example"] False ".dotenv"
         setEnv "ANOTHER_ENV" "SOME_BAR"
         home <- getEnv "HOME"
 
@@ -94,11 +96,12 @@ spec = after_ (mapM_ unsetEnv ["DOTENV", "UNICODE_TEST", "ANOTHER_ENV"]) $ do
   describe "onMissingFile" $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        let config = buildConfig ".dotenv.example" True ".dotenv" False
+        let config = buildConfig mempty True ".dotenv"
         void $ onMissingFile (loadFile config) (return [("DOTENV", "true"), ("UNICODE_TEST", "Manabí")])
         lookupEnv "DOTENV" `shouldReturn` Just "true"
+
     context "when target file is missing" $
       it "executes supplied handler instead" $ do
-        let config = buildConfig ".dotenv.example" True ".missing.dotenv" False
+        let config = buildConfig mempty True ".missing.dotenv"
         onMissingFile (True <$ loadFile config) (return False) `shouldReturn` False
 

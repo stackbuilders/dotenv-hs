@@ -43,15 +43,14 @@ loadFile Config{..} = do
   environment <- liftIO getEnvironment
   readedVars <- concat `liftM` DT.mapM parseFile configPath
   neededVars <- concat `liftM` DT.mapM parseFile configExamplePath
-  let numFoundCoincidences = length $ (environment `union` readedVars) `intersectEnvs` neededVars
-      numNeededVars = length neededVars
+  let coincidences = (environment `union` readedVars) `intersectEnvs` neededVars
       cmpEnvs env1 env2 = fst env1 == fst env2
       intersectEnvs = intersectBy cmpEnvs
       unionEnvs = unionBy cmpEnvs
       vars =
-        if configSafe
+        if (not . null) neededVars
           then
-            if numNeededVars == numFoundCoincidences
+            if length neededVars == length coincidences
               then readedVars `unionEnvs` neededVars
               else error $ "Some env vars are not defined. Please, check this var(s) (is/are) set: " ++ concatMap ((++) " " . fst) neededVars
           else readedVars
