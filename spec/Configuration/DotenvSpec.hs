@@ -2,6 +2,7 @@
 
 module Configuration.DotenvSpec (main, spec) where
 
+import Configuration.Dotenv.Types (Config(..))
 import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
 
 import Test.Hspec
@@ -56,21 +57,21 @@ spec = do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      loadFile False "spec/fixtures/.dotenv"
+      loadFile $ Config ["spec/fixtures/.dotenv"] [] False
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"
 
-      loadFile False "spec/fixtures/.dotenv"
+      loadFile $ Config ["spec/fixtures/.dotenv"] [] False
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
       setEnv "DOTENV" "preset"
 
-      loadFile True "spec/fixtures/.dotenv"
+      loadFile $ Config ["spec/fixtures/.dotenv"] [] True
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
@@ -78,7 +79,7 @@ spec = do
     it "returns variables from a file without changing the environment" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      (liftM head $ parseFile "spec/fixtures/.dotenv") `shouldReturn`
+      liftM head (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("DOTENV", "true")
 
       lookupEnv "DOTENV" `shouldReturn` Nothing
@@ -99,9 +100,10 @@ spec = do
   describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        onMissingFile (loadFile True "spec/fixtures/.dotenv") (return ())
+        onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True) (return ())
         lookupEnv "DOTENV" `shouldReturn` Just "true"
+
     context "when target file is missing" $
       it "executes supplied handler instead" $
-        onMissingFile (True <$ loadFile True "spec/fixtures/foo") (return False)
+        onMissingFile (True <$ (loadFile $ Config ["spec/fixtures/foo"] [] True)) (return False)
           `shouldReturn` False

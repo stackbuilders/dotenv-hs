@@ -1,4 +1,5 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP             #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Main where
 
@@ -8,35 +9,50 @@ import Data.Monoid ((<>))
 
 import Options.Applicative
 
-import Configuration.Dotenv (loadFile)
+import Control.Monad (void)
 
-import Control.Monad.IO.Class(MonadIO(..))
+import Configuration.Dotenv (loadFile)
+import Configuration.Dotenv.Types (Config(..))
 
 import System.Process (system)
 import System.Exit (exitWith)
 
 data Options = Options
-  { files    :: [String]
-  , overload :: Bool
-  , program  :: String
-  , args     :: [String]
+  { dotenvFiles        :: [String]
+  , dotenvExampleFiles :: [String]
+  , override           :: Bool
+  , program            :: String
+  , args               :: [String]
   } deriving (Show)
 
 main :: IO ()
-main = execParser opts >>= dotEnv
-  where
-    opts = info (helper <*> config)
-      ( fullDesc
-     <> progDesc "Runs PROGRAM after loading options from FILE"
-     <> header "dotenv - loads options from dotenv files" )
+main = do
+  Options{..} <- execParser opts
+  void $ loadFile Config
+    { configExamplePath = dotenvExampleFiles
+    , configOverride = override
+    , configPath = dotenvFiles
+    }
+  system (program ++ concatMap (" " ++) args) >>= exitWith
+    where
+      opts = info (helper <*> config)
+        ( fullDesc
+       <> progDesc "Runs PROGRAM after loading options from FILE"
+       <> header "dotenv - loads options from dotenv files" )
 
 config :: Parser Options
 config = Options
      <$> some (strOption (
-                  long "file"
-                  <> short 'f'
-                  <> metavar "FILE"
-                  <> help "File to read for options" ))
+                  long "dotenv"
+                  <> short 'e'
+                  <> metavar "DOTENV"
+                  <> help "File to read for environmental variables" ))
+
+     <*> many (strOption (
+                  long "dotenv-example"
+                  <> short 'x'
+                  <> metavar "DOTENV_EXAMPLE"
+                  <> help "File to read for needed environmental variables" ))
 
      <*> switch ( long "overload"
                   <> short 'o'
@@ -46,10 +62,3 @@ config = Options
 
      <*> many (argument str (metavar "ARG"))
 
-dotEnv :: MonadIO m => Options -> m ()
-dotEnv opts = liftIO $ do
-  mapM_ (loadFile (overload opts)) (files opts)
-  code <- system (program opts ++ programArguments)
-  exitWith code
-  where
-   programArguments = concatMap (" " ++) (args opts)
