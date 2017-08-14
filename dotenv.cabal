@@ -101,6 +101,7 @@ test-suite dotenv-test
                        , Configuration.Dotenv.ParseSpec
                        , Configuration.Dotenv
                        , Configuration.Dotenv.Text
+                       , Configuration.Dotenv.Types
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
 

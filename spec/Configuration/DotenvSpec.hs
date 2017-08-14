@@ -53,7 +53,7 @@ spec = do
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
 
-  describe "loadFile" $ after_ (unsetEnv "DOTENV") $ do
+  describe "loadFile" $ after_ (mapM_ unsetEnv ["DOTENV" , "ANOTHER_ENV"]) $ do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
@@ -74,6 +74,21 @@ spec = do
       loadFile $ Config ["spec/fixtures/.dotenv"] [] True
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
+
+    context "when the .env.example is present" $ do
+      let config = Config ["spec/fixtures/.dotenv"] ["spec/fixtures/.dotenv.example"] False
+
+      context "when the needed env vars are missing" $
+        it "should fail with an error call" $
+          loadFile config `shouldThrow` anyErrorCall
+
+      context "when the needed env vars are not missing" $
+        it "should have succeed loading all the needed env vars" $ do
+          setEnv "ANOTHER_ENV" "hello"
+          loadFile config `shouldReturn` ()
+          lookupEnv "DOTENV" `shouldReturn` Just "true"
+          lookupEnv "UNICODE_TEST" `shouldReturn` Just "Manabí"
+          lookupEnv "ANOTHER_ENV" `shouldReturn` Just "hello"
 
   describe "parseFile" $ after_ (unsetEnv "DOTENV") $ do
     it "returns variables from a file without changing the environment" $ do
