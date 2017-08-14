@@ -81,15 +81,50 @@ place to understand the nuances of Dotenv file parsing.
 You can call dotenv from the command line in order to load settings
 from one or more dotenv file before invoking an executable:
 
-```
-dotenv -f mydotenvfile myprogram
+```shell
+$ dotenv -e mydotenvfile myprogram
 ```
 
 Aditionally you can pass arguments and flags to the program passed to
 Dotenv:
 
+```shell
+$ dotenv -e mydotenvfile myprogram -- --myflag myargument
 ```
-dotenv -f mydotenvfile myprogram -- --myflag myargument
+
+or:
+
+```shell
+$ dotenv -e mydotenvfile "myprogram --myflag myargument"
+```
+
+Also, you can use a `-x` to use `dotenv-safe` functionality so that you can have
+a list of strict envs that should be defined in the environment or in your dotenv
+files before the execution of your program. For instance:
+
+```shell
+$ cat .env.example
+DOTENV=
+FOO=
+BAR=
+
+$ cat .env
+DOTENV=123
+
+$ echo $FOO
+123
+```
+
+This will fail:
+```shell
+$ dotenv -e .env -x .env.example "myprogram --myflag myargument"
+> dotenv: Missing env vars! Please, check (this/these) var(s) (is/are) set: BAR
+```
+
+This will succeed:
+```shell
+$ export BAR=123 # Or you can do something like: "echo 'BAR=123' >> .env"
+$ dotenv -e .env -x .env.example "myprogram --myflag myargument"
 ```
 
 Hint: The `env` program in most Unix-like environments prints out the
