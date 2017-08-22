@@ -98,9 +98,9 @@ or:
 $ dotenv -e mydotenvfile "myprogram --myflag myargument"
 ```
 
-Also, you can use a `-x` to use `dotenv-safe` functionality so that you can have
-a list of strict envs that should be defined in the environment or in your dotenv
-files before the execution of your program. For instance:
+Also, you can use a `--example` flag to use [dotenv-safe functionality](https://www.npmjs.com/package/dotenv-safe)
+so that you can have a list of strict envs that should be defined in the environment
+or in your dotenv files before the execution of your program. For instance:
 
 ```shell
 $ cat .env.example
@@ -117,14 +117,14 @@ $ echo $FOO
 
 This will fail:
 ```shell
-$ dotenv -e .env -x .env.example "myprogram --myflag myargument"
+$ dotenv -e .env --example .env.example "myprogram --myflag myargument"
 > dotenv: Missing env vars! Please, check (this/these) var(s) (is/are) set: BAR
 ```
 
 This will succeed:
 ```shell
 $ export BAR=123 # Or you can do something like: "echo 'BAR=123' >> .env"
-$ dotenv -e .env -x .env.example "myprogram --myflag myargument"
+$ dotenv -e .env --example .env.example "myprogram --myflag myargument"
 ```
 
 Hint: The `env` program in most Unix-like environments prints out the

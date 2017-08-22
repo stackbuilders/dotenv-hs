@@ -83,7 +83,7 @@ spec = do
           loadFile config `shouldThrow` anyErrorCall
 
       context "when the needed env vars are not missing" $
-        it "should have succeed loading all the needed env vars" $ do
+        it "should succeed when loading all of the needed env vars" $ do
           setEnv "ANOTHER_ENV" "hello"
           loadFile config `shouldReturn` ()
           lookupEnv "DOTENV" `shouldReturn` Just "true"

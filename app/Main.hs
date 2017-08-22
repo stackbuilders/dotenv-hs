@@ -44,13 +44,12 @@ config :: Parser Options
 config = Options
      <$> some (strOption (
                   long "dotenv"
-                  <> short 'e'
+                  <> short 'f'
                   <> metavar "DOTENV"
                   <> help "File to read for environmental variables" ))
 
      <*> many (strOption (
-                  long "dotenv-example"
-                  <> short 'x'
+                  long "example"
                   <> metavar "DOTENV_EXAMPLE"
                   <> help "File to read for needed environmental variables" ))
 
