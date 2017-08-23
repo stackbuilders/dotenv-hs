@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.4.0.0
+version:             0.5.0.0
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -72,6 +72,7 @@ library
                       , Configuration.Dotenv.Parse
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
+                      , Configuration.Dotenv.Types
 
   build-depends:         base >=4.7 && <5.0
                        , base-compat >= 0.4
@@ -100,6 +101,7 @@ test-suite dotenv-test
                        , Configuration.Dotenv.ParseSpec
                        , Configuration.Dotenv
                        , Configuration.Dotenv.Text
+                       , Configuration.Dotenv.Types
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
 

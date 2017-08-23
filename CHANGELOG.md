@@ -1,4 +1,11 @@
 ## MASTER
+## Dotenv 0.5.0.0
+
+* Add [dotenv-safe functionality](https://www.npmjs.com/package/dotenv-safe)
+* Add the `Config` type with options to override env variables, and setting the
+path for .env and .env.example files.
+* Changed `loadFile` function to get `Config` with the paths for the .env file
+and the .env.example file.
 
 ## Dotenv 0.4.0.0
 

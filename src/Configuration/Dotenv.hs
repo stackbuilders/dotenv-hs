@@ -9,7 +9,8 @@
 --
 -- This module contains common functions to load and read dotenv files.
 
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP             #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Configuration.Dotenv
   ( load
@@ -18,18 +19,21 @@ module Configuration.Dotenv
   , onMissingFile )
  where
 
+import Control.Monad (liftM)
 import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
+import Configuration.Dotenv.Types (Config(..))
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
+import Data.List (union, intersectBy, unionBy)
 import System.Environment (lookupEnv)
 import System.IO.Error (isDoesNotExistError)
-import Text.Megaparsec (parse)
+import Text.Megaparsec (parse, parseErrorPretty)
 
 #if MIN_VERSION_base(4,7,0)
-import System.Environment (setEnv)
+import System.Environment (getEnvironment, setEnv)
 #else
-import System.Environment.Compat (setEnv)
+import System.Environment.Compat (getEnvironment, setEnv)
 #endif
 
 -- | Loads the given list of options into the environment. Optionally
@@ -41,14 +45,30 @@ load ::
   -> m ()
 load override = mapM_ (applySetting override)
 
--- | Loads the options in the given file to the environment. Optionally
--- override existing variables with values from Dotenv files.
-loadFile ::
-  MonadIO m =>
-  Bool        -- ^ Override existing settings?
-  -> FilePath -- ^ A file containing options to load into the environment
+-- | @loadFile@ parses the environment variables defined in the dotenv example
+-- file and checks if they are defined in the dotenv file or in the environment.
+-- It also allows to override the environment variables defined in the environment
+-- with the values defined in the dotenv file.
+loadFile
+  :: MonadIO m
+  => Config
   -> m ()
-loadFile override f = load override =<< parseFile f
+loadFile Config{..} = do
+  environment <- liftIO getEnvironment
+  readedVars <- concat `liftM` mapM parseFile configPath
+  neededVars <- concat `liftM` mapM parseFile configExamplePath
+  let coincidences = (environment `union` readedVars) `intersectEnvs` neededVars
+      cmpEnvs env1 env2 = fst env1 == fst env2
+      intersectEnvs = intersectBy cmpEnvs
+      unionEnvs = unionBy cmpEnvs
+      vars =
+        if (not . null) neededVars
+          then
+            if length neededVars == length coincidences
+              then readedVars `unionEnvs` neededVars
+              else error $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++ concatMap ((++) " " . fst) neededVars
+          else readedVars
+  mapM_ (applySetting configOverride) vars
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
@@ -60,7 +80,7 @@ parseFile f = do
   contents <- liftIO $ readFile f
 
   case parse configParser f contents of
-    Left e        -> error $ "Failed to read file" ++ show e
+    Left e        -> error $ parseErrorPretty e
     Right options -> liftIO $ interpolateParsedVariables options
 
 applySetting :: MonadIO m => Bool -> (String, String) -> m ()

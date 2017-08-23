@@ -2,6 +2,7 @@
 
 module Configuration.DotenvSpec (main, spec) where
 
+import Configuration.Dotenv.Types (Config(..))
 import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
 
 import Test.Hspec
@@ -52,33 +53,48 @@ spec = do
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
 
-  describe "loadFile" $ after_ (unsetEnv "DOTENV") $ do
+  describe "loadFile" $ after_ (mapM_ unsetEnv ["DOTENV" , "ANOTHER_ENV"]) $ do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      loadFile False "spec/fixtures/.dotenv"
+      loadFile $ Config ["spec/fixtures/.dotenv"] [] False
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"
 
-      loadFile False "spec/fixtures/.dotenv"
+      loadFile $ Config ["spec/fixtures/.dotenv"] [] False
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
       setEnv "DOTENV" "preset"
 
-      loadFile True "spec/fixtures/.dotenv"
+      loadFile $ Config ["spec/fixtures/.dotenv"] [] True
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
+
+    context "when the .env.example is present" $ do
+      let config = Config ["spec/fixtures/.dotenv"] ["spec/fixtures/.dotenv.example"] False
+
+      context "when the needed env vars are missing" $
+        it "should fail with an error call" $
+          loadFile config `shouldThrow` anyErrorCall
+
+      context "when the needed env vars are not missing" $
+        it "should succeed when loading all of the needed env vars" $ do
+          setEnv "ANOTHER_ENV" "hello"
+          loadFile config `shouldReturn` ()
+          lookupEnv "DOTENV" `shouldReturn` Just "true"
+          lookupEnv "UNICODE_TEST" `shouldReturn` Just "Manabí"
+          lookupEnv "ANOTHER_ENV" `shouldReturn` Just "hello"
 
   describe "parseFile" $ after_ (unsetEnv "DOTENV") $ do
     it "returns variables from a file without changing the environment" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      (liftM head $ parseFile "spec/fixtures/.dotenv") `shouldReturn`
+      liftM head (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("DOTENV", "true")
 
       lookupEnv "DOTENV" `shouldReturn` Nothing
@@ -99,9 +115,10 @@ spec = do
   describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        onMissingFile (loadFile True "spec/fixtures/.dotenv") (return ())
+        onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True) (return ())
         lookupEnv "DOTENV" `shouldReturn` Just "true"
+
     context "when target file is missing" $
       it "executes supplied handler instead" $
-        onMissingFile (True <$ loadFile True "spec/fixtures/foo") (return False)
+        onMissingFile (True <$ (loadFile $ Config ["spec/fixtures/foo"] [] True)) (return False)
           `shouldReturn` False
