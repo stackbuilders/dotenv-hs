@@ -44,6 +44,11 @@ extra-source-files:    spec/fixtures/.dotenv
 cabal-version:       >=1.10
 bug-reports:         https://github.com/stackbuilders/dotenv-hs/issues
 
+data-dir: spec/fixtures/
+data-files:
+  .dotenv
+  .dotenv.example
+
 flag dev
   description:        Turn on development settings.
   manual:             True
