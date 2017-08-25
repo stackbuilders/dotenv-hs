@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.5.0.0
+version:             0.5.0.1
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -43,6 +43,11 @@ extra-source-files:    spec/fixtures/.dotenv
                      , README.md
 cabal-version:       >=1.10
 bug-reports:         https://github.com/stackbuilders/dotenv-hs/issues
+
+data-dir: spec/fixtures/
+data-files:
+  .dotenv
+  .dotenv.example
 
 flag dev
   description:        Turn on development settings.
