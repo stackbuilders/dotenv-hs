@@ -64,6 +64,7 @@ executable dotenv
                        , process
                        , text
                        , transformers >=0.4 && < 0.6
+  other-modules: Paths_dotenv
 
   hs-source-dirs:      app
   if flag(dev)

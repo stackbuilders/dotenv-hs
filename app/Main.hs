@@ -3,11 +3,13 @@
 
 module Main where
 
+import Data.Version (showVersion)
 #if MIN_VERSION_optparse_applicative(0,13,0)
 import Data.Monoid ((<>))
 #endif
 
 import Options.Applicative
+import Paths_dotenv (version)
 
 import Control.Monad (void)
 
@@ -35,10 +37,14 @@ main = do
     }
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
-      opts = info (helper <*> config)
+      opts = info (helper <*> versionOption <*> config)
         ( fullDesc
        <> progDesc "Runs PROGRAM after loading options from FILE"
        <> header "dotenv - loads options from dotenv files" )
+      versionOption =
+        infoOption
+          (showVersion version)
+          (long "version" <> short 'v' <> help "Show version of the program")
 
 config :: Parser Options
 config = Options
