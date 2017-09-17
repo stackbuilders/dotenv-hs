@@ -14,7 +14,7 @@ import Paths_dotenv (version)
 import Control.Monad (void)
 
 import Configuration.Dotenv (loadFile)
-import Configuration.Dotenv.Types (Config(..))
+import Configuration.Dotenv.Types (Config(..), defaultConfig)
 
 import System.Process (system)
 import System.Exit (exitWith)
@@ -33,7 +33,10 @@ main = do
   void $ loadFile Config
     { configExamplePath = dotenvExampleFiles
     , configOverride = override
-    , configPath = dotenvFiles
+    , configPath =
+        if null dotenvFiles
+          then configPath defaultConfig
+          else dotenvFiles
     }
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
@@ -48,7 +51,7 @@ main = do
 
 config :: Parser Options
 config = Options
-     <$> some (strOption (
+     <$> many (strOption (
                   long "dotenv"
                   <> short 'f'
                   <> metavar "DOTENV"
