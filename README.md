@@ -82,20 +82,27 @@ You can call dotenv from the command line in order to load settings
 from one or more dotenv file before invoking an executable:
 
 ```shell
-$ dotenv -e mydotenvfile myprogram
+$ dotenv -f mydotenvfile myprogram
+```
+
+The `-f` flag is optional, by default it looks for the `.env` file in the current
+working directory.
+
+```shell
+$ dotenv myprogram
 ```
 
 Aditionally you can pass arguments and flags to the program passed to
 Dotenv:
 
 ```shell
-$ dotenv -e mydotenvfile myprogram -- --myflag myargument
+$ dotenv -f mydotenvfile myprogram -- --myflag myargument
 ```
 
 or:
 
 ```shell
-$ dotenv -e mydotenvfile "myprogram --myflag myargument"
+$ dotenv -f mydotenvfile "myprogram --myflag myargument"
 ```
 
 Also, you can use a `--example` flag to use [dotenv-safe functionality](https://www.npmjs.com/package/dotenv-safe)
@@ -117,14 +124,14 @@ $ echo $FOO
 
 This will fail:
 ```shell
-$ dotenv -e .env --example .env.example "myprogram --myflag myargument"
+$ dotenv -f .env --example .env.example "myprogram --myflag myargument"
 > dotenv: Missing env vars! Please, check (this/these) var(s) (is/are) set: BAR
 ```
 
 This will succeed:
 ```shell
 $ export BAR=123 # Or you can do something like: "echo 'BAR=123' >> .env"
-$ dotenv -e .env --example .env.example "myprogram --myflag myargument"
+$ dotenv -f .env --example .env.example "myprogram --myflag myargument"
 ```
 
 Hint: The `env` program in most Unix-like environments prints out the
