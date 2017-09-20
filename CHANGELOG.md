@@ -1,4 +1,9 @@
 ## MASTER
+## Dotenv 0.5.0.2
+
+* Set `.env` file as default file for environment variables.
+* Add `--version` flag to check the version of dotenv that is in use.
+
 ## Dotenv 0.5.0.0
 
 * Add [dotenv-safe functionality](https://www.npmjs.com/package/dotenv-safe)
