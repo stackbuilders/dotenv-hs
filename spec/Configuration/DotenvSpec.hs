@@ -7,6 +7,7 @@ import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
 
 import Test.Hspec
 
+import System.Process (readCreateProcess, shell)
 import System.Environment (lookupEnv)
 import Control.Monad (liftM)
 import Data.Maybe (fromMaybe)
@@ -111,6 +112,11 @@ spec = do
     it "recognises previous variables" $
       liftM (!! 3) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("PREVIOUS", "true")
+
+    it "recognises commands" $ do
+      me <- init <$> readCreateProcess (shell "whoami") ""
+      liftM (!! 4) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
+        ("ME", me)
 
   describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
     context "when target file is present" $

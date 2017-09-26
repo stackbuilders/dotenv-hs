@@ -13,6 +13,7 @@ import Data.Functor ((<$>))
 #endif
 import Control.Applicative ((<|>))
 import System.Environment (lookupEnv)
+import System.Process (readCreateProcess, shell)
 
 data ParsedVariable
   = ParsedVariable VarName VarValue deriving (Show, Eq)
@@ -28,7 +29,8 @@ type VarContents = [VarFragment]
 
 data VarFragment
   = VarInterpolation String
-  | VarLiteral String deriving (Show, Eq)
+  | VarLiteral String
+  | CommandInterpolation String deriving (Show, Eq)
 
 interpolateParsedVariables :: [ParsedVariable] -> IO [(String, String)]
 interpolateParsedVariables = fmap reverse . foldM addInterpolated []
@@ -49,9 +51,11 @@ interpolateFragment _        (VarLiteral       value  ) = return value
 interpolateFragment previous (VarInterpolation varname) = fromPreviousOrEnv >>= maybe (return "") return
   where
     fromPreviousOrEnv = (lookup varname previous <|>) <$> lookupEnv varname
+interpolateFragment _ (CommandInterpolation commandName) = init <$> readCreateProcess (shell commandName) ""
 
 joinContents :: VarContents -> String
 joinContents = concatMap fragmentToString
   where
+    fragmentToString (CommandInterpolation value) = value
     fragmentToString (VarInterpolation value) = value
     fragmentToString (VarLiteral value)       = value
