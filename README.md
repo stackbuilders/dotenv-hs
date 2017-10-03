@@ -59,6 +59,38 @@ We have had many [dicussions](https://github.com/stackbuilders/dotenv-hs/issues/
 about this. Fortunately, there is already some work for this issue in
 [GHC Phabricator](https://phabricator.haskell.org/D3726).
 
+### Variable substitution
+
+In order to use compound env vars use the following sintax within your env vars
+${your_env_var}. For instance:
+
+```
+DATABASE=postgres://${USER}@localhost/database
+```
+ 
+Running it on the CLI:
+
+```
+$ dotenv "echo $DATABASE"
+postgres://myusername@localhost/database
+```
+
+### Command substitution
+
+In order to use the standard output of a command in your env vars use the following
+sintax $(your_command). For instance:
+
+```
+DATABASE=postgres://$(whoami)@localhost/database
+```
+ 
+Running it on the CLI:
+
+```
+$ dotenv "echo $DATABASE"
+postgres://myusername@localhost/database
+```
+
 ## Configuration
 
 The first argument to `loadFile` specifies whether you want to
