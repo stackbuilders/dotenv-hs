@@ -1,4 +1,8 @@
 ## MASTER
+## Dotenv 0.5.1.0
+
+* Add support for command substitution on env vars.
+
 ## Dotenv 0.5.0.2
 
 * Set `.env` file as default file for environment variables.

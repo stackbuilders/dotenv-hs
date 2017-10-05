@@ -2,3 +2,4 @@ DOTENV=true
 UNICODE_TEST=Manabí
 ENVIRONMENT="$HOME"
 PREVIOUS="$DOTENV"
+ME="$(whoami)"

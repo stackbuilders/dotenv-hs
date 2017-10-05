@@ -60,14 +60,24 @@ quotedWith SingleQuote = SingleQuoted <$> (between (char '\'') (char '\'') $ man
 quotedWith DoubleQuote = DoubleQuoted <$> (between (char '\"') (char '\"') $ many (fragment "\""))
 
 fragment :: [Char] -> Parser VarFragment
-fragment charsToEscape = interpolatedValueFragment <|> literalValueFragment ('$' : '\\' : charsToEscape)
+fragment charsToEscape =
+  interpolatedValueCommandInterpolation
+    <|> interpolatedValueVarInterpolation
+    <|> literalValueFragment ('$' : '\\' : charsToEscape)
 
-interpolatedValueFragment :: Parser VarFragment
-interpolatedValueFragment = VarInterpolation <$>
+interpolatedValueVarInterpolation :: Parser VarFragment
+interpolatedValueVarInterpolation = VarInterpolation <$>
                             ((between (symbol "${") (symbol "}") variableName) <|>
                             (char '$' >> variableName))
   where
     symbol                = L.symbol sc
+
+interpolatedValueCommandInterpolation :: Parser VarFragment
+interpolatedValueCommandInterpolation =
+  CommandInterpolation
+    <$> between (symbol "$(") (symbol ")") (many alphaNumChar)
+    where
+      symbol = L.symbol sc
 
 literalValueFragment :: [Char] -> Parser VarFragment
 literalValueFragment charsToEscape = VarLiteral <$> (some $ escapedChar <|> normalChar)

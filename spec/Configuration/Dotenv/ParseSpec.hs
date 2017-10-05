@@ -142,5 +142,11 @@ spec = describe "parse" $ do
   it "doesn't allow more configuration options after a quoted value" $
     parseConfig `shouldFailOn` "foo='bar'baz='buz'"
 
+  it "parses a command $(command)" $ do
+    parseConfig "FOO=$(command)"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [CommandInterpolation "command"])]
+    parseConfig "FOO=asdf_$(command)"
+      `shouldParse` [ParsedVariable "FOO" (Unquoted [VarLiteral "asdf_", CommandInterpolation "command"])]
+
 parseConfig :: String -> Either (ParseError Char Void) [ParsedVariable]
 parseConfig = parse configParser ""
