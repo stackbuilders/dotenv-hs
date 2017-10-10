@@ -64,6 +64,7 @@ executable dotenv
                        , process >= 1.4.3.0
                        , text
                        , transformers >=0.4 && < 0.6
+                       , yaml
   other-modules: Paths_dotenv
 
   hs-source-dirs:      app
@@ -79,6 +80,7 @@ library
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
+                      , Configuration.Dotenv.Scheme.Types
 
   build-depends:         base >=4.7 && <5.0
                        , base-compat >= 0.4
@@ -87,6 +89,7 @@ library
                        , text
                        , transformers >=0.4 && < 0.6
                        , exceptions >= 0.8 && < 0.9
+                       , yaml
 
   if !impl(ghc >= 7.10)
     build-depends:      void         == 0.7.*
