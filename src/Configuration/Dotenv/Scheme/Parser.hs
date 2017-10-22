@@ -10,6 +10,12 @@ import Text.Megaparsec.Char
 
 import Configuration.Dotenv.Scheme.Types
 
+import Debug.Trace
+import Text.Pretty.Simple
+import qualified Data.Text.Lazy as TL
+tsid :: (Show a) => String -> a -> a
+tsid msg x = trace (msg ++ (TL.unpack $ pShow x)) x
+
 isParseableAs
   :: String -- ^ Value of the env variable
   -> EnvType -- ^ Type that the env variable should have
@@ -22,6 +28,6 @@ isParseableAs envVal envTypeNeeded =
       dispatch :: Parsec Void String Bool
       dispatch =
         case envTypeNeeded of
-          EnvInteger -> evalParse digitChar
-          EnvBool    -> evalParse (string "true" <|> string "false")
+          EnvInteger -> evalParse (many digitChar *> eof)
+          EnvBool    -> evalParse ((string "true" <|> string "false") *> eof)
           EnvText    -> pure True
