@@ -33,7 +33,7 @@ data QuoteType = SingleQuote | DoubleQuote
 -- arguments separated by @=@. Comments in all positions are handled
 -- appropriately.
 configParser :: Parser [ParsedVariable]
-configParser = between scn eof (sepEndBy1 envLine (eol <* scn))
+configParser = between scn eof (sepEndBy envLine (eol <* scn))
 
 -- | Parse a single environment variable assignment.
 envLine :: Parser ParsedVariable
