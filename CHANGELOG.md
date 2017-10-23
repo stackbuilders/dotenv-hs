@@ -1,4 +1,8 @@
 ## MASTER
+## Dotenv 0.5.1.1
+
+* Allow `.env` empty files
+
 ## Dotenv 0.5.1.0
 
 * Add support for command substitution on env vars.
