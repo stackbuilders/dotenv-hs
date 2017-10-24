@@ -129,6 +129,7 @@ test-suite dotenv-test
                      , transformers >=0.4 && < 0.6
                      , exceptions >= 0.8 && < 0.9
                      , hspec-megaparsec >= 1.0 && < 2.0
+                     , yaml
 
   if !impl(ghc >= 7.10)
     build-depends:      void         == 0.7.*
