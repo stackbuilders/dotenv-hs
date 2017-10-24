@@ -11,10 +11,13 @@ import Data.Monoid ((<>))
 import Options.Applicative
 import Paths_dotenv (version)
 
-import Control.Monad (void)
+import Control.Monad (when, unless)
 
 import Configuration.Dotenv (loadFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
+import Configuration.Dotenv.Scheme.Parser (areParseable)
+
+import Data.Yaml (decodeFileEither, prettyPrintParseException)
 
 import System.Process (system)
 import System.Exit (exitWith)
@@ -25,12 +28,25 @@ data Options = Options
   , override           :: Bool
   , program            :: String
   , args               :: [String]
+  , safeModeEnabled    :: Bool
   } deriving (Show)
+
+checkEnvTypes
+  :: [(String, String)]
+  -> IO ()
+checkEnvTypes envs = do
+  eitherEnvConf <- decodeFileEither schemeFile
+  case eitherEnvConf of
+    Right envConf ->
+      unless (areParseable envConf envs) (error "The types of you envs don't match")
+    Left errorYaml ->
+      error (prettyPrintParseException errorYaml)
+    where schemeFile = ".scheme.yml"
 
 main :: IO ()
 main = do
   Options{..} <- execParser opts
-  void $ loadFile Config
+  envs <- loadFile Config
     { configExamplePath = dotenvExampleFiles
     , configOverride = override
     , configPath =
@@ -38,6 +54,7 @@ main = do
           then configPath defaultConfig
           else dotenvFiles
     }
+  when safeModeEnabled (checkEnvTypes envs)
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
       opts = info (helper <*> versionOption <*> config)
@@ -70,3 +87,6 @@ config = Options
 
      <*> many (argument str (metavar "ARG"))
 
+     <*> switch ( long "safe"
+                  <> short 's'
+                  <> help "Reads the .scheme.yml file from the current directory to enable type checking of envs" )
