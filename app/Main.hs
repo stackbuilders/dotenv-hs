@@ -11,13 +11,15 @@ import Data.Monoid ((<>))
 import Options.Applicative
 import Paths_dotenv (version)
 
-import Control.Monad (when, unless)
+import Control.Monad (when)
 
 import Configuration.Dotenv (loadFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
 import Configuration.Dotenv.Scheme.Parser (areParseable)
+import qualified Configuration.Dotenv.Scheme.Types as ST
 
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
+import Text.Megaparsec.Error (parseErrorPretty)
 
 import System.Process (system)
 import System.Exit (exitWith)
@@ -31,17 +33,23 @@ data Options = Options
   , safeModeEnabled    :: Bool
   } deriving (Show)
 
-checkEnvTypes
-  :: [(String, String)]
-  -> IO ()
-checkEnvTypes envs = do
+readScheme :: IO ST.Config
+readScheme = do
   eitherEnvConf <- decodeFileEither schemeFile
   case eitherEnvConf of
-    Right envConf ->
-      unless (areParseable envConf envs) (error "The types of you envs don't match")
-    Left errorYaml ->
-      error (prettyPrintParseException errorYaml)
-    where schemeFile = ".scheme.yml"
+    Right envConf -> return envConf
+    Left errorYaml -> error (prettyPrintParseException errorYaml)
+  where schemeFile = ".scheme.yml"
+
+checkEnvTypes
+  :: ST.Config
+  -> [(String, String)]
+  -> IO ()
+checkEnvTypes schemeConfig envs =
+  let prettyParsedErrors = unlines . fmap parseErrorPretty
+   in case areParseable schemeConfig envs of
+        Left errors -> error (prettyParsedErrors errors)
+        _ -> return ()
 
 main :: IO ()
 main = do
@@ -54,7 +62,7 @@ main = do
           then configPath defaultConfig
           else dotenvFiles
     }
-  when safeModeEnabled (checkEnvTypes envs)
+  when safeModeEnabled (readScheme >>= flip checkEnvTypes envs)
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
       opts = info (helper <*> versionOption <*> config)
