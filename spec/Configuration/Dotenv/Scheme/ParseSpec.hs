@@ -2,6 +2,7 @@
 
 module Configuration.Dotenv.Scheme.ParseSpec (spec) where
 
+import Data.Either (isLeft, isRight)
 import Data.Yaml (decodeFileEither)
 import Test.Hspec
 
@@ -31,26 +32,26 @@ specParse =
   describe "parseTypeEnv" $ do
     context "given an integer" $ do
       context "when the integer can be parsed" $
-        it "should return True" $
+        it "should return Right ()" $
           let varContent = "123"
               integer = EnvInteger
-           in varContent `isParseableAs` integer `shouldBe` True
+           in varContent `isParseableAs` integer `shouldSatisfy` isRight
 
       context "when the integer can't be parsed" $
-        it "should return False" $
+        it "should return Left (ParseError Char Void)" $
           let varContent = "123x"
               integer = EnvInteger
-           in varContent `isParseableAs` integer `shouldBe` False
+           in varContent `isParseableAs` integer `shouldSatisfy` isLeft
 
     context "given a bool" $ do
       context "when the bool can be parsed" $
-        it "should return True" $
+        it "should return Right ()" $
           let varContent = "true"
               boolean = EnvBool
-           in varContent `isParseableAs` boolean `shouldBe` True
+           in varContent `isParseableAs` boolean `shouldSatisfy` isRight
 
       context "when the bool can't be parsed" $
         it "should return False" $
           let varContent = "truex"
               boolean = EnvBool
-           in varContent `isParseableAs` boolean `shouldBe` False
+           in varContent `isParseableAs` boolean `shouldSatisfy` isLeft
