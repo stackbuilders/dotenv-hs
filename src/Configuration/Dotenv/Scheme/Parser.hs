@@ -1,8 +1,12 @@
+{-# LANGUAGE CPP               #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Configuration.Dotenv.Scheme.Parser where
 
-import Control.Applicative
+import Control.Applicative ((<|>))
+#if !MIN_VERSION_base(4,8,0)
+import Data.Functor ((<$>), pure)
+#endif
 import Data.Either
 import Data.Void
 import Text.Megaparsec
@@ -18,11 +22,10 @@ areParseable
 areParseable config envs =
   let envsWithConf = mapMatchEnvWithConf config envs
       parsedEnvs (v, t) = v `isParseableAs` t
-      eithers = fmap parsedEnvs envsWithConf
+      eithers = parsedEnvs <$> envsWithConf
     in if all isRight eithers
           then Right ()
           else Left (lefts eithers)
-
 
 isParseableAs
   :: String -- ^ Value of the env variable

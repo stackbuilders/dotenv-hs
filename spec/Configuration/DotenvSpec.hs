@@ -9,7 +9,7 @@ import Test.Hspec
 
 import System.Process (readCreateProcess, shell)
 import System.Environment (lookupEnv)
-import Control.Monad (liftM)
+import Control.Monad (liftM, void)
 import Data.Maybe (fromMaybe)
 #if !MIN_VERSION_base(4,8,0)
 import Data.Functor ((<$>))
@@ -58,21 +58,21 @@ spec = do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      loadFile $ Config ["spec/fixtures/.dotenv"] [] False
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] False
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"
 
-      loadFile $ Config ["spec/fixtures/.dotenv"] [] False
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] False
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
       setEnv "DOTENV" "preset"
 
-      loadFile $ Config ["spec/fixtures/.dotenv"] [] True
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] True
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
@@ -81,12 +81,12 @@ spec = do
 
       context "when the needed env vars are missing" $
         it "should fail with an error call" $
-          loadFile config `shouldThrow` anyErrorCall
+          void $ loadFile config `shouldThrow` anyErrorCall
 
       context "when the needed env vars are not missing" $
         it "should succeed when loading all of the needed env vars" $ do
           setEnv "ANOTHER_ENV" "hello"
-          loadFile config `shouldReturn` ()
+          loadFile config `shouldReturn` []
           lookupEnv "DOTENV" `shouldReturn` Just "true"
           lookupEnv "UNICODE_TEST" `shouldReturn` Just "Manabí"
           lookupEnv "ANOTHER_ENV" `shouldReturn` Just "hello"
@@ -121,7 +121,7 @@ spec = do
   describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True) (return ())
+        void $ onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True) (return [])
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     context "when target file is missing" $

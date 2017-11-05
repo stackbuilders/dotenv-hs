@@ -2,7 +2,6 @@
 
 module Configuration.Dotenv.Scheme.Types where
 
-import Control.Applicative
 import Data.Yaml
 
 data EnvType =
