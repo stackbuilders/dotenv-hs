@@ -3,10 +3,11 @@
 
 module Configuration.Dotenv.Scheme.Parser where
 
-import Control.Applicative ((<|>))
 #if !MIN_VERSION_base(4,8,0)
+import Control.Applicative ((*>), (<|>))
 import Data.Functor ((<$>), pure)
 #endif
+
 import Data.Either
 import Data.Void
 import Text.Megaparsec

@@ -8,7 +8,7 @@ import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
 import Test.Hspec
 
 import System.Process (readCreateProcess, shell)
-import System.Environment (lookupEnv)
+import System.Environment (lookupEnv, getEnv)
 import Control.Monad (liftM, void)
 import Data.Maybe (fromMaybe)
 #if !MIN_VERSION_base(4,8,0)
@@ -86,7 +86,9 @@ spec = do
       context "when the needed env vars are not missing" $
         it "should succeed when loading all of the needed env vars" $ do
           setEnv "ANOTHER_ENV" "hello"
-          loadFile config `shouldReturn` []
+          me <- getEnv "USER"
+          home <- getEnv "HOME"
+          loadFile config `shouldReturn` [("DOTENV","true"),("UNICODE_TEST","Manab\237"),("ENVIRONMENT", home),("PREVIOUS","true"),("ME", me),("ANOTHER_ENV","")]
           lookupEnv "DOTENV" `shouldReturn` Just "true"
           lookupEnv "UNICODE_TEST" `shouldReturn` Just "Manabí"
           lookupEnv "ANOTHER_ENV" `shouldReturn` Just "hello"
