@@ -116,6 +116,9 @@ test-suite dotenv-test
                        , Configuration.Dotenv.Types
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
+                       , Configuration.Dotenv.Scheme.Helpers
+                       , Configuration.Dotenv.Scheme.Parser
+                       , Configuration.Dotenv.Scheme.Types
                        , Configuration.Dotenv.Scheme.HelpersSpec
                        , Configuration.Dotenv.Scheme.ParseSpec
 
