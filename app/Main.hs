@@ -15,7 +15,7 @@ import Control.Monad (when)
 
 import Configuration.Dotenv (loadFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
-import Configuration.Dotenv.Scheme.Parser (areParseable)
+import Configuration.Dotenv.Scheme.Parser (parseEnvsWithScheme)
 import qualified Configuration.Dotenv.Scheme.Types as ST
 
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
@@ -42,12 +42,12 @@ readScheme = do
   where schemeFile = ".scheme.yml"
 
 checkEnvTypes
-  :: ST.Config
-  -> [(String, String)]
+  :: [(String, String)]
+  -> ST.Config
   -> IO ()
-checkEnvTypes schemeConfig envs =
+checkEnvTypes envs schemeConfig =
   let prettyParsedErrors = unlines . fmap parseErrorPretty
-   in case areParseable schemeConfig envs of
+   in case parseEnvsWithScheme schemeConfig envs of
         Left errors -> error (prettyParsedErrors errors)
         _ -> return ()
 
@@ -62,7 +62,7 @@ main = do
           then configPath defaultConfig
           else dotenvFiles
     }
-  when safeModeEnabled (readScheme >>= flip checkEnvTypes envs)
+  when safeModeEnabled (readScheme >>= checkEnvTypes envs)
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
       opts = info (helper <*> versionOption <*> config)

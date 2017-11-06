@@ -29,29 +29,29 @@ specInstance = describe "parse a config env file" $
 
 specParse :: Spec
 specParse =
-  describe "parseTypeEnv" $ do
+  describe "parseEnvAs" $ do
     context "given an integer" $ do
       context "when the integer can be parsed" $
         it "should return Right ()" $
           let varContent = "123"
               integer = EnvInteger
-           in varContent `isParseableAs` integer `shouldSatisfy` isRight
+           in varContent `parseEnvAs` integer `shouldSatisfy` isRight
 
       context "when the integer can't be parsed" $
         it "should return Left (ParseError Char Void)" $
           let varContent = "123x"
               integer = EnvInteger
-           in varContent `isParseableAs` integer `shouldSatisfy` isLeft
+           in varContent `parseEnvAs` integer `shouldSatisfy` isLeft
 
     context "given a bool" $ do
       context "when the bool can be parsed" $
         it "should return Right ()" $
           let varContent = "true"
               boolean = EnvBool
-           in varContent `isParseableAs` boolean `shouldSatisfy` isRight
+           in varContent `parseEnvAs` boolean `shouldSatisfy` isRight
 
       context "when the bool can't be parsed" $
         it "should return False" $
           let varContent = "truex"
               boolean = EnvBool
-           in varContent `isParseableAs` boolean `shouldSatisfy` isLeft
+           in varContent `parseEnvAs` boolean `shouldSatisfy` isLeft

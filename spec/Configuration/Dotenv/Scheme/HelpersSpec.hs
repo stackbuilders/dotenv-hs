@@ -28,9 +28,9 @@ spec = do
             env = ("DOTENV", "true")
          in matchVarWithType config env `shouldBe` Just ("true", EnvBool)
 
-  describe "mapMatchEnvWithConf" $
+  describe "mapMatchVarWithType" $
     it "maps the env with the specific content" $
       let envConfs = [EnvConf EnvBool "DOTENV", EnvConf EnvInteger "OTHER_ENV"]
           config = Config envConfs
           env = [("DOTENV", "true"), ("OTHER_ENV", "123"), ("TEST", "test")]
-       in mapMatchEnvWithConf config env `shouldBe` [("true", EnvBool), ("123", EnvInteger)]
+       in mapMatchVarWithType config env `shouldBe` [("true", EnvBool), ("123", EnvInteger)]

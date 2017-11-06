@@ -17,9 +17,9 @@ matchVarWithType (Config envConfs) (name, value) =
       pairEnvWithConf EnvConf{..} = (value, envType)
    in fmap pairEnvWithConf maybeEnvConf
 
-mapMatchEnvWithConf
+mapMatchVarWithType
   :: Config           -- ^ List of EnvConf for variables
   -> [(String, String)] -- ^ (Env Name, Env Value)
   -> [(String, EnvType)]
-mapMatchEnvWithConf config =
+mapMatchVarWithType config =
   mapMaybe (matchVarWithType config)
