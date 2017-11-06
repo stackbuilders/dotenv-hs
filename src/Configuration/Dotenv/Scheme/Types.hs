@@ -3,7 +3,7 @@
 
 module Configuration.Dotenv.Scheme.Types where
 
-#if MIN_VERSION_base(4,7,0)
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<*>), pure)
 import Data.Functor ((<$>))
 #endif
