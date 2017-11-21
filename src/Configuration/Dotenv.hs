@@ -15,6 +15,7 @@
 module Configuration.Dotenv
   ( load
   , loadFile
+  , loadSafeFile
   , parseFile
   , onMissingFile )
  where
@@ -22,6 +23,7 @@ module Configuration.Dotenv
 import Control.Monad (liftM)
 import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
+import Configuration.Dotenv.Scheme.Parser (readScheme, checkEnvTypes)
 import Configuration.Dotenv.Types (Config(..))
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
@@ -44,6 +46,17 @@ load ::
   -> [(String, String)] -- ^ List of values to be set in environment
   -> m ()
 load override = mapM_ (applySetting override)
+
+-- | @loadFile@ parses the /.scheme.yml/ file and will perform the type checking
+-- of the environment variables in the /.env/ file.
+loadSafeFile
+  :: MonadIO m
+  => Config
+  -> m [(String, String)]
+loadSafeFile config = do
+  envs <- loadFile config
+  liftIO (readScheme >>= checkEnvTypes envs)
+  return envs
 
 -- | @loadFile@ parses the environment variables defined in the dotenv example
 -- file and checks if they are defined in the dotenv file or in the environment.

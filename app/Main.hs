@@ -15,11 +15,7 @@ import Control.Monad (when)
 
 import Configuration.Dotenv (loadFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
-import Configuration.Dotenv.Scheme.Parser (parseEnvsWithScheme)
-import qualified Configuration.Dotenv.Scheme.Types as ST
-
-import Data.Yaml (decodeFileEither, prettyPrintParseException)
-import Text.Megaparsec.Error (parseErrorPretty)
+import Configuration.Dotenv.Scheme.Parser (readScheme, checkEnvTypes)
 
 import System.Process (system)
 import System.Exit (exitWith)
@@ -32,24 +28,6 @@ data Options = Options
   , args               :: [String]
   , safeModeEnabled    :: Bool
   } deriving (Show)
-
-readScheme :: IO ST.Config
-readScheme = do
-  eitherEnvConf <- decodeFileEither schemeFile
-  case eitherEnvConf of
-    Right envConf -> return envConf
-    Left errorYaml -> error (prettyPrintParseException errorYaml)
-  where schemeFile = ".scheme.yml"
-
-checkEnvTypes
-  :: [(String, String)]
-  -> ST.Config
-  -> IO ()
-checkEnvTypes envs schemeConfig =
-  let prettyParsedErrors = unlines . fmap parseErrorPretty
-   in case parseEnvsWithScheme schemeConfig envs of
-        Left errors -> error (prettyParsedErrors errors)
-        _ -> return ()
 
 main :: IO ()
 main = do

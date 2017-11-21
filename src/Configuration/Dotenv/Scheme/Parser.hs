@@ -10,11 +10,30 @@ import Data.Functor ((<$>))
 
 import Data.Either
 import Data.Void
+import Data.Yaml (decodeFileEither, prettyPrintParseException)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 
 import Configuration.Dotenv.Scheme.Helpers
 import Configuration.Dotenv.Scheme.Types
+
+readScheme :: IO Config
+readScheme = do
+  eitherEnvConf <- decodeFileEither schemeFile
+  case eitherEnvConf of
+    Right envConf -> return envConf
+    Left errorYaml -> error (prettyPrintParseException errorYaml)
+  where schemeFile = ".scheme.yml"
+
+checkEnvTypes
+  :: [(String, String)]
+  -> Config
+  -> IO ()
+checkEnvTypes envs schemeConfig =
+  let prettyParsedErrors = unlines . fmap parseErrorPretty
+   in case parseEnvsWithScheme schemeConfig envs of
+        Left errors -> error (prettyParsedErrors errors)
+        _ -> return ()
 
 parseEnvsWithScheme
   :: Config
