@@ -12,7 +12,7 @@ matchVarWithType
   -> (String, String) -- ^ (Env Name, Env Value)
   -> Maybe (String, EnvType)
 matchVarWithType (Config envConfs) (name, value) =
-  let criteria EnvConf{..} = envName == name
+  let criteria EnvConf{..} = name `elem` envNames
       maybeEnvConf = find criteria envConfs
       pairEnvWithConf EnvConf{..} = (value, envType)
    in fmap pairEnvWithConf maybeEnvConf

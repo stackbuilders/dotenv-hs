@@ -22,7 +22,7 @@ specInstance :: Spec
 specInstance = describe "parse a config env file" $
   it "parses the env config values from a file" $
     let expected :: Config
-        expected = Config [EnvConf EnvBool "DOTENV", EnvConf EnvInteger "PORT"]
+        expected = Config [EnvConf EnvBool ["DOTENV", "OTHERENV"], EnvConf EnvInteger ["PORT", "TOKEN"]]
      in do
        actual <- decodeFileEither "spec/fixtures/.scheme.yml"
        fromRight actual `shouldBe` expected

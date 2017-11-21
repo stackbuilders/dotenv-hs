@@ -12,18 +12,13 @@ import Data.Yaml
 data EnvType =
   EnvInteger
     | EnvBool
-    | EnvText deriving (Eq)
+    | EnvText deriving (Show, Eq)
 
 data EnvConf =
   EnvConf
-    { envType :: EnvType
-    , envName :: String
+    { envType  :: EnvType
+    , envNames :: [String]
     } deriving (Show, Eq)
-
-instance Show EnvType where
-  show EnvInteger = "integer"
-  show EnvBool    = "bool"
-  show EnvText    = "text"
 
 instance FromJSON EnvType where
   parseJSON (String "integer") = pure EnvInteger
@@ -36,12 +31,10 @@ instance FromJSON EnvConf where
   parseJSON (Object m) =
     EnvConf
       <$> m .: "type"
-      <*> m .: "name"
-  parseJSON x = fail ("not an object: " ++ show x)
+      <*> m .: "envs"
+  parseJSON x = fail ("Not an object: " ++ show x)
 
 newtype Config = Config [EnvConf] deriving (Show, Eq)
 
 instance FromJSON Config where
-  parseJSON (Object m) =
-    Config <$> m .: "envs"
-  parseJSON x = fail ("not an object: " ++ show x)
+  parseJSON = fmap Config . parseJSONList

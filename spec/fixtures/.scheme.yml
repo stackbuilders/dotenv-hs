@@ -1,5 +1,8 @@
-envs:
-  - name: DOTENV
-    type: bool
-  - name: PORT
-    type: integer
+- type: bool
+  envs:
+    - DOTENV
+    - OTHERENV
+- type: integer
+  envs:
+    - PORT
+    - TOKEN
