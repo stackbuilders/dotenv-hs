@@ -3,23 +3,24 @@
 module Configuration.Dotenv.Scheme.Helpers where
 
 import Data.List
-import Data.Maybe
 
 import Configuration.Dotenv.Scheme.Types
 
 matchVarWithType
   :: Config           -- ^ List of EnvConf for variables
   -> (String, String) -- ^ (Env Name, Env Value)
-  -> Maybe (String, EnvType)
+  -> (String, EnvType)
 matchVarWithType (Config envConfs) (name, value) =
   let criteria EnvConf{..} = name `elem` envNames
       maybeEnvConf = find criteria envConfs
       pairEnvWithConf EnvConf{..} = (value, envType)
-   in fmap pairEnvWithConf maybeEnvConf
+   in
+   case maybeEnvConf of
+     Just envConv -> pairEnvWithConf envConv
+     _            -> error $ "The env " ++ name ++ " must be defined in the scheme file."
 
 mapMatchVarWithType
   :: Config           -- ^ List of EnvConf for variables
   -> [(String, String)] -- ^ (Env Name, Env Value)
   -> [(String, EnvType)]
-mapMatchVarWithType config =
-  mapMaybe (matchVarWithType config)
+mapMatchVarWithType config = map (matchVarWithType config)
