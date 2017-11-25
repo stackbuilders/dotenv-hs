@@ -115,7 +115,13 @@ in your current directory. This file must have the following structure:
 
 It is a list of type and envs. So, in this example, `DOTENV` must have a value
 of `true` or `false` otherwise it won't be parsed as a boolean value. And envs
-like `PORT` must be any integer.
+like `PORT` must be any integer. Currently, we are supporting the following types:
+
+- `bool` - Accepts values `false` or `true`
+- `integer` - Accepts values of possitive integers
+- `text` - Any text
+
+**NOTE:** All the envs defined in the .env files **must be defined** in the .scheme.yml file.
 
 ## Configuration
 
