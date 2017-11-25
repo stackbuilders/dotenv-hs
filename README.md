@@ -95,11 +95,11 @@ postgres://myusername@localhost/database
 Env variables are simple strings. However, they can represent other types like
 integers, booleans, IP addresses, emails, URIs, and so on. We provide an interface
 that performs type checking after loading the envs and before running your application.
-If the type check succeed the application is executed, otherwise you will get an
-error with the types that missmatch.
+If the type-check succeeded the application is executed, otherwise you will get an
+error with the types that mismatch.
 
 In order to use this functionality you can use the `loadSafeFile` which takes the same
-configuration value as the `loadFile` function. Also, you need to have a `.scheme.yml` 
+configuration value as the `loadFile` function. Also, you need to have a `.scheme.yml`
 in your current directory. This file must have the following structure:
 
 ```yaml
