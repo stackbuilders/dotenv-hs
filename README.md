@@ -215,6 +215,27 @@ current environment settings. By invoking the program `env` in place
 of `myprogram` above you can see what the environment will look like
 after evaluating multiple Dotenv files.
 
+Adding the `-s` flag to dotenv will enable the safe mode to type check the env
+variables. For instance:
+
+```shell
+$ cat .env
+PORT=123a
+$ cat .scheme.yml
+- type: integer
+  envs:
+    - PORT
+```
+
+running `dotenv` will throw:
+
+```shell
+$ dotenv -s "echo $PORT"
+dotenv: 1:4:
+unexpected 'a'
+expecting digit or end of input
+```
+
 ## Author
 
 Justin Leitgeb
