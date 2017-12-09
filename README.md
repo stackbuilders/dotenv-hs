@@ -105,12 +105,16 @@ in your current directory. This file must have the following structure:
 ```yaml
 - type: bool
   envs:
-    - DOTENV
-    - OTHERENV
+    - name: DOTENV
+      required: true
+    - name: OTHERENV
+      required: false
 - type: integer
   envs:
-    - PORT
-    - TOKEN
+    - name: PORT
+      required: true
+    - name: TOKEN
+      required: true
 ```
 
 It is a list of type and envs. So, in this example, `DOTENV` must have a value
@@ -120,6 +124,8 @@ like `PORT` must be any integer. Currently, we are supporting the following type
 - `bool` - Accepts values `false` or `true`
 - `integer` - Accepts values of possitive integers
 - `text` - Any text
+
+You must set **required** if the env var is going to be type checked or not.
 
 **NOTE:** All the envs defined in the .env files **must be defined** in the .scheme.yml file.
 
@@ -224,7 +230,8 @@ PORT=123a
 $ cat .scheme.yml
 - type: integer
   envs:
-    - PORT
+    - name: PORT
+      required: true
 ```
 
 running `dotenv` will throw:

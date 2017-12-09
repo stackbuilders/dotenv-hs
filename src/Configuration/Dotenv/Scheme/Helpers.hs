@@ -11,7 +11,7 @@ matchVarWithType
   -> (String, String) -- ^ (Env Name, Env Value)
   -> (String, EnvType)
 matchVarWithType (Config envConfs) (name, value) =
-  let criteria EnvConf{..} = name `elem` envNames
+  let criteria EnvConf{..} = name `elem` (map envName envs)
       maybeEnvConf = find criteria envConfs
       pairEnvWithConf EnvConf{..} = (value, envType)
    in
@@ -23,4 +23,9 @@ mapMatchVarWithType
   :: Config           -- ^ List of EnvConf for variables
   -> [(String, String)] -- ^ (Env Name, Env Value)
   -> [(String, EnvType)]
-mapMatchVarWithType config = map (matchVarWithType config)
+mapMatchVarWithType config@(Config envConfs) envvars =
+  let filterRequiredEnvs EnvConf{..} = filter required envs
+      requiredEnvs = concatMap filterRequiredEnvs envConfs
+      inRequired (name, _) = name `elem` (map envName requiredEnvs)
+      filteredEnvs = filter inRequired envvars
+   in map (matchVarWithType config) filteredEnvs

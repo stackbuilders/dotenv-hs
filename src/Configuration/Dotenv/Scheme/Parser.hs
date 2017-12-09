@@ -29,9 +29,9 @@ checkEnvTypes
   :: [(String, String)]
   -> Config
   -> IO ()
-checkEnvTypes envs schemeConfig =
+checkEnvTypes envvars schemeConfig =
   let prettyParsedErrors = unlines . fmap parseErrorPretty
-   in case parseEnvsWithScheme schemeConfig envs of
+   in case parseEnvsWithScheme schemeConfig envvars of
         Left errors -> error (prettyParsedErrors errors)
         _ -> return ()
 
@@ -39,8 +39,8 @@ parseEnvsWithScheme
   :: Config
   -> [(String, String)]
   -> Either [ParseError Char Void] ()
-parseEnvsWithScheme config envs =
-  let envsWithConf = mapMatchVarWithType config envs
+parseEnvsWithScheme config envvars =
+  let envsWithConf = mapMatchVarWithType config envvars
       parsedEnvs (v, t) = v `parseEnvAs` t
       parseEithers = parsedEnvs <$> envsWithConf
     in if all isRight parseEithers
