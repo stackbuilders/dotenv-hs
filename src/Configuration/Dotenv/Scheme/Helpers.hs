@@ -1,31 +1,40 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module Configuration.Dotenv.Scheme.Helpers where
+module Configuration.Dotenv.Scheme.Helpers
+  ( findEnvByName
+  , mapMatchVarWithType
+  )
+  where
 
 import Data.List
+import Data.Maybe
 
 import Configuration.Dotenv.Scheme.Types
-
-matchVarWithType
-  :: Config           -- ^ List of EnvConf for variables
-  -> (String, String) -- ^ (Env Name, Env Value)
-  -> (String, EnvType)
-matchVarWithType (Config envConfs) (name, value) =
-  let criteria EnvConf{..} = name `elem` (map envName envs)
-      maybeEnvConf = find criteria envConfs
-      pairEnvWithConf EnvConf{..} = (value, envType)
-   in
-   case maybeEnvConf of
-     Just envConv -> pairEnvWithConf envConv
-     _            -> error $ "The env " ++ name ++ " must be defined in the scheme file."
 
 mapMatchVarWithType
   :: Config           -- ^ List of EnvConf for variables
   -> [(String, String)] -- ^ (Env Name, Env Value)
   -> [(String, EnvType)]
-mapMatchVarWithType config@(Config envConfs) envvars =
-  let filterRequiredEnvs EnvConf{..} = filter required envs
-      requiredEnvs = concatMap filterRequiredEnvs envConfs
-      inRequired (name, _) = name `elem` (map envName requiredEnvs)
-      filteredEnvs = filter inRequired envvars
-   in map (matchVarWithType config) filteredEnvs
+mapMatchVarWithType (Config envConfs) envvars =
+  let envsWithType = genEnvsWithType envConfs
+      valuesAndTypes = fmap (findEnvByName envvars) envsWithType
+   in catMaybes valuesAndTypes
+
+findEnvByName
+  :: [(String, String)] -- ^ [(Env Name, Env Value)]
+  -> (Env, EnvType)
+  -> Maybe (String, EnvType)
+findEnvByName envs (Env{..}, envType) =
+  let criteria (name, _) = name == envName
+      maybeEnv = find criteria envs
+   in case maybeEnv of
+        Just (_, value) -> Just (value, envType)
+        Nothing ->
+          if required
+             then error $ "The env: " ++ envName ++ " should be defined in the dotenvs."
+             else Nothing
+
+genEnvsWithType :: [EnvConf] -> [(Env, EnvType)]
+genEnvsWithType =
+  let genEnvWithType EnvConf{..} = (,) <$> envs <*> pure envType
+   in concatMap genEnvWithType
