@@ -23,7 +23,7 @@ module Configuration.Dotenv
 import Control.Monad (liftM)
 import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
-import Configuration.Dotenv.Scheme.Parser (readScheme, checkEnvTypes)
+import Configuration.Dotenv.Scheme (readScheme, checkConfig)
 import Configuration.Dotenv.Types (Config(..))
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
@@ -55,7 +55,7 @@ loadSafeFile
   -> m [(String, String)]
 loadSafeFile config = do
   envs <- loadFile config
-  liftIO (readScheme >>= checkEnvTypes envs)
+  liftIO (readScheme >>= checkConfig envs)
   return envs
 
 -- | @loadFile@ parses the environment variables defined in the dotenv example

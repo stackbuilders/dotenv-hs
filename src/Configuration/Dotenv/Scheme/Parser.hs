@@ -10,42 +10,20 @@ import Data.Functor ((<$>))
 
 import Data.Either
 import Data.Void
-import Data.Yaml (decodeFileEither, prettyPrintParseException)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 
-import Configuration.Dotenv.Scheme.Helpers
 import Configuration.Dotenv.Scheme.Types
 
-readScheme :: IO Config
-readScheme = do
-  eitherEnvConf <- decodeFileEither schemeFile
-  case eitherEnvConf of
-    Right envConf -> return envConf
-    Left errorYaml -> error (prettyPrintParseException errorYaml)
-  where schemeFile = ".scheme.yml"
-
-checkEnvTypes
-  :: [(String, String)]
-  -> Config
-  -> IO ()
-checkEnvTypes envvars schemeConfig =
-  let prettyParsedErrors = unlines . fmap parseErrorPretty
-   in case parseEnvsWithScheme schemeConfig envvars of
-        Left errors -> error (prettyParsedErrors errors)
-        _ -> return ()
-
 parseEnvsWithScheme
-  :: Config
-  -> [(String, String)]
+  :: [(String, EnvType)]
   -> Either [ParseError Char Void] ()
-parseEnvsWithScheme config envvars =
-  let envsWithConf = mapMatchVarWithType config envvars
-      parsedEnvs (v, t) = v `parseEnvAs` t
-      parseEithers = parsedEnvs <$> envsWithConf
-    in if all isRight parseEithers
+parseEnvsWithScheme valuesAndTypes =
+  let parsedEithers = parseEnvs <$> valuesAndTypes
+      parseEnvs (val, type') = val `parseEnvAs` type'
+    in if all isRight parsedEithers
           then Right ()
-          else Left (lefts parseEithers)
+          else Left (lefts parsedEithers)
 
 parseEnvAs
   :: String -- ^ Value of the env variable

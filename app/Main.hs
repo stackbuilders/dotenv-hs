@@ -15,7 +15,7 @@ import Control.Monad (when)
 
 import Configuration.Dotenv (loadFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
-import Configuration.Dotenv.Scheme.Parser (readScheme, checkEnvTypes)
+import Configuration.Dotenv.Scheme (readScheme, checkConfig)
 
 import System.Process (system)
 import System.Exit (exitWith)
@@ -40,7 +40,7 @@ main = do
           then configPath defaultConfig
           else dotenvFiles
     }
-  when safeModeEnabled (readScheme >>= checkEnvTypes envs)
+  when safeModeEnabled (readScheme >>= checkConfig envs)
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
       opts = info (helper <*> versionOption <*> config)
