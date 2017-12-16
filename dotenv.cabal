@@ -80,6 +80,7 @@ library
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
+                      , Configuration.Dotenv.Scheme
                       , Configuration.Dotenv.Scheme.Helpers
                       , Configuration.Dotenv.Scheme.Parser
                       , Configuration.Dotenv.Scheme.Types
@@ -116,11 +117,12 @@ test-suite dotenv-test
                        , Configuration.Dotenv.Types
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
+                       , Configuration.Dotenv.SchemeSpec
+                       , Configuration.Dotenv.Scheme.ParseSpec
+                       , Configuration.Dotenv.Scheme
                        , Configuration.Dotenv.Scheme.Helpers
                        , Configuration.Dotenv.Scheme.Parser
                        , Configuration.Dotenv.Scheme.Types
-                       , Configuration.Dotenv.Scheme.HelpersSpec
-                       , Configuration.Dotenv.Scheme.ParseSpec
 
   build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4
