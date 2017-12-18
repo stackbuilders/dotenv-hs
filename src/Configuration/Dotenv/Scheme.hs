@@ -27,18 +27,18 @@ checkConfig
   -> Config
   -> IO ()
 checkConfig envvars (Config envConfs) =
-  let prettyParsedErrors = unlines . fmap parseErrorPretty
+  let prettyParsedErrors = unlines . fmap parseErrorTextPretty
       envsWithType       = genEnvsWithType envConfs
       envsTypeAndValue   = joinEnvs envsWithType envvars
       valuesAndTypes     = matchValueAndType envsTypeAndValue
       dotenvsMissing     = getRequired (missingDotenvs envsWithType envsTypeAndValue)
       schemeEnvsMissing  = missingSchemeEnvs envvars envsTypeAndValue
    in do
-     when ((not . null) dotenvsMissing)
+     unless (null dotenvsMissing)
        (error $ "The following envs: "
                   ++ showMissingDotenvs dotenvsMissing
                   ++ " must be in the dotenvs")
-     when ((not . null) schemeEnvsMissing)
+     unless (null schemeEnvsMissing)
        (error $ "The following envs: "
                   ++ showMissingSchemeEnvs schemeEnvsMissing
                   ++ " must be in your scheme.yml")

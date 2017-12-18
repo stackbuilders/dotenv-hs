@@ -32,7 +32,7 @@ parseEnvAs
 parseEnvAs envVal envTypeNeeded =
   parse dispatch "" envVal
     where
-      errorMsg = "Couldn't parse " ++ envVal ++ " as " ++ show envTypeNeeded
+      errorMsg = "Couldn't parse " ++ envVal ++ " as " ++ showType envTypeNeeded
       evalParse parser = parser *> eof *> pure () <|> fail errorMsg
       dispatch :: Parsec Void String ()
       dispatch =
@@ -40,3 +40,8 @@ parseEnvAs envVal envTypeNeeded =
           EnvInteger -> evalParse (many digitChar)
           EnvBool    -> evalParse (string "true" <|> string "false")
           EnvText    -> pure ()
+
+showType :: EnvType -> String
+showType EnvInteger = "integer"
+showType EnvBool = "boolean"
+showType _ = "text"

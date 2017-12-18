@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP             #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Configuration.Dotenv.Scheme.Helpers
@@ -13,6 +14,10 @@ module Configuration.Dotenv.Scheme.Helpers
   )
   where
 
+#if !MIN_VERSION_base(4,8,0)
+import Data.Functor ((<$>))
+import Control.Applicative (pure, (<*>))
+#endif
 import Data.List
 
 import Configuration.Dotenv.Scheme.Types
@@ -72,7 +77,7 @@ getRequired :: [(Env,EnvType)] -> [(Env,EnvType)]
 getRequired = filter (required . fst)
 
 sepWithCommas :: [String] -> String
-sepWithCommas = concat . intersperse ", "
+sepWithCommas = intercalate ", "
 
 showMissingDotenvs :: [(Env, EnvType)] -> String
 showMissingDotenvs = sepWithCommas . map (envName . fst)

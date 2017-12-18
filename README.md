@@ -125,7 +125,8 @@ like `PORT` must be any integer. Currently, we are supporting the following type
 - `integer` - Accepts values of possitive integers
 - `text` - Any text
 
-You must set **required** if the env var is going to be type checked or not.
+**require** specifies if the env var is obligatory or not. In case you set it to true
+but do not provide it, you wil get an exception.
 
 **NOTE:** All the envs defined in the .env files **must be defined** in the .scheme.yml file.
 
