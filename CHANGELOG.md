@@ -1,4 +1,9 @@
 ## MASTER
+## Dotenv 0.5.2.1
+
+* Add `loadSafeFile` to typecheck the envs.
+* Add `-s` flag to the `dotenv` CLI tool to enable safe mode.
+
 ## Dotenv 0.5.1.1
 
 * Allow `.env` empty files

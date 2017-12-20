@@ -47,7 +47,7 @@ load ::
   -> m ()
 load override = mapM_ (applySetting override)
 
--- | @loadFile@ parses the /.scheme.yml/ file and will perform the type checking
+-- | @loadSafeFile@ parses the /.scheme.yml/ file and will perform the type checking
 -- of the environment variables in the /.env/ file.
 loadSafeFile
   :: MonadIO m
