@@ -1,16 +1,14 @@
-- type: bool
-  envs:
-    - name: DOTENV
-      required: true
-    - name: OTHERENV
-      required: false
-- type: integer
-  envs:
-    - name: PORT
-      required: true
-    - name: TOKEN
-      required: false
-- type: text
-  envs:
-    - name: URL
-      required: true
+- name: DOTENV
+  type: bool
+  required: true
+- name: OTHERENV
+  type: bool
+  required: false
+- name: PORT
+  type: integer
+  required: true
+- name: TOKEN
+  type: integer
+- name: URL
+  type: text
+  required: true

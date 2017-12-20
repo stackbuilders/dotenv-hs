@@ -23,18 +23,12 @@ specInstance = describe "parse a config env file" $
   it "parses the env config values from a file" $
     let expected :: Config
         expected =
-          Config [
-            EnvConf EnvBool
-              [ Env "DOTENV" True
-              , Env "OTHERENV" False
-              ]
-            , EnvConf EnvInteger
-              [ Env "PORT" True
-              , Env "TOKEN" False
-              ]
-            , EnvConf EnvText
-              [ Env "URL" True
-              ]
+          Config
+            [ Env "DOTENV" EnvBool True
+            , Env "OTHERENV" EnvBool False
+            , Env "PORT" EnvInteger True
+            , Env "TOKEN" EnvInteger False
+            , Env "URL" EnvText True
             ]
      in do
        actual <- decodeFileEither "spec/fixtures/.scheme.yml"

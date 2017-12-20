@@ -26,12 +26,11 @@ checkConfig
   :: [(String, String)]
   -> Config
   -> IO ()
-checkConfig envvars (Config envConfs) =
+checkConfig envvars (Config envsWithType) =
   let prettyParsedErrors = unlines . fmap parseErrorTextPretty
-      envsWithType       = genEnvsWithType envConfs
       envsTypeAndValue   = joinEnvs envsWithType envvars
       valuesAndTypes     = matchValueAndType envsTypeAndValue
-      dotenvsMissing     = getRequired (missingDotenvs envsWithType envsTypeAndValue)
+      dotenvsMissing     = filter required (missingDotenvs envsWithType envsTypeAndValue)
       schemeEnvsMissing  = missingSchemeEnvs envvars envsTypeAndValue
    in do
      unless (null dotenvsMissing)
