@@ -128,7 +128,8 @@ like `PORT` must be any integer. Currently, we are supporting the following type
 **require** specifies if the env var is obligatory or not. In case you set it to true
 but do not provide it, you wil get an exception.
 
-**NOTE:** All the envs defined in the .env files **must be defined** in the .scheme.yml file.
+**NOTE:** All the variables which are **required** in the `scheme.yml` must be defined
+in dotenvs.
 
 ## Configuration
 
