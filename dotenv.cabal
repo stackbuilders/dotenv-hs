@@ -48,6 +48,7 @@ data-dir: spec/fixtures/
 data-files:
   .dotenv
   .dotenv.example
+  .scheme.yml
 
 flag dev
   description:        Turn on development settings.

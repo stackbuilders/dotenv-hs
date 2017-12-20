@@ -1,5 +1,5 @@
 ## MASTER
-## Dotenv 0.5.2.1
+## Dotenv 0.5.2.0
 
 * Add `loadSafeFile` to typecheck the envs.
 * Add `-s` flag to the `dotenv` CLI tool to enable safe mode.
