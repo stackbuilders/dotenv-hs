@@ -36,7 +36,7 @@ settings into the environment:
 
 ```haskell
 import qualified Configuration.Dotenv as Dotenv
-Dotenv.loadFile False "/path/to/your/file"
+Dotenv.loadFile defaultConfig
 ```
 
 After calling `Dotenv.load`, you are able to read the values set in your
@@ -67,7 +67,7 @@ ${your_env_var}. For instance:
 ```
 DATABASE=postgres://${USER}@localhost/database
 ```
- 
+
 Running it on the CLI:
 
 ```
@@ -83,7 +83,7 @@ sintax $(your_command). For instance:
 ```
 DATABASE=postgres://$(whoami)@localhost/database
 ```
- 
+
 Running it on the CLI:
 
 ```
@@ -91,12 +91,64 @@ $ dotenv "echo $DATABASE"
 postgres://myusername@localhost/database
 ```
 
+### Type checking envs
+Env variables are simple strings. However, they can represent other types like
+integers, booleans, IP addresses, emails, URIs, and so on. We provide an interface
+that performs type checking after loading the envs and before running your application.
+If the type-check succeeded the application is executed, otherwise you will get an
+error with the types that mismatch.
+
+In order to use this functionality you can use the `loadSafeFile` which takes the same
+configuration value as the `loadFile` function. Also, you need to have a `.scheme.yml`
+in your current directory. This file must have the following structure:
+
+```yaml
+- type: bool
+  envs:
+    - name: DOTENV
+      required: true
+    - name: OTHERENV
+      required: false
+- type: integer
+  envs:
+    - name: PORT
+      required: true
+    - name: TOKEN
+      required: true
+```
+
+It is a list of type and envs. So, in this example, `DOTENV` must have a value
+of `true` or `false` otherwise it won't be parsed as a boolean value. And envs
+like `PORT` must be any integer. Currently, we are supporting the following types:
+
+- `bool` - Accepts values `false` or `true`
+- `integer` - Accepts values of possitive integers
+- `text` - Any text
+
+**require** specifies if the env var is obligatory or not. In case you set it to true
+but do not provide it, you wil get an exception.
+
+**NOTE:** All the variables which are **required** in the `scheme.yml` must be defined
+in dotenvs.
+
 ## Configuration
 
-The first argument to `loadFile` specifies whether you want to
-override system settings. `False` means Dotenv will respect
+The first argument to `loadFile` specifies the configuration. You cans use
+`defaultConfig` which parses the `.env` file in your current directory and
+doesn't override your envs. You can also define your own configuration with
+the `Config` type.
+
+`False` in `configOverride` means Dotenv will respect
 already-defined variables, and `True` means Dotenv will overwrite
 already-defined variables.
+
+In the `configPath` you can write a list of all the dotenv files where are
+envs defined (e.g `[".env", ".tokens", ".public_keys"]`).
+
+In the `configExamplePath` you can write a list of all the dotenv example files
+where you can specify which envs **must be defined** until running a program
+(e.g `[".env.example", ".tokens.example", ".public_keys.example"]`). If you don't
+need this functionality you can set `configExamplePath` to an empty list.
 
 ## Advanced Dotenv File Syntax
 
@@ -170,6 +222,28 @@ Hint: The `env` program in most Unix-like environments prints out the
 current environment settings. By invoking the program `env` in place
 of `myprogram` above you can see what the environment will look like
 after evaluating multiple Dotenv files.
+
+Adding the `-s` flag to dotenv will enable the safe mode to type check the env
+variables. For instance:
+
+```shell
+$ cat .env
+PORT=123a
+$ cat .scheme.yml
+- type: integer
+  envs:
+    - name: PORT
+      required: true
+```
+
+running `dotenv` will throw:
+
+```shell
+$ dotenv -s "echo $PORT"
+dotenv: 1:4:
+unexpected 'a'
+expecting digit or end of input
+```
 
 ## Author
 

@@ -11,10 +11,11 @@ import Data.Monoid ((<>))
 import Options.Applicative
 import Paths_dotenv (version)
 
-import Control.Monad (void)
+import Control.Monad (when)
 
 import Configuration.Dotenv (loadFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
+import Configuration.Dotenv.Scheme (readScheme, checkConfig)
 
 import System.Process (system)
 import System.Exit (exitWith)
@@ -25,12 +26,13 @@ data Options = Options
   , override           :: Bool
   , program            :: String
   , args               :: [String]
+  , safeModeEnabled    :: Bool
   } deriving (Show)
 
 main :: IO ()
 main = do
   Options{..} <- execParser opts
-  void $ loadFile Config
+  envs <- loadFile Config
     { configExamplePath = dotenvExampleFiles
     , configOverride = override
     , configPath =
@@ -38,6 +40,7 @@ main = do
           then configPath defaultConfig
           else dotenvFiles
     }
+  when safeModeEnabled (readScheme >>= checkConfig envs)
   system (program ++ concatMap (" " ++) args) >>= exitWith
     where
       opts = info (helper <*> versionOption <*> config)
@@ -70,3 +73,6 @@ config = Options
 
      <*> many (argument str (metavar "ARG"))
 
+     <*> switch ( long "safe"
+                  <> short 's'
+                  <> help "Reads the .scheme.yml file from the current directory to enable type checking of envs" )
