@@ -7,7 +7,6 @@ module Configuration.Dotenv.Scheme.Types where
 import Control.Applicative ((<*>), pure)
 import Data.Functor ((<$>))
 #endif
-import Data.Maybe (fromMaybe)
 
 import Data.Yaml
 
@@ -35,5 +34,5 @@ instance FromJSON Env where
     Env
       <$> m .: "name"
       <*> m .: "type"
-      <*> (fromMaybe False <$> m .:? "required")
+      <*> m .:? "required" .!= False
   parseJSON x = fail ("Not an object: " ++ show x)
