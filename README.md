@@ -99,22 +99,21 @@ If the type-check succeeded the application is executed, otherwise you will get 
 error with the types that mismatch.
 
 In order to use this functionality you can use the `loadSafeFile` which takes the same
-configuration value as the `loadFile` function. Also, you need to have a `.scheme.yml`
+configuration value as the `loadFile` function. Also, you need to have a `.schema.yml`
 in your current directory. This file must have the following structure:
 
 ```yaml
-- type: bool
-  envs:
-    - name: DOTENV
-      required: true
-    - name: OTHERENV
-      required: false
-- type: integer
-  envs:
-    - name: PORT
-      required: true
-    - name: TOKEN
-      required: true
+- name: DOTENV
+  type: bool
+  required: true
+- name: OTHERENV
+  type: bool
+- name: PORT
+  type: integer
+  required: true
+- name: TOKEN
+  type: text
+  required: false
 ```
 
 It is a list of type and envs. So, in this example, `DOTENV` must have a value
@@ -126,10 +125,11 @@ like `PORT` must be any integer. Currently, we are supporting the following type
 - `text` - Any text
 
 **require** specifies if the env var is obligatory or not. In case you set it to true
-but do not provide it, you wil get an exception.
+but do not provide it, you wil get an exception. When **required** is omited, the default
+value is `false`.
 
-**NOTE:** All the variables which are **required** in the `scheme.yml` must be defined
-in dotenvs.
+**NOTE:** All the variables which are **required** in the `schema.yml` must be defined
+in the dotenvs.
 
 ## Configuration
 
@@ -223,27 +223,28 @@ current environment settings. By invoking the program `env` in place
 of `myprogram` above you can see what the environment will look like
 after evaluating multiple Dotenv files.
 
-Adding the `-s` flag to dotenv will enable the safe mode to type check the env
-variables. For instance:
+The `--schema FILE` will get the envs configuration from the `FILE`. For instance:
 
 ```shell
 $ cat .env
 PORT=123a
-$ cat .scheme.yml
-- type: integer
-  envs:
-    - name: PORT
-      required: true
+$ cat .schema.yml
+- name: PORT
+  required: true
+  type: integer
 ```
 
 running `dotenv` will throw:
 
 ```shell
-$ dotenv -s "echo $PORT"
+$ dotenv -s .schema.yml "echo $PORT"
 dotenv: 1:4:
 unexpected 'a'
 expecting digit or end of input
 ```
+
+**NOTE:** The flag can be omited when the `.schema.yml` is in the current working
+directory. To disable type checking add the flag `--no-schema`.
 
 ## Author
 
