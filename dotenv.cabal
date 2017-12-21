@@ -129,6 +129,7 @@ test-suite dotenv-test
   build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4
                      , dotenv
+                     , directory
                      , megaparsec >= 6.0 && < 7.0
                      , hspec
                      , process >= 1.4.3.0
