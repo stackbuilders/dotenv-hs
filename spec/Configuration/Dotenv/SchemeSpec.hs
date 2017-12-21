@@ -13,7 +13,6 @@ spec =
         context "when the required envs are defined" $
           it "should succeed the type check" $
             let schemeEnvs =
-                  Config
                     [ Env "FOO" EnvBool True
                     , Env "BAR" EnvInteger False
                     ]
@@ -23,7 +22,6 @@ spec =
         context "when the not required envs are missing" $
           it "should succeed the type check" $
             let schemeEnvs =
-                  Config
                     [ Env "FOO" EnvBool True
                     , Env "BAR" EnvInteger False
                     ]
@@ -33,7 +31,6 @@ spec =
         context "when the required envs are missing" $
           it "should fail before the type check" $
             let schemeEnvs =
-                  Config
                     [ Env "FOO" EnvBool True
                     , Env "BAR" EnvInteger False
                     ]
@@ -44,7 +41,6 @@ spec =
       context "when there are missing dotenvs in the scheme" $
         it "should fail before type checking" $
           let schemeEnvs =
-                Config
                   [ Env "FOO" EnvBool True
                   , Env "BAR" EnvInteger False
                   ]
@@ -55,7 +51,6 @@ spec =
       context "when there are missing scheme envs in the dotenv vars" $
         it "should fail before type checking" $
           let schemeEnvs =
-                Config
                   [ Env "FOO" EnvBool True
                   , Env "BAZ" EnvText True
                   , Env "BAR" EnvInteger False

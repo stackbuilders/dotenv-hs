@@ -1,32 +1,47 @@
 module Configuration.Dotenv.Scheme
-  ( readScheme
-  , checkConfig
+  ( checkConfig
+  , loadSafeFile
+  , runSchemaChecker
   )
   where
 
 import Control.Monad
+import Control.Monad.IO.Class (MonadIO(..))
 
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
+import Text.Megaparsec
+import System.Directory (doesFileExist)
 
+import Configuration.Dotenv (loadFile)
+import Configuration.Dotenv.Types (Config(..))
 import Configuration.Dotenv.Scheme.Helpers
 import Configuration.Dotenv.Scheme.Parser
 import Configuration.Dotenv.Scheme.Types
 
-import Text.Megaparsec
+-- | @loadSafeFile@ parses the /.scheme.yml/ file and will perform the type checking
+-- of the environment variables in the /.env/ file.
+loadSafeFile
+  :: MonadIO m
+  => FilePath
+  -> Config
+  -> m [(String, String)]
+loadSafeFile schemaFile config = do
+  envs <- loadFile config
+  liftIO (readScheme schemaFile >>= checkConfig envs)
+  return envs
 
-readScheme :: IO Config
-readScheme = do
+readScheme :: FilePath -> IO [Env]
+readScheme schemeFile = do
   eitherEnvConf <- decodeFileEither schemeFile
   case eitherEnvConf of
-    Right envConf -> return envConf
+    Right envConfs -> return envConfs
     Left errorYaml -> error (prettyPrintParseException errorYaml)
-  where schemeFile = ".scheme.yml"
 
 checkConfig
   :: [(String, String)]
-  -> Config
+  -> [Env]
   -> IO ()
-checkConfig envvars (Config envsWithType) =
+checkConfig envvars envsWithType =
   let prettyParsedErrors = unlines . fmap parseErrorTextPretty
       envsTypeAndValue   = joinEnvs envsWithType envvars
       valuesAndTypes     = matchValueAndType envsTypeAndValue
@@ -44,3 +59,12 @@ checkConfig envvars (Config envsWithType) =
      case parseEnvsWithScheme valuesAndTypes of
         Left errors -> error (prettyParsedErrors errors)
         _ -> return ()
+
+runSchemaChecker
+  :: FilePath
+  -> Config
+  -> IO ()
+runSchemaChecker schemeFile config = do
+  exists <- doesFileExist schemeFile
+  when exists
+     (void $ loadSafeFile schemeFile config)

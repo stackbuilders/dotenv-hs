@@ -23,11 +23,6 @@ instance FromJSON EnvType where
   parseJSON (String x) = fail ("Don't know how to parse that kind of type: " ++ show x)
   parseJSON x = fail ("Not an object: " ++ show x)
 
-newtype Config = Config [Env] deriving (Show, Eq)
-
-instance FromJSON Config where
-  parseJSON = fmap Config . parseJSONList
-
 data Env =
   Env
     { envName  :: String

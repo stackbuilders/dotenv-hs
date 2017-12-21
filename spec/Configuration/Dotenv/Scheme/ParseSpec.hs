@@ -21,9 +21,8 @@ spec = do
 specInstance :: Spec
 specInstance = describe "parse a config env file" $
   it "parses the env config values from a file" $
-    let expected :: Config
+    let expected :: [Env]
         expected =
-          Config
             [ Env "DOTENV" EnvBool True
             , Env "OTHERENV" EnvBool False
             , Env "PORT" EnvInteger True

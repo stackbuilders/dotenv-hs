@@ -11,11 +11,11 @@ import Data.Monoid ((<>))
 import Options.Applicative
 import Paths_dotenv (version)
 
-import Control.Monad (when)
+import Control.Monad (void)
 
 import Configuration.Dotenv (loadFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
-import Configuration.Dotenv.Scheme (readScheme, checkConfig)
+import Configuration.Dotenv.Scheme ( runSchemaChecker )
 
 import System.Process (system)
 import System.Exit (exitWith)
@@ -26,31 +26,34 @@ data Options = Options
   , override           :: Bool
   , program            :: String
   , args               :: [String]
-  , safeModeEnabled    :: Bool
+  , schemaFile         :: FilePath
   } deriving (Show)
 
 main :: IO ()
 main = do
   Options{..} <- execParser opts
-  envs <- loadFile Config
-    { configExamplePath = dotenvExampleFiles
-    , configOverride = override
-    , configPath =
-        if null dotenvFiles
-          then configPath defaultConfig
-          else dotenvFiles
-    }
-  when safeModeEnabled (readScheme >>= checkConfig envs)
-  system (program ++ concatMap (" " ++) args) >>= exitWith
-    where
-      opts = info (helper <*> versionOption <*> config)
-        ( fullDesc
-       <> progDesc "Runs PROGRAM after loading options from FILE"
-       <> header "dotenv - loads options from dotenv files" )
-      versionOption =
-        infoOption
-          (showVersion version)
-          (long "version" <> short 'v' <> help "Show version of the program")
+  let configDotenv =
+        Config
+          { configExamplePath = dotenvExampleFiles
+          , configOverride = override
+          , configPath =
+              if null dotenvFiles
+                then configPath defaultConfig
+                else dotenvFiles
+          }
+   in do
+     void $ loadFile configDotenv
+     runSchemaChecker schemaFile configDotenv
+     system (program ++ concatMap (" " ++) args) >>= exitWith
+       where
+         opts = info (helper <*> versionOption <*> config)
+           ( fullDesc
+          <> progDesc "Runs PROGRAM after loading options from FILE"
+          <> header "dotenv - loads options from dotenv files" )
+         versionOption =
+           infoOption
+             (showVersion version)
+             (long "version" <> short 'v' <> help "Show version of the program")
 
 config :: Parser Options
 config = Options
@@ -73,6 +76,7 @@ config = Options
 
      <*> many (argument str (metavar "ARG"))
 
-     <*> switch ( long "safe"
-                  <> short 's'
-                  <> help "Reads the .scheme.yml file from the current directory to enable type checking of envs" )
+     <*> strOption ( long "schema"
+                      <> short 's'
+                      <> help "Set the file path for the schema.yml file"
+                      <> value ".schema.yml" )
