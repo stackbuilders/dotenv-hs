@@ -14,7 +14,7 @@ module Configuration.Dotenv.Scheme.Helpers
 
 #if !MIN_VERSION_base(4,8,0)
 import Data.Functor ((<$>))
-import Control.Applicative (pure, (<*>))
+import Control.Applicative ((<*>))
 #endif
 import Data.List
 

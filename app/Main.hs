@@ -11,7 +11,7 @@ import Data.Monoid ((<>))
 import Options.Applicative
 import Paths_dotenv (version)
 
-import Control.Monad (void)
+import Control.Monad (void, unless)
 
 import Configuration.Dotenv (loadFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
@@ -27,6 +27,7 @@ data Options = Options
   , program            :: String
   , args               :: [String]
   , schemaFile         :: FilePath
+  , disableSchema      :: Bool
   } deriving (Show)
 
 main :: IO ()
@@ -43,7 +44,8 @@ main = do
           }
    in do
      void $ loadFile configDotenv
-     runSchemaChecker schemaFile configDotenv
+     unless disableSchema
+       (runSchemaChecker schemaFile configDotenv)
      system (program ++ concatMap (" " ++) args) >>= exitWith
        where
          opts = info (helper <*> versionOption <*> config)
@@ -80,3 +82,5 @@ config = Options
                       <> short 's'
                       <> help "Set the file path for the schema.yml file"
                       <> value ".schema.yml" )
+
+     <*> switch ( long "no-schema" <> help "Omit type checking" )
