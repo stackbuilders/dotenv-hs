@@ -2,7 +2,10 @@
 ## Dotenv 0.5.2.0
 
 * Add `loadSafeFile` to typecheck the envs.
-* Add `-s` flag to the `dotenv` CLI tool to enable safe mode.
+* Add `(--schema|-s) FILE` flag to the `dotenv` CLI tool to enable safe mode.
+* Add `(--no-schema)` flag to the `dotenv` CLI tool to disable safe mode.
+* Turn safe mode on automatically when the `.schema.yml` file is present.
+* Make `required` optional in the `.schema.yml`.
 
 ## Dotenv 0.5.1.1
 
