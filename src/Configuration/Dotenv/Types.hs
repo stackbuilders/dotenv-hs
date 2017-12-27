@@ -1,4 +1,4 @@
-{- |
+-- |
 -- Module      :  Configuration.Dotenv.Types
 -- Copyright   :  © 2015–2017 Stack Builders Inc.
 -- License     :  MIT
@@ -8,7 +8,6 @@
 -- Portability :  portable
 --
 -- Provides the types with extra options for loading a dotenv file.
--}
 
 module Configuration.Dotenv.Types
   ( Config(..)
