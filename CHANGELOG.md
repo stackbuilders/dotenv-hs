@@ -1,4 +1,8 @@
 ## MASTER
+## Dotenv 0.5.2.1
+
+* Update documentation for Configuration.Dotenv.Types
+
 ## Dotenv 0.5.2.0
 
 * Add `loadSafeFile` to typecheck the envs.
