@@ -86,7 +86,7 @@ spec = do
       context "when the needed env vars are not missing" $
         it "should succeed when loading all of the needed env vars" $ do
           setEnv "ANOTHER_ENV" "hello"
-          me <- getEnv "USER"
+          me <- getEnv "ME"
           home <- getEnv "HOME"
           loadFile config `shouldReturn` [("DOTENV","true"),("UNICODE_TEST","Manab\237"),("ENVIRONMENT", home),("PREVIOUS","true"),("ME", me),("ANOTHER_ENV","")]
           lookupEnv "DOTENV" `shouldReturn` Just "true"
