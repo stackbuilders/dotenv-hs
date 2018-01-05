@@ -54,7 +54,7 @@ spec = do
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
 
-  describe "loadFile" $ after_ (mapM_ unsetEnv ["DOTENV" , "ANOTHER_ENV"]) $ do
+  describe "loadFile" $ after_ (mapM_ unsetEnv dotenvFixtures) $ do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
@@ -120,7 +120,7 @@ spec = do
       liftM (!! 4) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("ME", me)
 
-  describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
+  describe "onMissingFile" $ after_ (mapM_ unsetEnv dotenvFixtures) $ do
     context "when target file is present" $
       it "loading works as usual" $ do
         void $ onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True) (return [])
@@ -128,5 +128,14 @@ spec = do
 
     context "when target file is missing" $
       it "executes supplied handler instead" $
-        onMissingFile (True <$ (loadFile $ Config ["spec/fixtures/foo"] [] True)) (return False)
+        onMissingFile (True <$ loadFile (Config ["spec/fixtures/foo"] [] True)) (return False)
           `shouldReturn` False
+
+dotenvFixtures :: [String]
+dotenvFixtures =
+  [ "DOTENV"
+  , "ANOTHER_ENV"
+  , "UNICODE_TEST"
+  , "PREVIOUS"
+  , "ME"
+  ]
