@@ -8,7 +8,7 @@ import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
 import Test.Hspec
 
 import System.Process (readCreateProcess, shell)
-import System.Environment (lookupEnv, getEnv)
+import System.Environment (lookupEnv)
 import Control.Monad (liftM, void)
 import Data.Maybe (fromMaybe)
 #if !MIN_VERSION_base(4,8,0)
@@ -20,9 +20,9 @@ import Control.Applicative ((<$))
 #endif
 
 #if MIN_VERSION_base(4,7,0)
-import System.Environment (setEnv, unsetEnv)
+import System.Environment (getEnvironment, setEnv, unsetEnv)
 #else
-import System.Environment.Compat (setEnv, unsetEnv)
+import System.Environment.Compat (getEnvironment, setEnv, unsetEnv)
 #endif
 
 {-# ANN module "HLint: ignore Reduce duplication" #-}
@@ -32,7 +32,7 @@ main = hspec spec
 
 spec :: Spec
 spec = do
-  describe "load" $ after_ (unsetEnv "foo") $ do
+  describe "load" $ after_ clearEnvs $ do
     it "loads the given list of configuration options to the environment" $ do
       lookupEnv "foo" `shouldReturn` Nothing
 
@@ -54,7 +54,7 @@ spec = do
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
 
-  describe "loadFile" $ after_ (mapM_ unsetEnv ["DOTENV" , "ANOTHER_ENV"]) $ do
+  describe "loadFile" $ before_ setupEnv $ after_ clearEnvs $  do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
@@ -80,20 +80,27 @@ spec = do
       let config = Config ["spec/fixtures/.dotenv"] ["spec/fixtures/.dotenv.example"] False
 
       context "when the needed env vars are missing" $
-        it "should fail with an error call" $
+        it "should fail with an error call" $ do
+          unsetEnv "ANOTHER_ENV"
           void $ loadFile config `shouldThrow` anyErrorCall
 
       context "when the needed env vars are not missing" $
         it "should succeed when loading all of the needed env vars" $ do
-          setEnv "ANOTHER_ENV" "hello"
-          me <- getEnv "USER"
-          home <- getEnv "HOME"
-          loadFile config `shouldReturn` [("DOTENV","true"),("UNICODE_TEST","Manab\237"),("ENVIRONMENT", home),("PREVIOUS","true"),("ME", me),("ANOTHER_ENV","")]
+          -- Load extra information
+          me <- init <$> readCreateProcess (shell "whoami") ""
+          home <- fromMaybe "" <$> lookupEnv "HOME"
+
+          -- Load envs
+          void $ loadFile config
+
+          -- Check existing envs
+          lookupEnv "ENVIRONMENT" `shouldReturn` Just home
+          lookupEnv "ME" `shouldReturn` Just me
           lookupEnv "DOTENV" `shouldReturn` Just "true"
           lookupEnv "UNICODE_TEST" `shouldReturn` Just "Manabí"
           lookupEnv "ANOTHER_ENV" `shouldReturn` Just "hello"
 
-  describe "parseFile" $ after_ (unsetEnv "DOTENV") $ do
+  describe "parseFile" $ after_ clearEnvs $ do
     it "returns variables from a file without changing the environment" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
@@ -120,7 +127,7 @@ spec = do
       liftM (!! 4) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("ME", me)
 
-  describe "onMissingFile" $ after_ (unsetEnv "DOTENV") $ do
+  describe "onMissingFile" $ after_ clearEnvs $ do
     context "when target file is present" $
       it "loading works as usual" $ do
         void $ onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True) (return [])
@@ -128,5 +135,14 @@ spec = do
 
     context "when target file is missing" $
       it "executes supplied handler instead" $
-        onMissingFile (True <$ (loadFile $ Config ["spec/fixtures/foo"] [] True)) (return False)
+        onMissingFile (True <$ loadFile (Config ["spec/fixtures/foo"] [] True)) (return False)
           `shouldReturn` False
+
+clearEnvs :: IO ()
+clearEnvs =
+  fmap (fmap fst) getEnvironment >>=  mapM_ unsetEnv
+
+setupEnv :: IO ()
+setupEnv = do
+  setEnv "ANOTHER_ENV" "hello"
+  setEnv "HOME" "/home/me"
