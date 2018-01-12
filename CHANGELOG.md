@@ -1,6 +1,10 @@
 ## MASTER
 ## Dotenv 0.5.2.1
 
+* Fix tests suite Configuration.DotenvSpec
+
+## Dotenv 0.5.2.1
+
 * Update documentation for Configuration.Dotenv.Types
 
 ## Dotenv 0.5.2.0
