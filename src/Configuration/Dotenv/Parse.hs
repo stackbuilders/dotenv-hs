@@ -18,12 +18,16 @@
 module Configuration.Dotenv.Parse (configParser) where
 
 import           Configuration.Dotenv.ParsedVariable
-#if !MIN_VERSION_megaparsec(6,4,0)
-import           Control.Applicative
+#if MIN_VERSION_base(4,8,0)
+import           Control.Applicative                 (empty, many, some, (<|>))
+#else
+import           Control.Applicative                 (empty, many, some, (*>),
+                                                      (<$>), (<*), (<*>), (<|>))
 #endif
-import           Control.Monad
+import           Control.Monad                       (void)
 import           Data.Void                           (Void)
-import           Text.Megaparsec
+import           Text.Megaparsec                     (Parsec, between, eof,
+                                                      sepEndBy, (<?>))
 import           Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer          as L
 

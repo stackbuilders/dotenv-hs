@@ -1,5 +1,5 @@
 ## MASTER
-## Dotenv 0.5.2.2
+## Dotenv 0.5.2.3
 * Support `megaparsec` >= 6.4.0
 
 ## Dotenv 0.5.2.1
