@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.5.2.2
+* Support `megaparsec` >= 6.4.0
+
 ## Dotenv 0.5.2.1
 
 * Update documentation for Configuration.Dotenv.Types
