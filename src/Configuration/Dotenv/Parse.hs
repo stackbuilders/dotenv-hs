@@ -18,7 +18,9 @@
 module Configuration.Dotenv.Parse (configParser) where
 
 import           Configuration.Dotenv.ParsedVariable
+#if !MIN_VERSION_megaparsec(6,4,0)
 import           Control.Applicative
+#endif
 import           Control.Monad
 import           Data.Void                           (Void)
 import           Text.Megaparsec
