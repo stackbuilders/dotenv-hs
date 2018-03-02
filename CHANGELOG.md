@@ -1,4 +1,8 @@
 ## MASTER
+## Dotenv 0.5.2.4
+* Add error message when there is more than one definition in the Scheme for the
+same env
+
 ## Dotenv 0.5.2.3
 * Support `megaparsec` >= 6.4.0
 
