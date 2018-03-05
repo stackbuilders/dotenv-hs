@@ -4,7 +4,7 @@
 same env
 
 ## Dotenv 0.5.2.3
-* Update bounds `exceptions` == 0.9.0
+* Update bounds `exceptions` == 0.9.*
 
 ## Dotenv 0.5.2.3
 * Support `megaparsec` >= 6.4.0
