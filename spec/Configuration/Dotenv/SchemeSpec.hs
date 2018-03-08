@@ -2,11 +2,31 @@ module Configuration.Dotenv.SchemeSpec (spec) where
 
 import Configuration.Dotenv.Scheme
 import Configuration.Dotenv.Scheme.Types
+import Control.Exception (evaluate)
 
 import Test.Hspec
 
 spec :: Spec
-spec =
+spec = do
+  describe "checkScheme" $ do
+    context "when the env configs are unique" $
+      it "should succeed the check" $
+        let schemeEnvs =
+              [ Env "FOO" EnvBool True
+              , Env "BAR" EnvInteger True
+              ]
+         in checkScheme schemeEnvs `shouldBe` schemeEnvs
+
+    context "when there are duplicated env configs" $
+      it "should fail the check" $
+        let schemeEnvs =
+              [ Env "FOO" EnvBool True
+              , Env "BAR" EnvInteger True
+              , Env "FOO" EnvInteger True
+              ]
+            msg = "Duplicated env variable configuration in schema: FOO"
+         in evaluate (checkScheme schemeEnvs) `shouldThrow` errorCall msg
+
   describe "checkConfig" $
     context "when the envs have the correct type" $ do
       context "when the envs in the dotenvs are defined in the scheme" $ do

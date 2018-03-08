@@ -13,7 +13,8 @@ import Data.Yaml
 data EnvType =
   EnvInteger
     | EnvBool
-    | EnvText deriving (Show, Eq)
+    | EnvText
+    deriving (Show, Eq, Ord)
 
 instance FromJSON EnvType where
   parseJSON (String "integer") = pure EnvInteger
@@ -27,7 +28,7 @@ data Env =
     { envName  :: String
     , envType  :: EnvType
     , required :: Bool
-    } deriving (Show, Eq)
+    } deriving (Show, Eq, Ord)
 
 instance FromJSON Env where
   parseJSON (Object m) =

@@ -1,5 +1,6 @@
 module Configuration.Dotenv.Scheme
   ( checkConfig
+  , checkScheme
   , loadSafeFile
   , runSchemaChecker
   )
@@ -8,6 +9,7 @@ module Configuration.Dotenv.Scheme
 import Control.Monad
 import Control.Monad.IO.Class (MonadIO(..))
 
+import Data.List
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
 import Text.Megaparsec
 import System.Directory (doesFileExist)
@@ -27,7 +29,7 @@ loadSafeFile
   -> m [(String, String)]
 loadSafeFile schemaFile config = do
   envs <- loadFile config
-  liftIO (readScheme schemaFile >>= checkConfig envs)
+  liftIO (readScheme schemaFile >>= checkConfig envs . checkScheme)
   return envs
 
 readScheme :: FilePath -> IO [Env]
@@ -36,6 +38,19 @@ readScheme schemeFile = do
   case eitherEnvConf of
     Right envConfs -> return envConfs
     Left errorYaml -> error (prettyPrintParseException errorYaml)
+
+checkScheme :: [Env] -> [Env]
+checkScheme envConfs =
+  case duplicatedConfs of
+    []   -> envConfs
+    dups -> error (duplicatedConfErrorMsg $ uniqueConfs dups)
+  where
+    duplicatedConfs  = deleteFirstsBy confEquals envConfs (uniqueConfs envConfs)
+    uniqueConfs      = nubBy confEquals
+    a `confEquals` b = envName a == envName b
+
+duplicatedConfErrorMsg :: [Env] -> String
+duplicatedConfErrorMsg = ("Duplicated env variable configuration in schema: " ++) . showMissingDotenvs
 
 checkConfig
   :: [(String, String)]

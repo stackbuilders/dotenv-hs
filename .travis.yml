@@ -25,7 +25,7 @@ install:
  - cabal --version
  - echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
  - travis_retry cabal update
- - cabal install --only-dependencies --enable-tests
+ - cabal install --only-dependencies --enable-tests --reorder-goals --max-backjumps=-1
 
 script:
  - cabal configure --enable-tests -v2 -f dev
