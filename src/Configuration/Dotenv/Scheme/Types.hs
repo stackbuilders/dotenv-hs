@@ -8,21 +8,25 @@ import Control.Applicative ((<*>), pure)
 import Data.Functor ((<$>))
 #endif
 
+import Data.Map.Lazy (Map)
+
 import Data.Yaml
 
-data EnvType =
-  EnvInteger
-    | EnvBool
-    | EnvText
+import Data.Text
+
+-- |
+--
+newtype EnvType = EnvType Text
     deriving (Show, Eq, Ord)
 
+-- |
+--
 instance FromJSON EnvType where
-  parseJSON (String "integer") = pure EnvInteger
-  parseJSON (String "bool") = pure EnvBool
-  parseJSON (String "text") = pure EnvText
-  parseJSON (String x) = fail ("Don't know how to parse that kind of type: " ++ show x)
-  parseJSON x = fail ("Not an object: " ++ show x)
+  parseJSON (String value) = pure (EnvType value)
+  parseJSON anyOther = fail ("Not an object: " ++ show anyOther)
 
+-- |
+--
 data Env =
   Env
     { envName  :: String
@@ -30,6 +34,8 @@ data Env =
     , required :: Bool
     } deriving (Show, Eq, Ord)
 
+-- |
+--
 instance FromJSON Env where
   parseJSON (Object m) =
     Env
@@ -37,3 +43,8 @@ instance FromJSON Env where
       <*> m .: "type"
       <*> m .:? "required" .!= False
   parseJSON x = fail ("Not an object: " ++ show x)
+
+-- | Key: Name of the "format"
+--   Value: Function to check if some text has an specific value
+--
+type ValidatorMap = Map Text (Text -> Bool)

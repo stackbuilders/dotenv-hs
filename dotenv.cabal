@@ -90,6 +90,7 @@ library
                        , base-compat >= 0.4
                        , directory
                        , megaparsec >= 6.0 && < 7.0
+                       , containers >= 0.5.7
                        , process >= 1.4.3.0
                        , text
                        , transformers >=0.4 && < 0.6

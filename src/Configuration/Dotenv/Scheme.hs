@@ -24,12 +24,13 @@ import Configuration.Dotenv.Scheme.Types
 -- of the environment variables in the /.env/ file.
 loadSafeFile
   :: MonadIO m
-  => FilePath
+  => ValidatorMap
+  -> FilePath
   -> Config
   -> m [(String, String)]
-loadSafeFile schemaFile config = do
+loadSafeFile mapFormat schemaFile config = do
   envs <- loadFile config
-  liftIO (readScheme schemaFile >>= checkConfig envs . checkScheme)
+  liftIO (readScheme schemaFile >>= checkConfig mapFormat envs . checkScheme)
   return envs
 
 readScheme :: FilePath -> IO [Env]
@@ -53,12 +54,12 @@ duplicatedConfErrorMsg :: [Env] -> String
 duplicatedConfErrorMsg = ("Duplicated env variable configuration in schema: " ++) . showMissingDotenvs
 
 checkConfig
-  :: [(String, String)]
+  :: ValidatorMap
+  -> [(String, String)]
   -> [Env]
   -> IO ()
-checkConfig envvars envsWithType =
-  let prettyParsedErrors = unlines . fmap parseErrorTextPretty
-      envsTypeAndValue   = joinEnvs envsWithType envvars
+checkConfig mapFormat envvars envsWithType =
+  let envsTypeAndValue   = joinEnvs envsWithType envvars
       valuesAndTypes     = matchValueAndType envsTypeAndValue
       dotenvsMissing     = filter required (missingDotenvs envsWithType envsTypeAndValue)
       schemeEnvsMissing  = missingSchemeEnvs envvars envsTypeAndValue
@@ -71,15 +72,16 @@ checkConfig envvars envsWithType =
        (error $ "The following envs: "
                   ++ showMissingSchemeEnvs schemeEnvsMissing
                   ++ " must be in your scheme.yml")
-     case parseEnvsWithScheme valuesAndTypes of
-        Left errors -> error (prettyParsedErrors errors)
-        _ -> return ()
+     case parseEnvsWithScheme mapFormat valuesAndTypes of
+       Left errors -> error (unlines errors)
+       _ -> return ()
 
 runSchemaChecker
-  :: FilePath
+  :: ValidatorMap
+  -> FilePath
   -> Config
   -> IO ()
-runSchemaChecker schemeFile config = do
+runSchemaChecker validatorMap schemeFile config = do
   exists <- doesFileExist schemeFile
   when exists
-     (void $ loadSafeFile schemeFile config)
+     (void $ loadSafeFile validatorMap schemeFile config)
