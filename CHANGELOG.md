@@ -1,4 +1,8 @@
 ## MASTER
+
+## Dotenv 0.5.2.5
+* Update `exceptions` bounds `>= 0.8 && < 0.11`
+
 ## Dotenv 0.5.2.4
 * Add error message when there is more than one definition in the Scheme for the
 same env
