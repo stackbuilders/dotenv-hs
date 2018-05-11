@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.5.2.4
+version:             0.5.2.5
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -93,7 +93,7 @@ library
                        , process >= 1.4.3.0
                        , text
                        , transformers >=0.4 && < 0.6
-                       , exceptions >= 0.8 && < 0.10
+                       , exceptions >= 0.8 && < 0.11
                        , yaml >= 0.8
 
   if !impl(ghc >= 7.10)
@@ -135,7 +135,7 @@ test-suite dotenv-test
                      , process >= 1.4.3.0
                      , text
                      , transformers >=0.4 && < 0.6
-                     , exceptions >= 0.8 && < 0.10
+                     , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 1.0 && < 2.0
                      , yaml >= 0.8
 
