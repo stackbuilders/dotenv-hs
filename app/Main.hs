@@ -13,9 +13,9 @@ import Paths_dotenv (version)
 
 import Control.Monad (void, unless)
 
-import Configuration.Dotenv (loadFile)
+import Configuration.Dotenv (loadFile, loadSafeFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
-import Configuration.Dotenv.Scheme ( runSchemaChecker )
+import Configuration.Dotenv.Scheme.Parser ( defaultValidatorMap )
 
 import System.Process (system)
 import System.Exit (exitWith)
@@ -45,7 +45,7 @@ main = do
    in do
      void $ loadFile configDotenv
      unless disableSchema
-       (runSchemaChecker schemaFile configDotenv)
+       (void $ loadSafeFile defaultValidatorMap schemaFile configDotenv)
      system (program ++ concatMap (" " ++) args) >>= exitWith
        where
          opts = info (helper <*> versionOption <*> config)

@@ -1,37 +1,18 @@
 module Configuration.Dotenv.Scheme
   ( checkConfig
   , checkScheme
-  , loadSafeFile
-  , runSchemaChecker
+  , readScheme
   )
   where
 
 import Control.Monad
-import Control.Monad.IO.Class (MonadIO(..))
 
 import Data.List
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
-import Text.Megaparsec
-import System.Directory (doesFileExist)
 
-import Configuration.Dotenv (loadFile)
-import Configuration.Dotenv.Types (Config(..))
 import Configuration.Dotenv.Scheme.Helpers
 import Configuration.Dotenv.Scheme.Parser
 import Configuration.Dotenv.Scheme.Types
-
--- | @loadSafeFile@ parses the /.scheme.yml/ file and will perform the type checking
--- of the environment variables in the /.env/ file.
-loadSafeFile
-  :: MonadIO m
-  => ValidatorMap
-  -> FilePath
-  -> Config
-  -> m [(String, String)]
-loadSafeFile mapFormat schemaFile config = do
-  envs <- loadFile config
-  liftIO (readScheme schemaFile >>= checkConfig mapFormat envs . checkScheme)
-  return envs
 
 readScheme :: FilePath -> IO [Env]
 readScheme schemeFile = do
@@ -75,13 +56,3 @@ checkConfig mapFormat envvars envsWithType =
      case parseEnvsWithScheme mapFormat valuesAndTypes of
        Left errors -> error (unlines errors)
        _ -> return ()
-
-runSchemaChecker
-  :: ValidatorMap
-  -> FilePath
-  -> Config
-  -> IO ()
-runSchemaChecker validatorMap schemeFile config = do
-  exists <- doesFileExist schemeFile
-  when exists
-     (void $ loadSafeFile validatorMap schemeFile config)
