@@ -90,7 +90,7 @@ library
                        , base-compat >= 0.4
                        , directory
                        , megaparsec >= 6.0 && < 7.0
-                       , containers >= 0.5.7
+                       , containers
                        , process >= 1.4.3.0
                        , text
                        , transformers >=0.4 && < 0.6
@@ -129,7 +129,7 @@ test-suite dotenv-test
 
   build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4
-                     , containers >= 0.5.7
+                     , containers
                      , dotenv
                      , directory
                      , megaparsec >= 6.0 && < 7.0
