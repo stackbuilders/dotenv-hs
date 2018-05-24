@@ -7,3 +7,5 @@ ghc:
   - "8.0"
   - "7.10"
   - "7.8"
+
+install: cabal install --only-dependencies --enable-tests --reorder-goals --max-backjumps=-1
