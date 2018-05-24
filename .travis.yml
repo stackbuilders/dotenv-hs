@@ -8,4 +8,4 @@ ghc:
   - "7.10"
   - "7.8"
 
-before_install: wget https://www.stackage.org/lts/cabal.config -O $TRAVIS_BUILD_DIR/cabal.config
+install: cabal install --only-dependencies --enable-tests --reorder-goals --max-backjumps=-1
