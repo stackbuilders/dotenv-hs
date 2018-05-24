@@ -1,0 +1,5 @@
+DOTENV=true
+OTHERENV=false
+PORT=8000
+URL=http://example.com
+TWO=xD

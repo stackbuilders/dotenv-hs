@@ -12,3 +12,5 @@
 - name: URL
   type: text
   required: true
+- name: TWO
+  type: twoLetters

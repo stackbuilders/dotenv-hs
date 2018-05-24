@@ -1,9 +1,17 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Configuration.DotenvSpec (main, spec) where
 
 import Configuration.Dotenv.Types (Config(..))
-import Configuration.Dotenv (load, loadFile, parseFile, onMissingFile)
+import Configuration.Dotenv
+  ( load
+  , loadFile
+  , loadSafeFile
+  , parseFile
+  , onMissingFile
+  )
+
 
 import Test.Hspec
 
@@ -11,6 +19,8 @@ import System.Process (readCreateProcess, shell)
 import System.Environment (lookupEnv)
 import Control.Monad (liftM, void)
 import Data.Maybe (fromMaybe)
+import qualified Data.Text as T
+import qualified Data.Map.Lazy as M
 #if !MIN_VERSION_base(4,8,0)
 import Data.Functor ((<$>))
 #endif
@@ -24,8 +34,6 @@ import System.Environment (getEnvironment, setEnv, unsetEnv)
 #else
 import System.Environment.Compat (getEnvironment, setEnv, unsetEnv)
 #endif
-
-{-# ANN module "HLint: ignore Reduce duplication" #-}
 
 main :: IO ()
 main = hspec spec
@@ -99,6 +107,45 @@ spec = do
           lookupEnv "DOTENV" `shouldReturn` Just "true"
           lookupEnv "UNICODE_TEST" `shouldReturn` Just "Manabí"
           lookupEnv "ANOTHER_ENV" `shouldReturn` Just "hello"
+
+  describe "loadSafeFile" $ after_ clearEnvs $
+    context "given a custom map" $ do
+      context "when the envs are written accordingly to the rules in the map" $
+        it "should validate accordingly to the rules in the custom map" $
+          let hasTwoLetters text = T.length text == 2
+              customMap = M.fromList
+                [ ("twoLetters", hasTwoLetters)
+                , ("bool", const True)
+                , ("text", const True)
+                , ("integer", const True)
+                ]
+              schemaFile = "spec/fixtures/.scheme.yml"
+              config = Config ["spec/fixtures/.dotenv.safe"] [] False
+              expectedEnvs =
+                [ ("DOTENV","true")
+                , ("OTHERENV","false")
+                , ("PORT","8000")
+                , ("URL","http://example.com")
+                , ("TWO","xD")
+                ]
+           in do
+             envs <- loadSafeFile customMap schemaFile config
+             envs `shouldMatchList` expectedEnvs
+
+      context "when the envs are written in an unexpected way" $
+        it "should throw an errorCall" $
+          let unexpectedFormat text = T.length text == 3
+              customMap = M.fromList
+                [ ("twoLetters", unexpectedFormat)
+                , ("bool", const True)
+                , ("text", const True)
+                , ("integer", const True)
+                ]
+              schemaFile = "spec/fixtures/.scheme.yml"
+              config = Config ["spec/fixtures/.dotenv.safe"] [] False
+           in void $ loadSafeFile customMap schemaFile config
+                `shouldThrow` anyErrorCall
+
 
   describe "parseFile" $ after_ clearEnvs $ do
     it "returns variables from a file without changing the environment" $ do

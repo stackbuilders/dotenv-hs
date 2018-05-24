@@ -15,9 +15,9 @@
 module Configuration.Dotenv
   ( load
   , loadFile
+  , loadSafeFile
   , parseFile
   , onMissingFile
-  , loadSafeFile
   )
  where
 
@@ -114,9 +114,9 @@ onMissingFile f h = catchIf isDoesNotExistError f (const h)
 -- of the environment variables in the /.env/ file.
 loadSafeFile
   :: MonadIO m
-  => ValidatorMap
-  -> FilePath
-  -> Config
+  => ValidatorMap -- ^ Map with custom validations
+  -> FilePath -- ^ Filepath for schema file
+  -> Config -- ^ Common dotenv configuration
   -> m [(String, String)]
 loadSafeFile mapFormat schemaFile config = do
   envs <- loadFile config

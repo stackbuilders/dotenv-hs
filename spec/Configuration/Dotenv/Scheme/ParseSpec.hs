@@ -28,6 +28,7 @@ spec =
             , Env "PORT" (EnvType "integer") True
             , Env "TOKEN" (EnvType "integer") False
             , Env "URL" (EnvType "text") True
+            , Env "TWO" (EnvType "twoLetters") True
             ]
        in do
          actual <- decodeFileEither "spec/fixtures/.scheme.yml"
