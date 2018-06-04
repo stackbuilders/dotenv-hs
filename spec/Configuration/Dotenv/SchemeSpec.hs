@@ -4,7 +4,6 @@ module Configuration.Dotenv.SchemeSpec (spec) where
 
 import Configuration.Dotenv.Scheme
 import Configuration.Dotenv.Scheme.Types
-import Configuration.Dotenv.Scheme.Parser
 import Control.Exception (evaluate)
 
 import Test.Hspec

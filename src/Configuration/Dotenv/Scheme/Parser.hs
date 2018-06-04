@@ -15,13 +15,9 @@ import Data.Functor ((<$>))
 #endif
 
 import Data.Either
-import Data.Maybe (isJust)
 
 import qualified Data.Map.Lazy as ML
 
-import Text.Read (readMaybe)
-
-import Data.Text (Text)
 import qualified Data.Text as T
 
 import Configuration.Dotenv.Scheme.Types
@@ -56,19 +52,3 @@ typeValidator validatorMap envVal (EnvType type_) =
           if validator (T.pack envVal)
              then Right ()
              else Left errorMsg
-
--- |
---
-defaultValidatorMap :: ValidatorMap
-defaultValidatorMap =
-  let booleanValidator :: Text -> Bool
-      booleanValidator text = isJust (readMaybe (T.unpack text) :: Maybe Bool)
-      integerValidator :: Text -> Bool
-      integerValidator text = isJust (readMaybe (T.unpack text) :: Maybe Integer)
-      textValidator :: Text -> Bool
-      textValidator = const True
-   in ML.fromList
-        [ ("bool", booleanValidator)
-        , ("integer", integerValidator)
-        , ("text", textValidator)
-        ]

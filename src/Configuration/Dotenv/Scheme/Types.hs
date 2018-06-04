@@ -8,11 +8,19 @@ import Control.Applicative ((<*>), pure)
 import Data.Functor ((<$>))
 #endif
 
+import Data.Maybe (isJust)
+
 import Data.Map.Lazy (Map)
 
 import Data.Yaml
 
+import qualified Data.Map.Lazy as ML
+
 import Data.Text (Text)
+import qualified Data.Text as T
+
+import Text.Read (readMaybe)
+
 
 -- |
 --
@@ -44,7 +52,28 @@ instance FromJSON Env where
       <*> m .:? "required" .!= False
   parseJSON x = fail ("Not an object: " ++ show x)
 
--- | Key: Name of the "format"
---   Value: Function to check if some text has an specific value
+-- | Parameters:
+--
+-- - __Key:__ Name of the /format/ to check.
+--
+-- - __Value:__ Function to check if some text meets the condition.
 --
 type ValidatorMap = Map Text (Text -> Bool)
+
+
+-- | Default configuration for 'loadSafeFile'. It currently checks:
+-- @bool@, @integer@, and @text@.
+--
+defaultValidatorMap :: ValidatorMap
+defaultValidatorMap =
+  let booleanValidator :: Text -> Bool
+      booleanValidator text = isJust (readMaybe (T.unpack text) :: Maybe Bool)
+      integerValidator :: Text -> Bool
+      integerValidator text = isJust (readMaybe (T.unpack text) :: Maybe Integer)
+      textValidator :: Text -> Bool
+      textValidator = const True
+   in ML.fromList
+        [ ("bool", booleanValidator)
+        , ("integer", integerValidator)
+        , ("text", textValidator)
+        ]
