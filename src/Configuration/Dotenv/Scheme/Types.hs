@@ -12,7 +12,7 @@ import Data.Map.Lazy (Map)
 
 import Data.Yaml
 
-import Data.Text
+import Data.Text (Text)
 
 -- |
 --
