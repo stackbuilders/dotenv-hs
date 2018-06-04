@@ -21,8 +21,9 @@ description:
   .
   To use, call `loadFile` from your application:
   .
+  > import Control.Monad (void)
   > import Configuration.Dotenv
-  > loadFile False "/my/dotenvfile"
+  > void $ loadFile defaultConfig
   .
   This package also includes an executable that can be used
   to inspect the results of applying one or more Dotenv files
