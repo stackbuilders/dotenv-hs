@@ -35,8 +35,8 @@ Then, calling `Dotenv.load` from your Haskell program reads the above
 settings into the environment:
 
 ```haskell
-import qualified Configuration.Dotenv as Dotenv
-Dotenv.loadFile defaultConfig
+import Configuration.Dotenv (loadFile, defaultConfig)
+loadFile defaultConfig
 ```
 
 After calling `Dotenv.load`, you are able to read the values set in your

@@ -1,7 +1,8 @@
 ## MASTER
-## Dotenv 0.5.3.0
+## Dotenv 0.6.0.0
 * Move `loadSafeFile` to `Configuration.Dotenv`
-* Change `loadSafeFile` signature
+* Export `Configuration.Dotenv.Types` from `Configuration.Dotenv`
+* Change `loadSafeFile` signature to accept different types of validators.
 * Add `type ValidatorMap = Map Text (Text -> Bool)` for custom validations.
 
 ## Dotenv 0.5.2.5

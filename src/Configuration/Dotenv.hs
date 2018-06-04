@@ -18,6 +18,7 @@ module Configuration.Dotenv
   , loadSafeFile
   , parseFile
   , onMissingFile
+  , module Configuration.Dotenv.Types
   )
  where
 
