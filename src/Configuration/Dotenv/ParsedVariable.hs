@@ -1,3 +1,14 @@
+-- |
+-- Module      :  Configuration.Dotenv.Types
+-- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- License     :  MIT
+--
+-- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Helpers to interpolate environment variables
+
 {-# LANGUAGE CPP #-}
 
 module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),

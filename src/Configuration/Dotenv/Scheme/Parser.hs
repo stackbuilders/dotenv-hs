@@ -1,3 +1,14 @@
+-- |
+-- Module      :  Configuration.Dotenv.Types
+-- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- License     :  MIT
+--
+-- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Helpers for loadSafeFile
+
 {-# LANGUAGE CPP                 #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
