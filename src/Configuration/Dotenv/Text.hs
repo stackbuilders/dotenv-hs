@@ -1,6 +1,6 @@
 -- |
--- Module      :  Configuration.Dotenv.Text
--- Copyright   :  © 2015–2016 Stack Builders Inc.
+-- Module      :  Configuration.Dotenv.Types
+-- Copyright   :  © 2015–2018 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>

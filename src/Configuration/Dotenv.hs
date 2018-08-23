@@ -1,6 +1,6 @@
 -- |
--- Module      :  Configuration.Dotenv
--- Copyright   :  © 2015–2016 Stack Builders Inc.
+-- Module      :  Configuration.Dotenv.Types
+-- Copyright   :  © 2015–2018 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
@@ -13,19 +13,30 @@
 {-# LANGUAGE RecordWildCards #-}
 
 module Configuration.Dotenv
-  ( load
+  (
+  -- * Dotenv Load Functions
+    load
   , loadFile
+  , loadSafeFile
   , parseFile
-  , onMissingFile )
+  , onMissingFile
+  -- * Dotenv Types
+  , module Configuration.Dotenv.Types
+  , ValidatorMap
+  , defaultValidatorMap
+  )
  where
 
-import Control.Monad (liftM)
+import Control.Monad (liftM, when)
 import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
+import Configuration.Dotenv.Scheme
+import Configuration.Dotenv.Scheme.Types (ValidatorMap, defaultValidatorMap)
 import Configuration.Dotenv.Types (Config(..))
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
 import Data.List (union, intersectBy, unionBy)
+import System.Directory (doesFileExist)
 import System.Environment (lookupEnv)
 import System.IO.Error (isDoesNotExistError)
 import Text.Megaparsec (parse, parseErrorPretty)
@@ -51,8 +62,8 @@ load override = mapM_ (applySetting override)
 -- with the values defined in the dotenv file.
 loadFile
   :: MonadIO m
-  => Config
-  -> m [(String, String)]
+  => Config -- ^ Dotenv configuration
+  -> m [(String, String)] -- ^ Environment variables loaded
 loadFile Config{..} = do
   environment <- liftIO getEnvironment
   readedVars <- concat `liftM` mapM parseFile configPath
@@ -104,3 +115,18 @@ onMissingFile :: MonadCatch m
   -> m a               -- ^ Action to perform if file is indeed missing
   -> m a
 onMissingFile f h = catchIf isDoesNotExistError f (const h)
+
+-- | @loadSafeFile@ parses the /.scheme.yml/ file and will perform the type checking
+-- of the environment variables in the /.env/ file.
+loadSafeFile
+  :: MonadIO m
+  => ValidatorMap -- ^ Map with custom validations
+  -> FilePath -- ^ Filepath for schema file
+  -> Config -- ^ Dotenv configuration
+  -> m [(String, String)] -- ^ Environment variables loaded
+loadSafeFile mapFormat schemaFile config = do
+  envs <- loadFile config
+  exists <- liftIO $ doesFileExist schemaFile
+  when exists $
+    liftIO (readScheme schemaFile >>= checkConfig mapFormat envs . checkScheme)
+  return envs

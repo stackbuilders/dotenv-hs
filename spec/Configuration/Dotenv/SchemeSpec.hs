@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Configuration.Dotenv.SchemeSpec (spec) where
 
 import Configuration.Dotenv.Scheme
@@ -6,23 +8,25 @@ import Control.Exception (evaluate)
 
 import Test.Hspec
 
+-- |
+--
 spec :: Spec
 spec = do
   describe "checkScheme" $ do
     context "when the env configs are unique" $
       it "should succeed the check" $
         let schemeEnvs =
-              [ Env "FOO" EnvBool True
-              , Env "BAR" EnvInteger True
+              [ Env "FOO" (EnvType "bool") True
+              , Env "BAR" (EnvType "integer") True
               ]
          in checkScheme schemeEnvs `shouldBe` schemeEnvs
 
     context "when there are duplicated env configs" $
       it "should fail the check" $
         let schemeEnvs =
-              [ Env "FOO" EnvBool True
-              , Env "BAR" EnvInteger True
-              , Env "FOO" EnvInteger True
+              [ Env "FOO" (EnvType "bool") True
+              , Env "BAR" (EnvType "integer") True
+              , Env "FOO" (EnvType "integer") True
               ]
             msg = "Duplicated env variable configuration in schema: FOO"
          in evaluate (checkScheme schemeEnvs) `shouldThrow` errorCall msg
@@ -33,48 +37,48 @@ spec = do
         context "when the required envs are defined" $
           it "should succeed the type check" $
             let schemeEnvs =
-                    [ Env "FOO" EnvBool True
-                    , Env "BAR" EnvInteger False
+                    [ Env "FOO" (EnvType "bool") True
+                    , Env "BAR" (EnvType "integer") False
                     ]
-                dotenvs = [("FOO","true"), ("BAR","123")]
-             in checkConfig dotenvs schemeEnvs `shouldReturn` ()
+                dotenvs = [("FOO","True"), ("BAR","123")]
+             in checkConfig defaultValidatorMap dotenvs schemeEnvs `shouldReturn` ()
 
         context "when the not required envs are missing" $
           it "should succeed the type check" $
             let schemeEnvs =
-                    [ Env "FOO" EnvBool True
-                    , Env "BAR" EnvInteger False
+                    [ Env "FOO" (EnvType "bool") True
+                    , Env "BAR" (EnvType "integer") False
                     ]
-                dotenvs = [("FOO","true")]
-             in checkConfig dotenvs schemeEnvs `shouldReturn` ()
+                dotenvs = [("FOO","True")]
+             in checkConfig defaultValidatorMap dotenvs schemeEnvs `shouldReturn` ()
 
         context "when the required envs are missing" $
           it "should fail before the type check" $
             let schemeEnvs =
-                    [ Env "FOO" EnvBool True
-                    , Env "BAR" EnvInteger False
+                    [ Env "FOO" (EnvType "bool") True
+                    , Env "BAR" (EnvType "integer") False
                     ]
                 dotenvs = [("BAR","123")]
                 msg = "The following envs: FOO must be in the dotenvs"
-              in checkConfig dotenvs schemeEnvs `shouldThrow` errorCall msg
+              in checkConfig defaultValidatorMap dotenvs schemeEnvs `shouldThrow` errorCall msg
 
       context "when there are missing dotenvs in the scheme" $
         it "should fail before type checking" $
           let schemeEnvs =
-                  [ Env "FOO" EnvBool True
-                  , Env "BAR" EnvInteger False
+                  [ Env "FOO" (EnvType "bool") True
+                  , Env "BAR" (EnvType "integer") False
                   ]
-              dotenvs = [("FOO","true"), ("BAR","123"), ("BAZ","text")]
+              dotenvs = [("FOO","True"), ("BAR","123"), ("BAZ","text")]
               msg = "The following envs: BAZ must be in your scheme.yml"
-           in checkConfig dotenvs schemeEnvs `shouldThrow` errorCall msg
+           in checkConfig defaultValidatorMap dotenvs schemeEnvs `shouldThrow` errorCall msg
 
       context "when there are missing scheme envs in the dotenv vars" $
         it "should fail before type checking" $
           let schemeEnvs =
-                  [ Env "FOO" EnvBool True
-                  , Env "BAZ" EnvText True
-                  , Env "BAR" EnvInteger False
+                  [ Env "FOO" (EnvType "bool") True
+                  , Env "BAZ" (EnvType "text") True
+                  , Env "BAR" (EnvType "integer") False
                   ]
-              dotenvs = [("FOO","true"), ("BAR","123")]
+              dotenvs = [("FOO","True"), ("BAR","123")]
               msg = "The following envs: BAZ must be in the dotenvs"
-           in checkConfig dotenvs schemeEnvs `shouldThrow` errorCall msg
+           in checkConfig defaultValidatorMap dotenvs schemeEnvs `shouldThrow` errorCall msg

@@ -1,36 +1,29 @@
+-- |
+-- Module      :  Configuration.Dotenv.Types
+-- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- License     :  MIT
+--
+-- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
+-- Stability   :  experimental
+-- Portability :  portable
+--
+-- Helpers for loadSafeFile
+
 module Configuration.Dotenv.Scheme
   ( checkConfig
   , checkScheme
-  , loadSafeFile
-  , runSchemaChecker
+  , readScheme
   )
   where
 
 import Control.Monad
-import Control.Monad.IO.Class (MonadIO(..))
 
 import Data.List
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
-import Text.Megaparsec
-import System.Directory (doesFileExist)
 
-import Configuration.Dotenv (loadFile)
-import Configuration.Dotenv.Types (Config(..))
 import Configuration.Dotenv.Scheme.Helpers
 import Configuration.Dotenv.Scheme.Parser
 import Configuration.Dotenv.Scheme.Types
-
--- | @loadSafeFile@ parses the /.scheme.yml/ file and will perform the type checking
--- of the environment variables in the /.env/ file.
-loadSafeFile
-  :: MonadIO m
-  => FilePath
-  -> Config
-  -> m [(String, String)]
-loadSafeFile schemaFile config = do
-  envs <- loadFile config
-  liftIO (readScheme schemaFile >>= checkConfig envs . checkScheme)
-  return envs
 
 readScheme :: FilePath -> IO [Env]
 readScheme schemeFile = do
@@ -53,12 +46,12 @@ duplicatedConfErrorMsg :: [Env] -> String
 duplicatedConfErrorMsg = ("Duplicated env variable configuration in schema: " ++) . showMissingDotenvs
 
 checkConfig
-  :: [(String, String)]
+  :: ValidatorMap
+  -> [(String, String)]
   -> [Env]
   -> IO ()
-checkConfig envvars envsWithType =
-  let prettyParsedErrors = unlines . fmap parseErrorTextPretty
-      envsTypeAndValue   = joinEnvs envsWithType envvars
+checkConfig mapFormat envvars envsWithType =
+  let envsTypeAndValue   = joinEnvs envsWithType envvars
       valuesAndTypes     = matchValueAndType envsTypeAndValue
       dotenvsMissing     = filter required (missingDotenvs envsWithType envsTypeAndValue)
       schemeEnvsMissing  = missingSchemeEnvs envvars envsTypeAndValue
@@ -71,15 +64,6 @@ checkConfig envvars envsWithType =
        (error $ "The following envs: "
                   ++ showMissingSchemeEnvs schemeEnvsMissing
                   ++ " must be in your scheme.yml")
-     case parseEnvsWithScheme valuesAndTypes of
-        Left errors -> error (prettyParsedErrors errors)
-        _ -> return ()
-
-runSchemaChecker
-  :: FilePath
-  -> Config
-  -> IO ()
-runSchemaChecker schemeFile config = do
-  exists <- doesFileExist schemeFile
-  when exists
-     (void $ loadSafeFile schemeFile config)
+     case parseEnvsWithScheme mapFormat valuesAndTypes of
+       Left errors -> error (unlines errors)
+       _ -> return ()

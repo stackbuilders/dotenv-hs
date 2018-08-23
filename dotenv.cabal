@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.5.2.5
+version:             0.6.0.0
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -21,8 +21,9 @@ description:
   .
   To use, call `loadFile` from your application:
   .
+  > import Control.Monad (void)
   > import Configuration.Dotenv
-  > loadFile False "/my/dotenvfile"
+  > void $ loadFile defaultConfig
   .
   This package also includes an executable that can be used
   to inspect the results of applying one or more Dotenv files
@@ -90,6 +91,7 @@ library
                        , base-compat >= 0.4
                        , directory
                        , megaparsec >= 6.0 && < 7.0
+                       , containers
                        , process >= 1.4.3.0
                        , text
                        , transformers >=0.4 && < 0.6
@@ -128,6 +130,7 @@ test-suite dotenv-test
 
   build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4
+                     , containers
                      , dotenv
                      , directory
                      , megaparsec >= 6.0 && < 7.0
