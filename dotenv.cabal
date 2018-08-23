@@ -49,7 +49,7 @@ data-dir: spec/fixtures/
 data-files:
   .dotenv
   .dotenv.example
-  .scheme.yml
+  .schema.yml
 
 flag dev
   description:        Turn on development settings.
@@ -82,10 +82,10 @@ library
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
-                      , Configuration.Dotenv.Scheme
-                      , Configuration.Dotenv.Scheme.Helpers
-                      , Configuration.Dotenv.Scheme.Parser
-                      , Configuration.Dotenv.Scheme.Types
+                      , Configuration.Dotenv.Schema
+                      , Configuration.Dotenv.Schema.Helpers
+                      , Configuration.Dotenv.Schema.Parser
+                      , Configuration.Dotenv.Schema.Types
 
   build-depends:         base >=4.7 && <5.0
                        , base-compat >= 0.4
@@ -121,12 +121,12 @@ test-suite dotenv-test
                        , Configuration.Dotenv.Types
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
-                       , Configuration.Dotenv.SchemeSpec
-                       , Configuration.Dotenv.Scheme.ParseSpec
-                       , Configuration.Dotenv.Scheme
-                       , Configuration.Dotenv.Scheme.Helpers
-                       , Configuration.Dotenv.Scheme.Parser
-                       , Configuration.Dotenv.Scheme.Types
+                       , Configuration.Dotenv.SchemaSpec
+                       , Configuration.Dotenv.Schema.ParseSpec
+                       , Configuration.Dotenv.Schema
+                       , Configuration.Dotenv.Schema.Helpers
+                       , Configuration.Dotenv.Schema.Parser
+                       , Configuration.Dotenv.Schema.Types
 
   build-depends:       base >=4.7 && <5.0
                      , base-compat >= 0.4

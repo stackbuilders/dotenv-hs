@@ -30,8 +30,8 @@ module Configuration.Dotenv
 import Control.Monad (liftM, when)
 import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
-import Configuration.Dotenv.Scheme
-import Configuration.Dotenv.Scheme.Types (ValidatorMap, defaultValidatorMap)
+import Configuration.Dotenv.Schema
+import Configuration.Dotenv.Schema.Types (ValidatorMap, defaultValidatorMap)
 import Configuration.Dotenv.Types (Config(..))
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
@@ -116,7 +116,7 @@ onMissingFile :: MonadCatch m
   -> m a
 onMissingFile f h = catchIf isDoesNotExistError f (const h)
 
--- | @loadSafeFile@ parses the /.scheme.yml/ file and will perform the type checking
+-- | @loadSafeFile@ parses the /.schema.yml/ file and will perform the type checking
 -- of the environment variables in the /.env/ file.
 loadSafeFile
   :: MonadIO m
@@ -128,5 +128,5 @@ loadSafeFile mapFormat schemaFile config = do
   envs <- loadFile config
   exists <- liftIO $ doesFileExist schemaFile
   when exists $
-    liftIO (readScheme schemaFile >>= checkConfig mapFormat envs . checkScheme)
+    liftIO (readSchema schemaFile >>= checkConfig mapFormat envs . checkSchema)
   return envs

@@ -119,7 +119,7 @@ spec = do
                 , ("text", const True)
                 , ("integer", const True)
                 ]
-              schemaFile = "spec/fixtures/.scheme.yml"
+              schemaFile = "spec/fixtures/.schema.yml"
               config = Config ["spec/fixtures/.dotenv.safe"] [] False
               expectedEnvs =
                 [ ("DOTENV","true")
@@ -141,7 +141,7 @@ spec = do
                 , ("text", const True)
                 , ("integer", const True)
                 ]
-              schemaFile = "spec/fixtures/.scheme.yml"
+              schemaFile = "spec/fixtures/.schema.yml"
               config = Config ["spec/fixtures/.dotenv.safe"] [] False
            in void $ loadSafeFile customMap schemaFile config
                 `shouldThrow` anyErrorCall

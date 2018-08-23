@@ -9,10 +9,10 @@
 --
 -- Helpers for loadSafeFile
 
-module Configuration.Dotenv.Scheme
+module Configuration.Dotenv.Schema
   ( checkConfig
-  , checkScheme
-  , readScheme
+  , checkSchema
+  , readSchema
   )
   where
 
@@ -21,19 +21,19 @@ import Control.Monad
 import Data.List
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
 
-import Configuration.Dotenv.Scheme.Helpers
-import Configuration.Dotenv.Scheme.Parser
-import Configuration.Dotenv.Scheme.Types
+import Configuration.Dotenv.Schema.Helpers
+import Configuration.Dotenv.Schema.Parser
+import Configuration.Dotenv.Schema.Types
 
-readScheme :: FilePath -> IO [Env]
-readScheme schemeFile = do
-  eitherEnvConf <- decodeFileEither schemeFile
+readSchema :: FilePath -> IO [Env]
+readSchema schemaFile = do
+  eitherEnvConf <- decodeFileEither schemaFile
   case eitherEnvConf of
     Right envConfs -> return envConfs
     Left errorYaml -> error (prettyPrintParseException errorYaml)
 
-checkScheme :: [Env] -> [Env]
-checkScheme envConfs =
+checkSchema :: [Env] -> [Env]
+checkSchema envConfs =
   case duplicatedConfs of
     []   -> envConfs
     dups -> error (duplicatedConfErrorMsg $ uniqueConfs dups)
@@ -54,16 +54,16 @@ checkConfig mapFormat envvars envsWithType =
   let envsTypeAndValue   = joinEnvs envsWithType envvars
       valuesAndTypes     = matchValueAndType envsTypeAndValue
       dotenvsMissing     = filter required (missingDotenvs envsWithType envsTypeAndValue)
-      schemeEnvsMissing  = missingSchemeEnvs envvars envsTypeAndValue
+      schemaEnvsMissing  = missingSchemaEnvs envvars envsTypeAndValue
    in do
      unless (null dotenvsMissing)
        (error $ "The following envs: "
                   ++ showMissingDotenvs dotenvsMissing
                   ++ " must be in the dotenvs")
-     unless (null schemeEnvsMissing)
+     unless (null schemaEnvsMissing)
        (error $ "The following envs: "
-                  ++ showMissingSchemeEnvs schemeEnvsMissing
-                  ++ " must be in your scheme.yml")
-     case parseEnvsWithScheme mapFormat valuesAndTypes of
+                  ++ showMissingSchemaEnvs schemaEnvsMissing
+                  ++ " must be in your schema.yml")
+     case parseEnvsWithSchema mapFormat valuesAndTypes of
        Left errors -> error (unlines errors)
        _ -> return ()

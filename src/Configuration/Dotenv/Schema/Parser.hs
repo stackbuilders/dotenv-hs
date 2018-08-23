@@ -13,9 +13,9 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Configuration.Dotenv.Scheme.Parser
+module Configuration.Dotenv.Schema.Parser
   ( defaultValidatorMap
-  , parseEnvsWithScheme
+  , parseEnvsWithSchema
   , typeValidator
   )
   where
@@ -31,16 +31,16 @@ import qualified Data.Map.Lazy as ML
 
 import qualified Data.Text as T
 
-import Configuration.Dotenv.Scheme.Types
+import Configuration.Dotenv.Schema.Types
 
 
 -- |
 --
-parseEnvsWithScheme
+parseEnvsWithSchema
   :: ValidatorMap -- ^ MapFormat validations
   -> [(String, EnvType)] -- ^ Value and Type
   -> Either [String] ()
-parseEnvsWithScheme validatorMap valuesAndTypes =
+parseEnvsWithSchema validatorMap valuesAndTypes =
   let parsedEithers = parseEnvs <$> valuesAndTypes
       parseEnvWith = typeValidator validatorMap
       parseEnvs (val, type') = val `parseEnvWith` type'

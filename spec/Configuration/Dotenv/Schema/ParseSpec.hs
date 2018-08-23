@@ -2,12 +2,12 @@
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Configuration.Dotenv.Scheme.ParseSpec (spec) where
+module Configuration.Dotenv.Schema.ParseSpec (spec) where
 
 import Data.Yaml (decodeFileEither)
 import Test.Hspec
 
-import Configuration.Dotenv.Scheme.Types
+import Configuration.Dotenv.Schema.Types
 
 -- | Extract Right from Either
 --
@@ -31,5 +31,5 @@ spec =
             , Env "TWO" (EnvType "twoLetters") False
             ]
        in do
-         actual <- decodeFileEither "spec/fixtures/.scheme.yml"
+         actual <- decodeFileEither "spec/fixtures/.schema.yml"
          fromRight actual `shouldBe` expected

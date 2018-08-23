@@ -12,7 +12,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Configuration.Dotenv.Scheme.Types where
+module Configuration.Dotenv.Schema.Types where
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<*>), pure)

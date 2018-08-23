@@ -12,14 +12,14 @@
 {-# LANGUAGE CPP             #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Configuration.Dotenv.Scheme.Helpers
+module Configuration.Dotenv.Schema.Helpers
   ( joinEnvs
   , matchValueAndType
   , missingDotenvs
-  , missingSchemeEnvs
+  , missingSchemaEnvs
   , sepWithCommas
   , showMissingDotenvs
-  , showMissingSchemeEnvs
+  , showMissingSchemaEnvs
   )
   where
 
@@ -29,7 +29,7 @@ import Control.Applicative ((<*>))
 #endif
 import Data.List
 
-import Configuration.Dotenv.Scheme.Types
+import Configuration.Dotenv.Schema.Types
 
 matchValueAndType
   :: [(Env, (String, String))]
@@ -64,11 +64,11 @@ missingLeft p xs xys =
   let getAllLeft = map fst xys
    in deleteFirstsBy p xs getAllLeft
 
-missingSchemeEnvs
+missingSchemaEnvs
   :: [(String, String)]
   -> [(Env, (String, String))]
   -> [(String, String)]
-missingSchemeEnvs =
+missingSchemaEnvs =
   let sameName (nameOne,_) (nameTwo,_) = nameOne == nameTwo
    in missingRight sameName
 
@@ -83,5 +83,5 @@ sepWithCommas = intercalate ", "
 showMissingDotenvs :: [Env] -> String
 showMissingDotenvs = sepWithCommas . map envName
 
-showMissingSchemeEnvs :: [(String, String)] -> String
-showMissingSchemeEnvs = sepWithCommas . map fst
+showMissingSchemaEnvs :: [(String, String)] -> String
+showMissingSchemaEnvs = sepWithCommas . map fst
