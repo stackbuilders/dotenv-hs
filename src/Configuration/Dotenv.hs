@@ -38,6 +38,7 @@ import Control.Monad.IO.Class (MonadIO(..))
 import Data.List (union, intersectBy, unionBy)
 import System.Directory (doesFileExist)
 import System.Environment (lookupEnv)
+import System.Exit (exitFailure)
 import System.IO.Error (isDoesNotExistError)
 import Text.Megaparsec (parse, parseErrorPretty)
 
@@ -127,6 +128,11 @@ loadSafeFile
 loadSafeFile mapFormat schemaFile config = do
   envs <- loadFile config
   exists <- liftIO $ doesFileExist schemaFile
-  when exists $
-    liftIO (readScheme schemaFile >>= checkConfig mapFormat envs . checkScheme)
+  when exists $ liftIO $ do
+    result <- try $ do
+        envSchemas <- readScheme schemaFile
+        checkConfig mapFormat envs envSchemas
+    case result :: Either SchemaErrors () of
+      Left error_ -> print error_ >> exitFailure
+      _ -> return ()
   return envs

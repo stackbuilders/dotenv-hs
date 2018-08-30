@@ -10,14 +10,18 @@
 -- Helpers for loadSafeFile
 
 module Configuration.Dotenv.Scheme
-  ( checkConfig
+  ( SchemaErrors(..)
+  , checkConfig
   , checkScheme
   , readScheme
+  , defaultValidatorMap
   )
   where
 
 import Control.Monad
+import Control.Exception
 
+import Data.Typeable
 import Data.List
 import Data.Yaml (decodeFileEither, prettyPrintParseException)
 
@@ -25,45 +29,50 @@ import Configuration.Dotenv.Scheme.Helpers
 import Configuration.Dotenv.Scheme.Parser
 import Configuration.Dotenv.Scheme.Types
 
+
+data SchemaErrors =
+  InvalidYaml String
+    | DuplicatedEnvs [Env]
+    | MissingEnvsInDotenvs [Env]
+    | MissingEnvsInSchema [(String, String)]
+    | ParseEnvFailures [String]
+  deriving (Eq, Show, Typeable)
+
+instance Exception SchemaErrors
+
 readScheme :: FilePath -> IO [Env]
 readScheme schemeFile = do
   eitherEnvConf <- decodeFileEither schemeFile
   case eitherEnvConf of
     Right envConfs -> return envConfs
-    Left errorYaml -> error (prettyPrintParseException errorYaml)
+    Left errorYaml -> throw $ InvalidYaml (prettyPrintParseException errorYaml)
 
 checkScheme :: [Env] -> [Env]
 checkScheme envConfs =
   case duplicatedConfs of
     []   -> envConfs
-    dups -> error (duplicatedConfErrorMsg $ uniqueConfs dups)
+    dups -> throw $ DuplicatedEnvs (uniqueConfs dups)
   where
     duplicatedConfs  = deleteFirstsBy confEquals envConfs (uniqueConfs envConfs)
     uniqueConfs      = nubBy confEquals
     a `confEquals` b = envName a == envName b
-
-duplicatedConfErrorMsg :: [Env] -> String
-duplicatedConfErrorMsg = ("Duplicated env variable configuration in schema: " ++) . showMissingDotenvs
 
 checkConfig
   :: ValidatorMap
   -> [(String, String)]
   -> [Env]
   -> IO ()
-checkConfig mapFormat envvars envsWithType =
-  let envsTypeAndValue   = joinEnvs envsWithType envvars
+checkConfig mapFormat envvars allEnvSchemas =
+  let envSchemas         = checkScheme allEnvSchemas
+      envsTypeAndValue   = joinEnvs envSchemas envvars
       valuesAndTypes     = matchValueAndType envsTypeAndValue
-      dotenvsMissing     = filter required (missingDotenvs envsWithType envsTypeAndValue)
+      dotenvsMissing     = filter required (missingDotenvs envSchemas envsTypeAndValue)
       schemeEnvsMissing  = missingSchemeEnvs envvars envsTypeAndValue
    in do
      unless (null dotenvsMissing)
-       (error $ "The following envs: "
-                  ++ showMissingDotenvs dotenvsMissing
-                  ++ " must be in the dotenvs")
+       (throw $ MissingEnvsInDotenvs dotenvsMissing)
      unless (null schemeEnvsMissing)
-       (error $ "The following envs: "
-                  ++ showMissingSchemeEnvs schemeEnvsMissing
-                  ++ " must be in your scheme.yml")
+       (throw $ MissingEnvsInSchema schemeEnvsMissing)
      case parseEnvsWithScheme mapFormat valuesAndTypes of
-       Left errors -> error (unlines errors)
+       Left errors -> throw $ ParseEnvFailures errors
        _ -> return ()

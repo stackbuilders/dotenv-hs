@@ -15,7 +15,7 @@ import Control.Monad (void, unless)
 
 import Configuration.Dotenv (loadFile, loadSafeFile)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
-import Configuration.Dotenv.Scheme.Parser ( defaultValidatorMap )
+import Configuration.Dotenv.Scheme ( defaultValidatorMap )
 
 import System.Process (system)
 import System.Exit (exitWith)

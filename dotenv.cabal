@@ -79,12 +79,12 @@ executable dotenv
 library
   exposed-modules:      Configuration.Dotenv
                       , Configuration.Dotenv.Parse
-                      , Configuration.Dotenv.ParsedVariable
-                      , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
                       , Configuration.Dotenv.Scheme
-                      , Configuration.Dotenv.Scheme.Helpers
+  other-modules:        Configuration.Dotenv.ParsedVariable
+                      , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Scheme.Parser
+                      , Configuration.Dotenv.Scheme.Helpers
                       , Configuration.Dotenv.Scheme.Types
 
   build-depends:         base >=4.7 && <5.0

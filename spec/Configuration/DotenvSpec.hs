@@ -11,11 +11,13 @@ import Configuration.Dotenv
   , parseFile
   , onMissingFile
   )
+import Configuration.Dotenv.Scheme (SchemaErrors(..))
 
 
 import Test.Hspec
 
 import System.Process (readCreateProcess, shell)
+import System.Exit (ExitCode(..))
 import System.Environment (lookupEnv)
 import Control.Monad (liftM, void)
 import Data.Maybe (fromMaybe)
@@ -144,7 +146,7 @@ spec = do
               schemaFile = "spec/fixtures/.scheme.yml"
               config = Config ["spec/fixtures/.dotenv.safe"] [] False
            in void $ loadSafeFile customMap schemaFile config
-                `shouldThrow` anyErrorCall
+                `shouldThrow` (== ExitFailure 1)
 
 
   describe "parseFile" $ after_ clearEnvs $ do
