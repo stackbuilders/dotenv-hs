@@ -9,8 +9,10 @@
 --
 -- Helpers for loadSafeFile
 
+{-# LANGUAGE DeriveDataTypeable #-}
+
 module Configuration.Dotenv.Scheme
-  ( SchemaErrors(..)
+  ( SchemaError(..)
   , checkConfig
   , checkScheme
   , readScheme
