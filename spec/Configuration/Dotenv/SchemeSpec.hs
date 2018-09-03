@@ -23,13 +23,13 @@ spec = do
 
     context "when there are duplicated env configs" $
       it "should fail the check" $
-        let duplicatedEnvs =
-              [ Env "FOO" (EnvType "bool") True
-              , Env "FOO" (EnvType "integer") True
-              ]
-            schemeEnvs = Env "BAR" (EnvType "integer") True : duplicatedEnvs
+        let duplicatedEnv = Env "FOO" (EnvType "integer") True 
+            schemeEnvs =
+              [ Env "BAR" (EnvType "integer") True
+              , Env "FOO" (EnvType "bool") True
+              ] ++ [duplicatedEnv]
          in evaluate (checkScheme schemeEnvs)
-              `shouldThrow` (\(DuplicatedEnvs _) -> True)
+              `shouldThrow` (== DuplicatedEnvs [duplicatedEnv])
 
   describe "checkConfig" $
     context "when the envs have the correct type" $ do
@@ -61,7 +61,7 @@ spec = do
                     ]
                 dotenvs = [("BAR","123")]
               in checkConfig defaultValidatorMap dotenvs schemeEnvs
-                   `shouldThrow` (\(MissingEnvsInDotenvs _) -> True)
+                   `shouldThrow` (== MissingEnvsInDotenvs [missingEnv])
 
       context "when there are missing dotenvs in the scheme" $
         it "should fail before type checking" $
@@ -72,7 +72,7 @@ spec = do
               missingEnv = ("BAZ","text")
               dotenvs = [("FOO","True"), ("BAR","123"), missingEnv]
            in checkConfig defaultValidatorMap dotenvs schemeEnvs
-                `shouldThrow` (\(MissingEnvsInSchema _) -> True)
+                `shouldThrow` (== MissingEnvsInSchema [missingEnv])
 
       context "when there are missing scheme envs in the dotenv vars" $
         it "should fail before type checking" $
@@ -84,4 +84,4 @@ spec = do
               missingEnv = Env "BAZ" (EnvType "text") True
               dotenvs = [("FOO","True"), ("BAR","123")]
            in checkConfig defaultValidatorMap dotenvs schemeEnvs
-                `shouldThrow` (\(MissingEnvsInDotenvs _) -> True)
+                `shouldThrow` (== MissingEnvsInDotenvs [missingEnv])
