@@ -11,7 +11,7 @@ import Configuration.Dotenv
   , parseFile
   , onMissingFile
   )
-import Configuration.Dotenv.Scheme (SchemaErrors(..))
+import Configuration.Dotenv.Scheme (SchemaError(..))
 
 
 import Test.Hspec

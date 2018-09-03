@@ -30,7 +30,7 @@ import Configuration.Dotenv.Scheme.Parser
 import Configuration.Dotenv.Scheme.Types
 
 
-data SchemaErrors =
+data SchemaError =
   InvalidYaml String
     | DuplicatedEnvs [Env]
     | MissingEnvsInDotenvs [Env]
@@ -38,7 +38,7 @@ data SchemaErrors =
     | ParseEnvFailures [String]
   deriving (Eq, Show, Typeable)
 
-instance Exception SchemaErrors
+instance Exception SchemaError
 
 readScheme :: FilePath -> IO [Env]
 readScheme schemeFile = do

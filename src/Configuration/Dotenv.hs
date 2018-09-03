@@ -132,7 +132,7 @@ loadSafeFile mapFormat schemaFile config = do
     result <- try $ do
         envSchemas <- readScheme schemaFile
         checkConfig mapFormat envs envSchemas
-    case result :: Either SchemaErrors () of
+    case result :: Either SchemaError () of
       Left error_ -> print error_ >> exitFailure
       _ -> return ()
   return envs
