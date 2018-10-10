@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.6.0.1
+version:             0.6.0.2
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -92,7 +92,7 @@ library
                        , directory
                        , megaparsec >= 7.0.1 && < 8.0
                        , containers
-                       , process >= 1.6.4.0 && < 1.7
+                       , process >= 1.6.3.0 && < 1.7
                        , text
                        , transformers >=0.4 && < 0.6
                        , exceptions >= 0.8 && < 0.11

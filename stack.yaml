@@ -5,4 +5,4 @@ extra-deps:
 - megaparsec-7.0.1
 - parser-combinators-1.0.0
 - hspec-megaparsec-2.0.0
-- process-1.6.4.0
+- process-1.6.3.0
