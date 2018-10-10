@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.6.0.1
+* Support for `megaparsec-7.0.1`
+
 ## Dotenv 0.6.0.0
 * Move `loadSafeFile` to `Configuration.Dotenv`
 * Export `Configuration.Dotenv.Types` from `Configuration.Dotenv`

@@ -26,9 +26,12 @@ import           Control.Applicative                 (empty, many, some, (*>),
 #endif
 import           Control.Monad                       (void)
 import           Data.Void                           (Void)
-import           Text.Megaparsec                     (Parsec, between, eof,
-                                                      sepEndBy, (<?>))
-import           Text.Megaparsec.Char
+import           Text.Megaparsec                     (Parsec, anySingle, between, eof,
+                                                      sepEndBy, (<?>), oneOf,
+                                                      noneOf)
+import           Text.Megaparsec.Char                (alphaNumChar, char, eol,
+                                                      spaceChar, digitChar,
+                                                      letterChar)
 import qualified Text.Megaparsec.Char.Lexer          as L
 
 type Parser = Parsec Void String
@@ -58,14 +61,14 @@ value :: Parser VarValue
 value = (quotedValue <|> unquotedValue) <?> "variable value"
   where
     quotedValue   = quotedWith SingleQuote <|> quotedWith DoubleQuote
-    unquotedValue = Unquoted <$> (many $ fragment "\'\" \t\n\r")
+    unquotedValue = Unquoted <$> many (fragment "\'\" \t\n\r")
 
 -- | Parse a value quoted with given character.
 quotedWith :: QuoteType -> Parser VarValue
-quotedWith SingleQuote = SingleQuoted <$> (between (char '\'') (char '\'') $ many (literalValueFragment "\'\\"))
-quotedWith DoubleQuote = DoubleQuoted <$> (between (char '\"') (char '\"') $ many (fragment "\""))
+quotedWith SingleQuote = SingleQuoted <$> between (char '\'') (char '\'') (many (literalValueFragment "\'\\"))
+quotedWith DoubleQuote = DoubleQuoted <$> between (char '\"') (char '\"') (many (fragment "\""))
 
-fragment :: [Char] -> Parser VarFragment
+fragment :: String -> Parser VarFragment
 fragment charsToEscape =
   interpolatedValueCommandInterpolation
     <|> interpolatedValueVarInterpolation
@@ -85,10 +88,10 @@ interpolatedValueCommandInterpolation =
     where
       symbol = L.symbol sc
 
-literalValueFragment :: [Char] -> Parser VarFragment
-literalValueFragment charsToEscape = VarLiteral <$> (some $ escapedChar <|> normalChar)
+literalValueFragment :: String -> Parser VarFragment
+literalValueFragment charsToEscape = VarLiteral <$> some (escapedChar <|> normalChar)
   where
-    escapedChar = (char '\\' *> anyChar) <?> "escaped character"
+    escapedChar = (char '\\' *> anySingle) <?> "escaped character"
     normalChar  = noneOf charsToEscape <?> "unescaped character"
 
 ----------------------------------------------------------------------------
