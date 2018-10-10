@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.6.0.2
+* Support for `process-1.6.3.0`
+
 ## Dotenv 0.6.0.1
 * Add support for `megaparsec-7.0.1`
 * Drop support for `GHC 7.8.4`
