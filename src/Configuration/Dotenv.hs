@@ -39,7 +39,7 @@ import Data.List (union, intersectBy, unionBy)
 import System.Directory (doesFileExist)
 import System.Environment (lookupEnv)
 import System.IO.Error (isDoesNotExistError)
-import Text.Megaparsec (parse, parseErrorPretty)
+import Text.Megaparsec (parse, errorBundlePretty)
 
 #if MIN_VERSION_base(4,7,0)
 import System.Environment (getEnvironment, setEnv)
@@ -91,7 +91,7 @@ parseFile f = do
   contents <- liftIO $ readFile f
 
   case parse configParser f contents of
-    Left e        -> error $ parseErrorPretty e
+    Left e        -> error $ errorBundlePretty e
     Right options -> liftIO $ interpolateParsedVariables options
 
 applySetting :: MonadIO m => Bool -> (String, String) -> m (String, String)

@@ -9,7 +9,7 @@ import Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
 import Data.Void (Void)
 import Test.Hspec (it, describe, Spec, hspec)
 import Test.Hspec.Megaparsec (shouldParse, shouldFailOn, shouldSucceedOn)
-import Text.Megaparsec (ParseError, parse)
+import Text.Megaparsec (ParseErrorBundle, parse)
 
 main :: IO ()
 main = hspec spec
@@ -151,5 +151,5 @@ spec = describe "parse" $ do
   it "parses empty content (when the file is empty)" $
     parseConfig `shouldSucceedOn` ""
 
-parseConfig :: String -> Either (ParseError Char Void) [ParsedVariable]
+parseConfig :: String -> Either (ParseErrorBundle String Void) [ParsedVariable]
 parseConfig = parse configParser ""
