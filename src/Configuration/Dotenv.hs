@@ -32,7 +32,7 @@ import Configuration.Dotenv.Parse (configParser)
 import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
 import Configuration.Dotenv.Scheme
 import Configuration.Dotenv.Scheme.Types (ValidatorMap, defaultValidatorMap)
-import Configuration.Dotenv.Types (Config(..))
+import Configuration.Dotenv.Types (Config(..), defaultConfig)
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
 import Data.List (union, intersectBy, unionBy)
