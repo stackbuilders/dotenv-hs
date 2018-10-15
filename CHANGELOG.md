@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.6.0.3
+* Reexport `defaultConfig` in `Configuration.Dotenv` (thanks to: matsubara0507)
+
 ## Dotenv 0.6.0.2
 * Support for `process-1.6.3.0`
 
