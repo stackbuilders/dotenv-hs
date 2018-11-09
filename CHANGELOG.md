@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.7.0.0
+* Hide helper modules in other-modules
+
 ## Dotenv 0.6.0.3
 * Reexport `defaultConfig` in `Configuration.Dotenv` (thanks to: matsubara0507)
 
