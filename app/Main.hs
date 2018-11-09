@@ -13,9 +13,12 @@ import Paths_dotenv (version)
 
 import Control.Monad (void, unless)
 
-import Configuration.Dotenv (loadFile, loadSafeFile)
-import Configuration.Dotenv.Types (Config(..), defaultConfig)
-import Configuration.Dotenv.Scheme.Parser ( defaultValidatorMap )
+import Configuration.Dotenv
+  (Config(..)
+  , loadFile
+  , loadSafeFile
+  , defaultConfig
+  , defaultValidatorMap)
 
 import System.Process (system)
 import System.Exit (exitWith)
