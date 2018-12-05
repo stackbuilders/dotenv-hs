@@ -1,20 +1,12 @@
-{-# LANGUAGE CPP #-}
-
 module Configuration.Dotenv.TextSpec (main, spec) where
 
 import Configuration.Dotenv.Text (parseFile)
+import Configuration.Dotenv.Environment (lookupEnv, unsetEnv)
 
 import Test.Hspec
 
 import Control.Monad (liftM)
-import System.Environment (lookupEnv)
 import qualified Data.Text as T
-
-#if MIN_VERSION_base(4,7,0)
-import System.Environment (unsetEnv)
-#else
-import System.Environment.Compat (unsetEnv)
-#endif
 
 {-# ANN module ("HLint: ignore Reduce duplication" :: String) #-}
 

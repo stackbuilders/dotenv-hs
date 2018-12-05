@@ -4,6 +4,12 @@
 module Configuration.DotenvSpec (main, spec) where
 
 import Configuration.Dotenv.Types (Config(..))
+import Configuration.Dotenv.Environment
+  ( getEnvironment
+  , lookupEnv
+  , setEnv
+  , unsetEnv
+  )
 import Configuration.Dotenv
   ( load
   , loadFile
@@ -16,7 +22,6 @@ import Configuration.Dotenv
 import Test.Hspec
 
 import System.Process (readCreateProcess, shell)
-import System.Environment (lookupEnv)
 import Control.Monad (liftM, void)
 import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
@@ -27,12 +32,6 @@ import Data.Functor ((<$>))
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative ((<$))
-#endif
-
-#if MIN_VERSION_base(4,7,0)
-import System.Environment (getEnvironment, setEnv, unsetEnv)
-#else
-import System.Environment.Compat (getEnvironment, setEnv, unsetEnv)
 #endif
 
 main :: IO ()
@@ -173,6 +172,12 @@ spec = do
       me <- init <$> readCreateProcess (shell "whoami") ""
       liftM (!! 4) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("ME", me)
+
+#if MIN_VERSION_base(4,11,0)
+    it "recognizes blank variable" $
+      liftM (!! 5) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
+        ("BLANK", "")
+#endif
 
   describe "onMissingFile" $ after_ clearEnvs $ do
     context "when target file is present" $

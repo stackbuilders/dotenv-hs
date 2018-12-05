@@ -9,7 +9,6 @@
 --
 -- This module contains common functions to load and read dotenv files.
 
-{-# LANGUAGE CPP             #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Configuration.Dotenv
@@ -33,19 +32,13 @@ import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
 import Configuration.Dotenv.Scheme
 import Configuration.Dotenv.Scheme.Types (ValidatorMap, defaultValidatorMap)
 import Configuration.Dotenv.Types (Config(..), defaultConfig)
+import Configuration.Dotenv.Environment (getEnvironment, lookupEnv, setEnv)
 import Control.Monad.Catch
 import Control.Monad.IO.Class (MonadIO(..))
 import Data.List (union, intersectBy, unionBy)
 import System.Directory (doesFileExist)
-import System.Environment (lookupEnv)
 import System.IO.Error (isDoesNotExistError)
 import Text.Megaparsec (parse, errorBundlePretty)
-
-#if MIN_VERSION_base(4,7,0)
-import System.Environment (getEnvironment, setEnv)
-#else
-import System.Environment.Compat (getEnvironment, setEnv)
-#endif
 
 -- | Loads the given list of options into the environment. Optionally
 -- override existing variables with values from Dotenv files.
