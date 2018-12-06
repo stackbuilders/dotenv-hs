@@ -1,4 +1,9 @@
 ## MASTER
+## Dotenv 0.8.0.0
+* Add `Configuration.Dotenv.Environment` module exporting functions from `System.Environment`,
+  `System.Environment.Compat`, or `System.Environment.Blank`, depending on `base` version.
+* Add support for blank environment variables for `base` >= 4.11.0.0.
+
 ## Dotenv 0.7.0.0
 * Hide helper modules in other-modules
 
