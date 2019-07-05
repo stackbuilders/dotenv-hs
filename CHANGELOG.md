@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.8.0.1
+* Support for `optparse-applicative-0.15`
+
 ## Dotenv 0.8.0.0
 * Add `Configuration.Dotenv.Environment` module exporting functions from `System.Environment`,
   `System.Environment.Compat`, or `System.Environment.Blank`, depending on `base` version.
