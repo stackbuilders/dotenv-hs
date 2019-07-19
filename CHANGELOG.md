@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.8.0.2
+* Add support for GHC 8.6
+
 ## Dotenv 0.8.0.1
 * Support for `optparse-applicative-0.15`
 
