@@ -91,7 +91,7 @@ library
   build-depends:         base >=4.7 && <5.0
                        , base-compat >= 0.4
                        , directory
-                       , megaparsec >= 7.0.1 && < 8.0
+                       , megaparsec >= 7.0.1 && < 9.0
                        , containers
                        , process >= 1.6.3.0 && < 1.7
                        , text
