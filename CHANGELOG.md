@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.8.0.4
+*  Fix test fixtures
+
 ## Dotenv 0.8.0.3
 * Add suppport for `megaparsec-8.0.0`
 
