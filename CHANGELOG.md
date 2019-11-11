@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.8.0.3
+* Add suppport for `megaparsec-8.0.0`
+
 ## Dotenv 0.8.0.2
 * Add support for GHC 8.6
 
