@@ -50,6 +50,7 @@ data-files:
   .dotenv
   .dotenv.example
   .scheme.yml
+  .dotenv.safe
 
 flag dev
   description:        Turn on development settings.
