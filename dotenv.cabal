@@ -52,6 +52,11 @@ data-files:
   .scheme.yml
   .dotenv.safe
 
+flag static
+  description:        Creates static binary.
+  manual:             True
+  default:            False
+
 flag dev
   description:        Turn on development settings.
   manual:             True
@@ -71,6 +76,9 @@ executable dotenv
   other-modules: Paths_dotenv
 
   hs-source-dirs:      app
+  if flag(static)
+    ghc-options:      -Wall -Werror
+    ld-options:       -static -pthread
   if flag(dev)
     ghc-options:      -Wall -Werror
   else
