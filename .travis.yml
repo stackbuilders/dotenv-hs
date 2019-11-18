@@ -4,22 +4,22 @@ language: haskell
 ghc:
   - "8.6"
   - "8.4"
-  - "8.2"
-  - "8.0"
-  - "7.10"
+#  - "8.2"
+#  - "8.0"
+#  - "7.10"
 
 before_deploy: |
-  if [[ $TRAVIS_HASKELL_VERSION == "8.6.5" ]]; then
-    cabal install -f 'static'
-    tar -C dist/build/dotenv -cvf dotenv.static.linux.x86_64.tar.gz dotenv
-  fi
+  tar -C dist/build/dotenv -cvf dotenv-linux-x86_64-static.tar.gz dotenv
+  cabal install -f 'static'
+  export BODY=$(cat < CHANGELOG.md)
 
 deploy:
   provider: releases
   api_key: "$GITHUB_TRAVIS_DEPLOY"
-  file: "dotenv.static.linux.x86_64.tar.gz"
+  file: "dotenv-linux-x86_64-static.tar.gz"
   skip_cleanup: true
   draft: true
+  body: '${BODY}'
   on:
     branch: create-static-binary-linux-64
     condition: $TRAVIS_HASKELL_VERSION == "8.6.5"
