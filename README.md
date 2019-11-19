@@ -20,7 +20,9 @@ programs written in Haskell.
 ## Installation
 
 In most cases you will just add `dotenv` to your cabal file. You can
-also install the library and executable by invoking `stack install dotenv`.
+also install the library and executable by invoking `stack install dotenv` or
+you can download the dotenv binaries from our
+[releases](https://github.com/stackbuilders/dotenv-hs/releases) page.
 
 ## Usage
 
