@@ -7,3 +7,19 @@ ghc:
   - "8.2"
   - "8.0"
   - "7.10"
+
+before_deploy: |
+  if [[ $TRAVIS_HASKELL_VERSION == "8.6.5" ]]; then
+    cabal install -f 'static'
+    tar -C dist/build/dotenv -cvf dotenv-linux-x86_64-static.tar.gz dotenv
+  fi
+
+deploy:
+  provider: releases
+  api_key: "$GITHUB_TRAVIS_DEPLOY"
+  file: "dotenv-linux-x86_64-static.tar.gz"
+  skip_cleanup: true
+  draft: true
+  on:
+    condition: $TRAVIS_HASKELL_VERSION == "8.6.5"
+    tags: true
