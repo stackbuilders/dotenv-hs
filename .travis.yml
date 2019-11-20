@@ -24,5 +24,6 @@ deploy:
   script: ./github-releaser -draft -verbose
   skip_cleanup: true
   on:
+    branch: release-with-notes
     condition: $TRAVIS_HASKELL_VERSION == "8.6.5"
-    tags: true
+    tags: false
