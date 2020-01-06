@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Configuration.Dotenv.Types
--- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- Copyright   :  © 2015–2020 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
@@ -16,14 +16,15 @@ module Configuration.Dotenv.Scheme
   )
   where
 
-import Control.Monad
+import           Control.Monad
 
-import Data.List
-import Data.Yaml (decodeFileEither, prettyPrintParseException)
+import           Data.List
+import           Data.Yaml                           (decodeFileEither,
+                                                      prettyPrintParseException)
 
-import Configuration.Dotenv.Scheme.Helpers
-import Configuration.Dotenv.Scheme.Parser
-import Configuration.Dotenv.Scheme.Types
+import           Configuration.Dotenv.Scheme.Helpers
+import           Configuration.Dotenv.Scheme.Parser
+import           Configuration.Dotenv.Scheme.Types
 
 readScheme :: FilePath -> IO [Env]
 readScheme schemeFile = do
@@ -66,4 +67,4 @@ checkConfig mapFormat envvars envsWithType =
                   ++ " must be in your scheme.yml")
      case parseEnvsWithScheme mapFormat valuesAndTypes of
        Left errors -> error (unlines errors)
-       _ -> return ()
+       _           -> return ()

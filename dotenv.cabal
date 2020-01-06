@@ -36,7 +36,7 @@ license:             MIT
 license-file:        LICENSE
 author:              Justin Leitgeb
 maintainer:          hackage@stackbuilders.com
-copyright:           2015-2017 Stack Builders Inc.
+copyright:           2015-2020 Stack Builders Inc.
 category:            Configuration
 build-type:          Simple
 extra-source-files:    spec/fixtures/.dotenv

@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Configuration.Dotenv.Types
--- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- Copyright   :  © 2015–2020 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
@@ -13,12 +13,12 @@ module Configuration.Dotenv.Text (parseFile) where
 
 import qualified Configuration.Dotenv
 
-import qualified Data.Text as T
-import Control.Arrow ((***))
+import           Control.Arrow          ((***))
+import qualified Data.Text              as T
 
-import Control.Monad (liftM)
+import           Control.Monad          (liftM)
 
-import Control.Monad.IO.Class (MonadIO(..))
+import           Control.Monad.IO.Class (MonadIO (..))
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.

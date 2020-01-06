@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Configuration.Dotenv.Types
--- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- Copyright   :  © 2015–2020 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
@@ -9,28 +9,28 @@
 --
 -- Types for 'loadSafeFile' (e. g., 'ValidatorMap')
 
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP               #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Configuration.Dotenv.Scheme.Types where
 
 #if !MIN_VERSION_base(4,8,0)
-import Control.Applicative ((<*>), pure)
-import Data.Functor ((<$>))
+import           Control.Applicative (pure, (<*>))
+import           Data.Functor        ((<$>))
 #endif
 
-import Data.Maybe (isJust)
+import           Data.Maybe          (isJust)
 
-import Data.Map.Lazy (Map)
+import           Data.Map.Lazy       (Map)
 
-import Data.Yaml
+import           Data.Yaml
 
-import qualified Data.Map.Lazy as ML
+import qualified Data.Map.Lazy       as ML
 
-import Data.Text (Text)
-import qualified Data.Text as T
+import           Data.Text           (Text)
+import qualified Data.Text           as T
 
-import Text.Read (readMaybe)
+import           Text.Read           (readMaybe)
 
 
 -- |
@@ -42,7 +42,7 @@ newtype EnvType = EnvType Text
 --
 instance FromJSON EnvType where
   parseJSON (String value) = pure (EnvType value)
-  parseJSON anyOther = fail ("Not an object: " ++ show anyOther)
+  parseJSON anyOther       = fail ("Not an object: " ++ show anyOther)
 
 -- |
 --
