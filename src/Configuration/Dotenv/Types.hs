@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Configuration.Dotenv.Types
--- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- Copyright   :  © 2015–2020 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>

@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Configuration.Dotenv.Types
--- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- Copyright   :  © 2015–2020 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
@@ -18,13 +18,13 @@ module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             VarFragment(..),
                                             interpolateParsedVariables) where
 
-import Control.Monad (foldM)
-import Configuration.Dotenv.Environment (lookupEnv)
+import           Configuration.Dotenv.Environment (lookupEnv)
+import           Control.Monad                    (foldM)
 #if !MIN_VERSION_base(4,8,0)
-import Data.Functor ((<$>))
+import           Data.Functor                     ((<$>))
 #endif
-import Control.Applicative ((<|>))
-import System.Process (readCreateProcess, shell)
+import           Control.Applicative              ((<|>))
+import           System.Process                   (readCreateProcess, shell)
 
 data ParsedVariable
   = ParsedVariable VarName VarValue deriving (Show, Eq)
@@ -68,5 +68,5 @@ joinContents :: VarContents -> String
 joinContents = concatMap fragmentToString
   where
     fragmentToString (CommandInterpolation value) = value
-    fragmentToString (VarInterpolation value) = value
-    fragmentToString (VarLiteral value)       = value
+    fragmentToString (VarInterpolation value)     = value
+    fragmentToString (VarLiteral value)           = value

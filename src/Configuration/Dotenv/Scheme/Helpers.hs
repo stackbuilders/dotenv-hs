@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Configuration.Dotenv.Types
--- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- Copyright   :  © 2015–2020 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
@@ -24,12 +24,12 @@ module Configuration.Dotenv.Scheme.Helpers
   where
 
 #if !MIN_VERSION_base(4,8,0)
-import Data.Functor ((<$>))
-import Control.Applicative ((<*>))
+import           Control.Applicative               ((<*>))
+import           Data.Functor                      ((<$>))
 #endif
-import Data.List
+import           Data.List
 
-import Configuration.Dotenv.Scheme.Types
+import           Configuration.Dotenv.Scheme.Types
 
 matchValueAndType
   :: [(Env, (String, String))]

@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Configuration.Dotenv.Types
--- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- Copyright   :  © 2015–2020 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
@@ -21,17 +21,17 @@ module Configuration.Dotenv.Scheme.Parser
   where
 
 #if !MIN_VERSION_base(4,8,0)
-import Control.Applicative ((*>), pure)
-import Data.Functor ((<$>))
+import           Control.Applicative               (pure, (*>))
+import           Data.Functor                      ((<$>))
 #endif
 
-import Data.Either
+import           Data.Either
 
-import qualified Data.Map.Lazy as ML
+import qualified Data.Map.Lazy                     as ML
 
-import qualified Data.Text as T
+import qualified Data.Text                         as T
 
-import Configuration.Dotenv.Scheme.Types
+import           Configuration.Dotenv.Scheme.Types
 
 
 -- |

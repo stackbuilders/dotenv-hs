@@ -245,4 +245,4 @@ MIT
 
 ## Copyright
 
-(C) 2015-2017 [Stack Builders Inc.](http://www.stackbuilders.com)
+(C) 2015-2020 [Stack Builders Inc.](http://www.stackbuilders.com)

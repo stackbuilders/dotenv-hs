@@ -1,6 +1,6 @@
 -- |
 -- Module      :  Configuration.Dotenv.Types
--- Copyright   :  © 2015–2018 Stack Builders Inc.
+-- Copyright   :  © 2015–2020 Stack Builders Inc.
 -- License     :  MIT
 --
 -- Maintainer  :  Stack Builders <hackage@stackbuilders.com>
@@ -26,19 +26,23 @@ module Configuration.Dotenv
   )
  where
 
-import Control.Monad (liftM, when)
-import Configuration.Dotenv.Parse (configParser)
-import Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
-import Configuration.Dotenv.Scheme
-import Configuration.Dotenv.Scheme.Types (ValidatorMap, defaultValidatorMap)
-import Configuration.Dotenv.Types (Config(..), defaultConfig)
-import Configuration.Dotenv.Environment (getEnvironment, lookupEnv, setEnv)
-import Control.Monad.Catch
-import Control.Monad.IO.Class (MonadIO(..))
-import Data.List (union, intersectBy, unionBy)
-import System.Directory (doesFileExist)
-import System.IO.Error (isDoesNotExistError)
-import Text.Megaparsec (parse, errorBundlePretty)
+import           Configuration.Dotenv.Environment    (getEnvironment, lookupEnv,
+                                                      setEnv)
+import           Configuration.Dotenv.Parse          (configParser)
+import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
+import           Configuration.Dotenv.Scheme
+import           Configuration.Dotenv.Scheme.Types   (ValidatorMap,
+                                                      defaultValidatorMap)
+import           Configuration.Dotenv.Types          (Config (..),
+                                                      defaultConfig)
+import           Control.Monad                       (liftM, when)
+import           Control.Monad.Catch
+import           Control.Monad.IO.Class              (MonadIO (..))
+import           Data.List                           (intersectBy, union,
+                                                      unionBy)
+import           System.Directory                    (doesFileExist)
+import           System.IO.Error                     (isDoesNotExistError)
+import           Text.Megaparsec                     (errorBundlePretty, parse)
 
 -- | Loads the given list of options into the environment. Optionally
 -- override existing variables with values from Dotenv files.
