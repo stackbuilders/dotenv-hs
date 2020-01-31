@@ -3,10 +3,10 @@ language: haskell
 
 ghc:
   - "8.6"
-#  - "8.4"
-#  - "8.2"
-#  - "8.0"
-#  - "7.10"
+  - "8.4"
+  - "8.2"
+  - "8.0"
+  - "7.10"
 
 before_deploy: |
   if [[ $TRAVIS_HASKELL_VERSION == "8.6.5" ]]; then
@@ -23,6 +23,5 @@ deploy:
   edge: true
   draft: true
   on:
-    branch: release-with-notes
     condition: $TRAVIS_HASKELL_VERSION == "8.6.5"
-    tags: false
+    tags: true
