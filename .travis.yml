@@ -20,6 +20,7 @@ deploy:
   file: "dotenv-linux-x86_64-static.tar.gz"
   skip_cleanup: true
   release_notes_file: "CHANGELOG.md"
+  edge: true
   draft: true
   on:
     branch: release-with-notes
