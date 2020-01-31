@@ -14,7 +14,7 @@ before_deploy: |
     tar -C dist/build/dotenv -cvf dotenv-linux-x86_64-static.tar.gz dotenv
     curl https://github.com/lindell/github-release-cli/releases/download/1.3.0/github-releaser-travis -L --output github-releaser && chmod +x github-releaser
     export GITHUB_OAUTH_TOKEN="$GITHUB_TRAVIS_DEPLOY"
-    export RELEASE_NAME=Dotenv-Release-v$(cabal exec dotenv -- --version)
+    export RELEASE_NAME=v$(cabal exec dotenv -- --version)
     export BODY=$(envsubst < ./CHANGELOG.md)
     export FILES=dotenv-linux-x86_64-static.tar.gz
   fi
