@@ -49,6 +49,7 @@ jobs:
       script: sh .travis/travis_build.sh
 
     - stage: Deploy to GitHub
+      if: branch = master
       language: generic
       before_deploy:
         - mv ~/$TRAVIS_BUILD_NUMBER/* $PWD
