@@ -39,7 +39,8 @@ after_success:
 
 jobs:
   include:
-    - language: generic
+    - stage: Test
+      language: generic
       os: osx
       addons: skip
       before_install: sh .travis/ghcup.sh
