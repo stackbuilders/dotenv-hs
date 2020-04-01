@@ -18,56 +18,62 @@ env:
     - PATH=$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH
     - PATH=$HOME/.ghcup/ghc/$GHC_VER:$HOME/.cabal/$CABAL_VER:$PATH
 
+# TODO: Uncomment master and remove osx-deploy-binary
+stages:
+  - Test
+  - name: Binary build
+    if: branch = osx-deploy-binary
+#    if: branch = master
+  - name: Deploy
+    if: branch = osx-deploy-binary
+#    if: branch = master
+
 before_install:
   - pip install --user awscli
   - echo $(which pip)
   - mkdir -p ~/$TRAVIS_BUILD_NUMBER
   - aws s3 sync s3://dotenv-releases/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
 
+after_success:
+  - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://dotenv-releases/$TRAVIS_BUILD_NUMBER
+
 jobs:
   include:
-    - stage: OS X build and test
-      language: generic
+    - language: generic
       os: osx
       addons: skip
       before_install: sh .travis/ghcup.sh
       install: cabal install --only-dependencies --enable-tests
       script: cabal configure --enable-tests && cabal build && cabal test
 
-    - stage: OS X binary build
-      if: branch = master
-      language: generic
+    - stage: Binary build
+      ghc: 8.6
+      install: cabal install --only-dependencies
+      script: sh .travis/travis_build.sh
+
+    - language: generic
       os: osx
       install: |
         sh .travis/ghcup.sh
         cabal install --only-dependencies
       script: sh .travis/travis_build.sh
 
-    - stage: Linux static binary build
-      if: branch = master
-      ghc: 8.6
-      script: sh .travis/travis_build.sh
-
-    - stage: Deploy to GitHub
-      if: branch = master
+    - stage: Deploy
       language: generic
-      before_deploy:
-        - mv ~/$TRAVIS_BUILD_NUMBER/* $PWD
+      before_deploy: mv ~/$TRAVIS_BUILD_NUMBER/* $PWD
       deploy:
         provider: releases
         api_key: "$GITHUB_TRAVIS_DEPLOY"
         file:
           - "dotenv-linux-x86_64-static.tar.gz"
-          - "dotenv-osx-x86_64-static.tar.gz"
+          - "dotenv-osx-x86_64.tar.gz"
         skip_cleanup: true
         release_notes_file: "CHANGELOG.md"
         edge: true
         draft: true
         on:
-          tags: true
+# TODO: Remove branch and uncomment tags
+#          tags: true
+          branch: osx-deploy-binary
       after_deploy:
         - aws s3 rm --recursive s3://dotenv-releases/$TRAVIS_BUILD_NUMBER
-
-
-after_success:
-  - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://dotenv-releases/$TRAVIS_BUILD_NUMBER
