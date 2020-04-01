@@ -18,15 +18,12 @@ env:
     - PATH=$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH
     - PATH=$HOME/.ghcup/ghc/$GHC_VER:$HOME/.cabal/$CABAL_VER:$PATH
 
-# TODO: Uncomment master and remove osx-deploy-binary
 stages:
   - Test
   - name: Binary build
-    if: branch = osx-deploy-binary
-#    if: branch = master
+    if: tag IS present
   - name: Deploy
-    if: branch = osx-deploy-binary
-#    if: branch = master
+    if: tag IS present
 
 before_install:
   - pip install --user awscli
@@ -73,8 +70,6 @@ jobs:
         edge: true
         draft: true
         on:
-# TODO: Remove branch and uncomment tags
-#          tags: true
-          branch: osx-deploy-binary
+          tags: true
       after_deploy:
         - aws s3 rm --recursive s3://dotenv-releases/$TRAVIS_BUILD_NUMBER
