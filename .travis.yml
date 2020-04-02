@@ -37,10 +37,15 @@ after_success:
 jobs:
   include:
     - stage: Test
+      before_install: skip
+      after_success: skip
+
+    - stage: Test
       language: generic
       os: osx
       addons: skip
       before_install: sh .travis/ghcup.sh
+      after_success: skip
       install: cabal install --only-dependencies --enable-tests
       script: cabal configure --enable-tests && cabal build && cabal test
 
