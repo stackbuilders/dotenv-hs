@@ -8,20 +8,73 @@ ghc:
   - "8.0"
   - "7.10"
 
-before_deploy: |
-  if [[ $TRAVIS_HASKELL_VERSION == "8.6.5" ]]; then
-    cabal install -f 'static'
-    tar -C dist/build/dotenv -cvf dotenv-linux-x86_64-static.tar.gz dotenv
-  fi
+env:
+  global:
+    - PATH=$HOME/.local/bin:$PATH
+    # Envs for OS X
+    - GHC_VER="8.6.5"
+    - CABAL_VER="2.4.0.0"
+    - PATH=$HOME/Library/Python/2.7/bin:$PATH
+    - PATH=$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH
+    - PATH=$HOME/.ghcup/ghc/$GHC_VER:$HOME/.cabal/$CABAL_VER:$PATH
 
-deploy:
-  provider: releases
-  api_key: "$GITHUB_TRAVIS_DEPLOY"
-  file: "dotenv-linux-x86_64-static.tar.gz"
-  skip_cleanup: true
-  release_notes_file: "CHANGELOG.md"
-  edge: true
-  draft: true
-  on:
-    condition: $TRAVIS_HASKELL_VERSION == "8.6.5"
-    tags: true
+stages:
+  - Test
+  - name: Binary build
+    if: tag IS present
+  - name: Deploy
+    if: tag IS present
+
+before_install:
+  - pip install --user awscli
+  - echo $(which pip)
+  - mkdir -p ~/$TRAVIS_BUILD_NUMBER
+  - aws s3 sync s3://dotenv-releases/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+
+after_success:
+  - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://dotenv-releases/$TRAVIS_BUILD_NUMBER
+
+jobs:
+  include:
+    - stage: Test
+      before_install: skip
+      after_success: skip
+
+    - stage: Test
+      language: generic
+      os: osx
+      addons: skip
+      before_install: sh .travis/ghcup.sh
+      after_success: skip
+      install: cabal install --only-dependencies --enable-tests
+      script: cabal configure --enable-tests && cabal build && cabal test
+
+    - stage: Binary build
+      ghc: 8.6
+      install: cabal install --only-dependencies
+      script: sh .travis/travis_build.sh
+
+    - language: generic
+      os: osx
+      install: |
+        sh .travis/ghcup.sh
+        cabal install --only-dependencies
+      script: sh .travis/travis_build.sh
+
+    - stage: Deploy
+      language: generic
+      before_deploy: mv ~/$TRAVIS_BUILD_NUMBER/* $PWD
+      deploy:
+        provider: releases
+        api_key: "$GITHUB_TRAVIS_DEPLOY"
+        file:
+          - "dotenv-linux-x86_64-static.tar.gz"
+          - "dotenv-osx-x86_64.tar.gz"
+        skip_cleanup: true
+        release_notes_file: "CHANGELOG.md"
+        edge: true
+        draft: true
+        on:
+          tags: true
+      after_deploy:
+        - aws s3 rm --recursive s3://dotenv-releases/$TRAVIS_BUILD_NUMBER
