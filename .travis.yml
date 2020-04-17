@@ -25,37 +25,34 @@ stages:
   - name: Deploy
     if: tag IS present
 
-before_install:
-  - pip install --user awscli
-  - echo $(which pip)
-  - mkdir -p ~/$TRAVIS_BUILD_NUMBER
-  - aws s3 sync s3://dotenv-releases/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
-
-after_success:
-  - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://dotenv-releases/$TRAVIS_BUILD_NUMBER
-
 jobs:
   include:
-    - stage: Test
-      before_install: skip
-      after_success: skip
-
     - stage: Test
       language: generic
       os: osx
       addons: skip
       before_install: sh .travis/ghcup.sh
-      after_success: skip
       install: cabal install --only-dependencies --enable-tests
       script: cabal configure --enable-tests && cabal build && cabal test
 
     - stage: Binary build
       ghc: 8.6
+      before_install: &aws_install
+        - pip install --user awscli
+        - echo $(which pip)
+        - mkdir -p ~/$TRAVIS_BUILD_NUMBER
+        - aws s3 sync s3://dotenv-releases/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+      after_success: &aws_sync
+        - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://dotenv-releases/$TRAVIS_BUILD_NUMBER
       install: cabal install --only-dependencies
       script: sh .travis/travis_build.sh
 
     - language: generic
       os: osx
+      before_install:
+        - *aws_install
+      after_success:
+        - *aws_sync
       install: |
         sh .travis/ghcup.sh
         cabal install --only-dependencies
@@ -63,6 +60,10 @@ jobs:
 
     - stage: Deploy
       language: generic
+      before_install:
+        - *aws_install
+      after_success:
+        - *aws_sync
       before_deploy: mv ~/$TRAVIS_BUILD_NUMBER/* $PWD
       deploy:
         provider: releases
