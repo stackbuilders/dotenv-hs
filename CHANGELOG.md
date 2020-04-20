@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.8.0.5
+* Extend ghc support to 8.8 and 8.10
+
 ## Dotenv 0.8.0.4
 *  Fix test fixtures
 
