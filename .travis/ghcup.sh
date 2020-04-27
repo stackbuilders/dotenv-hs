@@ -4,3 +4,4 @@ ghcup install $GHC_VER
 ghcup install-cabal $CABAL_VER
 ghcup set $GHC_VER
 cabal update
+cabal install Cabal cabal-install
