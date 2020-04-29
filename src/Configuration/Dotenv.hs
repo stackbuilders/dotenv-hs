@@ -38,8 +38,9 @@ import           Configuration.Dotenv.Types          (Config (..),
 import           Control.Monad                       (liftM, when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
+import           Data.Function                       (on)
 import           Data.List                           (intersectBy, union,
-                                                      unionBy)
+                                                      unionBy, nubBy)
 import           System.Directory                    (doesFileExist)
 import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
@@ -76,7 +77,9 @@ loadFile Config{..} = do
               then readedVars `unionEnvs` neededVars
               else error $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++ concatMap ((++) " " . fst) neededVars
           else readedVars
-  mapM (applySetting configOverride) vars
+      -- prefer later in favour of earlier occurrences:
+      nubbedVars = reverse . nubBy ((==) `on` fst) $ reverse vars
+  mapM (applySetting configOverride) nubbedVars
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
