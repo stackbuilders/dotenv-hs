@@ -4,4 +4,8 @@ ghcup install $GHC_VER
 ghcup install-cabal $CABAL_VER
 ghcup set $GHC_VER
 cabal update
+echo "Cabal version before upgrade:"
+cabal --version
 cabal install Cabal cabal-install
+echo "Cabal version after upgrade:"
+cabal --version
