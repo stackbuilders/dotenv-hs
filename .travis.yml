@@ -1,6 +1,7 @@
 ---
 language: haskell
 
+cabal: "3.2"
 ghc:
   - "8.10"
   - "8.8"
@@ -15,7 +16,7 @@ env:
     - PATH=$HOME/.local/bin:$PATH
     # Envs for OS X
     - GHC_VER="8.6.5"
-    - CABAL_VER="2.4.0.0"
+    - CABAL_VER="3.2.0.0"
     - PATH=$HOME/Library/Python/2.7/bin:$PATH
     - PATH=$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH
     - PATH=$HOME/.ghcup/ghc/$GHC_VER:$HOME/.cabal/$CABAL_VER:$PATH
