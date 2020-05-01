@@ -35,7 +35,7 @@ jobs:
       os: osx
       addons: skip
       before_install: sh .travis/ghcup.sh
-      install: cabal install --only-dependencies --enable-tests
+      install: cabal install --only-dependencies
       script: cabal configure --enable-tests && cabal build && cabal test
 
     - stage: Binary build
