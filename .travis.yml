@@ -1,7 +1,10 @@
 ---
 language: haskell
 
+cabal: "2.4"
 ghc:
+  - "8.10"
+  - "8.8"
   - "8.6"
   - "8.4"
   - "8.2"
@@ -36,7 +39,7 @@ jobs:
       script: cabal configure --enable-tests && cabal build && cabal test
 
     - stage: Binary build
-      ghc: 8.6
+      ghc: 8.10
       before_install: &aws_install
         - pip install --user awscli
         - echo $(which pip)
