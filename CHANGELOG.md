@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.8.0.6
+* Allow optparse-applicative-0.16.0.0
+
 ## Dotenv 0.8.0.5
 * Extend ghc support to 8.8 and 8.10
 
