@@ -1,4 +1,7 @@
 ## MASTER
+## Dotenv 0.8.0.7
+* Allow megaparsec-0.9.0.0
+
 ## Dotenv 0.8.0.6
 * Allow optparse-applicative-0.16.0.0
 
