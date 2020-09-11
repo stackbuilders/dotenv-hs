@@ -150,7 +150,7 @@ test-suite dotenv-test
                      , text
                      , transformers >=0.4 && < 0.6
                      , exceptions >= 0.8 && < 0.11
-                     , hspec-megaparsec >= 2.2 && < 3.0
+                     , hspec-megaparsec >= 2.0 && < 3.0
                      , yaml >= 0.8
 
   if !impl(ghc >= 7.10)
