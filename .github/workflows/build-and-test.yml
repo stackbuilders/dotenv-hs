@@ -33,7 +33,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+            ~/.cabal/store
             dist-newstyle
           key: dependencies-${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
           restore-keys: |
