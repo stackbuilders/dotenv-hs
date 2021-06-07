@@ -1,4 +1,5 @@
 name: Build and Test
+
 on:
   push:
     branches:
@@ -7,6 +8,7 @@ on:
     types:
       - opened
       - synchronize
+
 jobs:
   build-and-test:
     runs-on: ${{ matrix.os }}
@@ -26,23 +28,22 @@ jobs:
         uses: haskell/actions/setup@v1
         with:
           ghc-version: ${{ matrix.ghc }}
-          cabal-version: "2.4"
+          cabal-version: "3.4"
       - run: cabal v2-update
       - run: cabal v2-freeze --enable-tests
       - name: Cache dependencies and dist-newstyle
         uses: actions/cache@v2
         with:
           path: |
-            ~/.cabal/store
+            ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
             dist-newstyle
           key: dependencies-${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
           restore-keys: |
             dependencies-${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
             dependencies-${{ runner.os }}-${{ matrix.ghc }}-
       - name: Install dependencies
-        run: cabal install --only-dependencies --enable-tests
-      - run: cabal configure --enable-tests
+        run: cabal v2-install --only-dependencies
       - name: Build project
-        run: cabal build
+        run: cabal v2-build --enable-tests
       - name: Run tests
-        run: cabal test
+        run: cabal v2-test --enable-tests
