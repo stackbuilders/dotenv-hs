@@ -1,4 +1,4 @@
-name: Release to package to Github
+name: Release package to Github
 
 on:
   push:
