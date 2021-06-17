@@ -3,21 +3,7 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    hackage: hspec-megaparsec-2.2.0@sha256:679b9b91ea0ed0c36d6782d6051a08e0825409d10adbab8c8cfa9c8bd8bfc245,1802
-    pantry-tree:
-      size: 385
-      sha256: 55cfefc7cab71d84528ddc846040c60a27e827e806d39aeba8ca5a2bf0a5e96c
-  original:
-    hackage: hspec-megaparsec-2.2.0
-- completed:
-    hackage: megaparsec-9.0.0@sha256:920d1e469056c746b532333a078c2a9a195fab5e860e0c9734ee92a28c2bfb65,3117
-    pantry-tree:
-      size: 1447
-      sha256: 26c1c24e343cfa6b2c55715fff4b8608e527a6b6ad3d510e328e0a228f979a7d
-  original:
-    hackage: megaparsec-9.0.0
+packages: []
 snapshots:
 - completed:
     size: 532381
