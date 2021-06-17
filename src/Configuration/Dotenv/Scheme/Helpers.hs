@@ -9,7 +9,6 @@
 --
 -- Helpers for loadSafeFile
 
-{-# LANGUAGE CPP             #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Configuration.Dotenv.Scheme.Helpers
@@ -23,10 +22,6 @@ module Configuration.Dotenv.Scheme.Helpers
   )
   where
 
-#if !MIN_VERSION_base(4,8,0)
-import           Control.Applicative               ((<*>))
-import           Data.Functor                      ((<$>))
-#endif
 import           Data.List
 
 import           Configuration.Dotenv.Scheme.Types

@@ -9,8 +9,6 @@
 --
 -- Helpers to interpolate environment variables
 
-{-# LANGUAGE CPP #-}
-
 module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             VarName,
                                             VarValue(..),
@@ -20,9 +18,6 @@ module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
 
 import           Configuration.Dotenv.Environment (lookupEnv)
 import           Control.Monad                    (foldM)
-#if !MIN_VERSION_base(4,8,0)
-import           Data.Functor                     ((<$>))
-#endif
 import           Control.Applicative              ((<|>))
 import           System.Process                   (readCreateProcess, shell)
 

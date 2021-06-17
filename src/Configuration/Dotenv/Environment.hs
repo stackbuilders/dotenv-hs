@@ -8,20 +8,10 @@ module Configuration.Dotenv.Environment
   ) where
 
 #if MIN_VERSION_base(4,11,0)
-import System.Environment.Blank (getEnvironment, unsetEnv)
+import System.Environment.Blank (getEnvironment, getEnv, unsetEnv)
 import qualified System.Environment.Blank as Blank
 #else
-#if MIN_VERSION_base(4,7,0)
-import System.Environment (getEnvironment, setEnv, unsetEnv)
-#else
-import System.Environment.Compat (getEnvironment, setEnv, unsetEnv)
-#endif
-#endif
-
-#if MIN_VERSION_base(4,11,0)
-import System.Environment.Blank (getEnv)
-#else
-import System.Environment (lookupEnv)
+import System.Environment (getEnvironment, lookupEnv, setEnv, unsetEnv)
 #endif
 
 #if MIN_VERSION_base(4,11,0)

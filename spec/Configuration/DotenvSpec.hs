@@ -26,13 +26,6 @@ import Control.Monad (liftM, void)
 import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import qualified Data.Map.Lazy as M
-#if !MIN_VERSION_base(4,8,0)
-import Data.Functor ((<$>))
-#endif
-
-#if !MIN_VERSION_base(4,8,0)
-import Control.Applicative ((<$))
-#endif
 
 main :: IO ()
 main = hspec spec
