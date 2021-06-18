@@ -1,4 +1,8 @@
 ## MASTER
+
+## Dotenv 0.8.1.0
+* Correct bounds for base. GHC support for versions older than 8.0 was dropped.
+
 ## Dotenv 0.8.0.7
 * Allow megaparsec-0.9.0.0
 

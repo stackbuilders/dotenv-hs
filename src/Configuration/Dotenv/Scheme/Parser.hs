@@ -9,7 +9,6 @@
 --
 -- Helpers for loadSafeFile
 
-{-# LANGUAGE CPP                 #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -19,11 +18,6 @@ module Configuration.Dotenv.Scheme.Parser
   , typeValidator
   )
   where
-
-#if !MIN_VERSION_base(4,8,0)
-import           Control.Applicative               (pure, (*>))
-import           Data.Functor                      ((<$>))
-#endif
 
 import           Data.Either
 

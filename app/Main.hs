@@ -4,7 +4,7 @@
 module Main where
 
 import Data.Version (showVersion)
-#if MIN_VERSION_optparse_applicative(0,13,0)
+#if !MIN_VERSION_base(4,13,0)
 import Data.Monoid ((<>))
 #endif
 

@@ -12,18 +12,12 @@
 -- information on the dotenv format can be found in the project README and the
 -- test suite.
 
-{-# LANGUAGE CPP               #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Configuration.Dotenv.Parse (configParser) where
 
 import           Configuration.Dotenv.ParsedVariable
-#if MIN_VERSION_base(4,8,0)
 import           Control.Applicative                 (empty, many, some, (<|>))
-#else
-import           Control.Applicative                 (empty, many, some, (*>),
-                                                      (<$>), (<*), (<*>), (<|>))
-#endif
 import           Control.Monad                       (void)
 import           Data.Void                           (Void)
 import           Text.Megaparsec                     (Parsec, anySingle,
@@ -121,11 +115,5 @@ spaceChar' = oneOf (" \t" :: String)
 -- | Skip line comment and stop before newline character without consuming
 -- it.
 skipLineComment :: Parser ()
-#if MIN_VERSION_megaparsec(5,1,0)
 skipLineComment = L.skipLineComment "#"
-#else
-skipLineComment = p >> void (manyTill anyChar n)
-  where p = string "#"
-        n = lookAhead (void newline) <|> eof
-#endif
 {-# INLINE skipLineComment #-}

@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.8.0.7
+version:             0.8.1.0
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -64,14 +64,14 @@ flag dev
 
 executable dotenv
   main-is:             Main.hs
-  build-depends:         base >=4.7 && <5.0
+  build-depends:         base >= 4.9 && < 5.0
                        , base-compat >= 0.4
                        , dotenv
-                       , optparse-applicative >=0.11 && < 0.17
+                       , optparse-applicative >= 0.11 && < 0.17
                        , megaparsec
                        , process
                        , text
-                       , transformers >=0.4 && < 0.6
+                       , transformers >= 0.4 && < 0.6
                        , yaml >= 0.8
   other-modules: Paths_dotenv
 
@@ -97,7 +97,7 @@ library
                       , Configuration.Dotenv.Scheme.Parser
                       , Configuration.Dotenv.Scheme.Types
 
-  build-depends:         base >=4.7 && <5.0
+  build-depends:         base >= 4.9 && < 5.0
                        , base-compat >= 0.4
                        , directory
                        , megaparsec >= 7.0.1 && < 10.0
@@ -107,9 +107,6 @@ library
                        , transformers >=0.4 && < 0.6
                        , exceptions >= 0.8 && < 0.11
                        , yaml >= 0.8
-
-  if !impl(ghc >= 7.10)
-    build-depends:      void         == 0.7.*
 
   hs-source-dirs:      src
   ghc-options:         -Wall
@@ -139,7 +136,7 @@ test-suite dotenv-test
                        , Configuration.Dotenv.Scheme.Parser
                        , Configuration.Dotenv.Scheme.Types
 
-  build-depends:       base >=4.7 && <5.0
+  build-depends:       base >= 4.9 && < 5.0
                      , base-compat >= 0.4
                      , containers
                      , dotenv
@@ -148,15 +145,12 @@ test-suite dotenv-test
                      , hspec
                      , process
                      , text
-                     , transformers >=0.4 && < 0.6
+                     , transformers >= 0.4 && < 0.6
                      , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 2.0 && < 3.0
                      , yaml >= 0.8
-
-  if !impl(ghc >= 7.10)
-    build-depends:      void         == 0.7.*
   
-  build-tools:        hspec-discover   >= 2.0  && < 3.0
+  build-tools:        hspec-discover   >= 2.0 && < 3.0
 
   if flag(dev)
     ghc-options:      -Wall -Werror
