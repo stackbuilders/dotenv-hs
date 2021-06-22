@@ -24,9 +24,12 @@ jobs:
           cabal-version: "2.4"
       - name: Build package
         id: build
+        shell: bash
         run: |
           cabal install
-          if [ "$RUNNER_OS" == "Linux" ]; then
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            tar -C dist/build/dotenv -cvf dotenv-windows-x86_64-static.tar.gz dotenv
+          elif [ "$RUNNER_OS" == "Linux" ]; then
             tar -C dist/build/dotenv -cvf dotenv-linux-x86_64-static.tar.gz dotenv
           else
             tar -C dist/build/dotenv -cvf dotenv-osx-x86_64.tar.gz dotenv
