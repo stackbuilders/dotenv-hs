@@ -1,31 +1,22 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP               #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Configuration.DotenvSpec (main, spec) where
 
-import Configuration.Dotenv.Types (Config(..))
-import Configuration.Dotenv.Environment
-  ( getEnvironment
-  , lookupEnv
-  , setEnv
-  , unsetEnv
-  )
-import Configuration.Dotenv
-  ( load
-  , loadFile
-  , loadSafeFile
-  , parseFile
-  , onMissingFile
-  )
+import           Configuration.Dotenv             (load, loadFile, loadSafeFile,
+                                                   onMissingFile, parseFile)
+import           Configuration.Dotenv.Environment (getEnvironment, lookupEnv,
+                                                   setEnv, unsetEnv)
+import           Configuration.Dotenv.Types       (Config (..))
 
 
-import Test.Hspec
+import           Test.Hspec
 
-import System.Process (readCreateProcess, shell)
-import Control.Monad (liftM, void)
-import Data.Maybe (fromMaybe)
-import qualified Data.Text as T
-import qualified Data.Map.Lazy as M
+import           Control.Monad                    (liftM, void)
+import qualified Data.Map.Lazy                    as M
+import           Data.Maybe                       (fromMaybe)
+import qualified Data.Text                        as T
+import           System.Process                   (readCreateProcess, shell)
 
 main :: IO ()
 main = hspec spec
@@ -185,7 +176,14 @@ spec = do
 
 clearEnvs :: IO ()
 clearEnvs =
-  fmap (fmap fst) getEnvironment >>=  mapM_ unsetEnv
+  let
+    g v = do
+      env <- lookupEnv v
+      f env
+    f (Just v) = unsetEnv v
+    f _        = return ()
+  in
+    fmap (fmap fst) getEnvironment >>= mapM_ g
 
 setupEnv :: IO ()
 setupEnv = do
