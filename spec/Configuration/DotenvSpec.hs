@@ -135,7 +135,14 @@ spec = do
 
 clearEnvs :: IO ()
 clearEnvs =
-  fmap (fmap fst) getEnvironment >>=  mapM_ unsetEnv
+  let
+    g v = do
+      env <- lookupEnv v
+      f env
+    f (Just v) = unsetEnv v
+    f _        = return ()
+  in
+    fmap (fmap fst) getEnvironment >>= mapM_ g
 
 setupEnv :: IO ()
 setupEnv = do
