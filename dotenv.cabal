@@ -49,8 +49,6 @@ data-dir: spec/fixtures/
 data-files:
   .dotenv
   .dotenv.example
-  .scheme.yml
-  .dotenv.safe
 
 flag static
   description:        Creates static binary.
@@ -72,7 +70,6 @@ executable dotenv
                        , process
                        , text
                        , transformers >= 0.4 && < 0.6
-                       , yaml >= 0.8
   other-modules: Paths_dotenv
 
   hs-source-dirs:      app
@@ -92,10 +89,6 @@ library
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
-                      , Configuration.Dotenv.Scheme
-                      , Configuration.Dotenv.Scheme.Helpers
-                      , Configuration.Dotenv.Scheme.Parser
-                      , Configuration.Dotenv.Scheme.Types
 
   build-depends:         base >= 4.9 && < 5.0
                        , base-compat >= 0.4
@@ -106,7 +99,6 @@ library
                        , text
                        , transformers >=0.4 && < 0.6
                        , exceptions >= 0.8 && < 0.11
-                       , yaml >= 0.8
 
   hs-source-dirs:      src
   ghc-options:         -Wall
@@ -129,12 +121,6 @@ test-suite dotenv-test
                        , Configuration.Dotenv.Types
                        , Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
-                       , Configuration.Dotenv.SchemeSpec
-                       , Configuration.Dotenv.Scheme.ParseSpec
-                       , Configuration.Dotenv.Scheme
-                       , Configuration.Dotenv.Scheme.Helpers
-                       , Configuration.Dotenv.Scheme.Parser
-                       , Configuration.Dotenv.Scheme.Types
 
   build-depends:       base >= 4.9 && < 5.0
                      , base-compat >= 0.4
@@ -148,8 +134,7 @@ test-suite dotenv-test
                      , transformers >= 0.4 && < 0.6
                      , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 2.0 && < 3.0
-                     , yaml >= 0.8
-  
+
   build-tools:        hspec-discover   >= 2.0 && < 3.0
 
   if flag(dev)

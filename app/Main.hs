@@ -3,25 +3,20 @@
 
 module Main where
 
-import Data.Version (showVersion)
+import           Data.Version         (showVersion)
 #if !MIN_VERSION_base(4,13,0)
-import Data.Monoid ((<>))
+import           Data.Monoid          ((<>))
 #endif
 
-import Options.Applicative
-import Paths_dotenv (version)
+import           Options.Applicative
+import           Paths_dotenv         (version)
 
-import Control.Monad (void, unless)
+import           Control.Monad        (void)
 
-import Configuration.Dotenv
-  (Config(..)
-  , loadFile
-  , loadSafeFile
-  , defaultConfig
-  , defaultValidatorMap)
+import           Configuration.Dotenv (Config (..), defaultConfig, loadFile)
 
-import System.Process (system)
-import System.Exit (exitWith)
+import           System.Exit          (exitWith)
+import           System.Process       (system)
 
 data Options = Options
   { dotenvFiles        :: [String]
@@ -29,8 +24,6 @@ data Options = Options
   , override           :: Bool
   , program            :: String
   , args               :: [String]
-  , schemaFile         :: FilePath
-  , disableSchema      :: Bool
   } deriving (Show)
 
 main :: IO ()
@@ -47,8 +40,6 @@ main = do
           }
    in do
      void $ loadFile configDotenv
-     unless disableSchema
-       (void $ loadSafeFile defaultValidatorMap schemaFile configDotenv)
      system (program ++ concatMap (" " ++) args) >>= exitWith
        where
          opts = info (helper <*> versionOption <*> config)
@@ -80,10 +71,3 @@ config = Options
      <*> argument str (metavar "PROGRAM")
 
      <*> many (argument str (metavar "ARG"))
-
-     <*> strOption ( long "schema"
-                      <> short 's'
-                      <> help "Set the file path for the schema.yml file"
-                      <> value ".schema.yml" )
-
-     <*> switch ( long "no-schema" <> help "Omit type checking" )
