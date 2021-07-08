@@ -80,46 +80,6 @@ $ dotenv "echo $DATABASE"
 postgres://myusername@localhost/database
 ```
 
-### Type checking envs
-Env variables are simple strings. However, they can represent other types like
-integers, booleans, IP addresses, emails, URIs, and so on. We provide an interface
-that performs type checking after loading the envs and before running your application.
-If the type-check succeeded the application is executed, otherwise you will get an
-error with the types that mismatch.
-
-In order to use this functionality you can use the `loadSafeFile` which takes the same
-configuration value as the `loadFile` function. Also, you need to have a `.schema.yml`
-in your current directory. This file must have the following structure:
-
-```yaml
-- name: DOTENV
-  type: bool
-  required: true
-- name: OTHERENV
-  type: bool
-- name: PORT
-  type: integer
-  required: true
-- name: TOKEN
-  type: text
-  required: false
-```
-
-It is a list of type and envs. So, in this example, `DOTENV` must have a value
-of `true` or `false` otherwise it won't be parsed as a boolean value. And envs
-like `PORT` must be any integer. Currently, we are supporting the following types:
-
-- `bool` - Accepts values `false` or `true`
-- `integer` - Accepts values of possitive integers
-- `text` - Any text
-
-**require** specifies if the env var is obligatory or not. In case you set it to true
-but do not provide it, you wil get an exception. When **required** is omited, the default
-value is `false`.
-
-**NOTE:** All the variables which are **required** in the `schema.yml` must be defined
-in the dotenvs.
-
 ## Configuration
 
 The first argument to `loadFile` specifies the configuration. You cans use

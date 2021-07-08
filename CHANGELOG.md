@@ -1,7 +1,7 @@
 ## MASTER
 
 ## Dotenv 0.9.0.0
-* Remove `loadSafeFile`. Its dependencies and tests.
+* Remove `loadSafeFile`
 
 ## Dotenv 0.8.1.0
 * Correct bounds for base. GHC support for versions older than 8.0 was dropped.
