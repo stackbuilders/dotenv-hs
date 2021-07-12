@@ -16,13 +16,10 @@ module Configuration.Dotenv
   -- * Dotenv Load Functions
     load
   , loadFile
-  , loadSafeFile
   , parseFile
   , onMissingFile
   -- * Dotenv Types
   , module Configuration.Dotenv.Types
-  , ValidatorMap
-  , defaultValidatorMap
   )
  where
 
@@ -30,17 +27,13 @@ import           Configuration.Dotenv.Environment    (getEnvironment, lookupEnv,
                                                       setEnv)
 import           Configuration.Dotenv.Parse          (configParser)
 import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
-import           Configuration.Dotenv.Scheme
-import           Configuration.Dotenv.Scheme.Types   (ValidatorMap,
-                                                      defaultValidatorMap)
 import           Configuration.Dotenv.Types          (Config (..),
                                                       defaultConfig)
-import           Control.Monad                       (liftM, when)
+import           Control.Monad                       (liftM)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
 import           Data.List                           (intersectBy, union,
                                                       unionBy)
-import           System.Directory                    (doesFileExist)
 import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
 
@@ -112,18 +105,3 @@ onMissingFile :: MonadCatch m
   -> m a               -- ^ Action to perform if file is indeed missing
   -> m a
 onMissingFile f h = catchIf isDoesNotExistError f (const h)
-
--- | @loadSafeFile@ parses the /.scheme.yml/ file and will perform the type checking
--- of the environment variables in the /.env/ file.
-loadSafeFile
-  :: MonadIO m
-  => ValidatorMap -- ^ Map with custom validations
-  -> FilePath -- ^ Filepath for schema file
-  -> Config -- ^ Dotenv configuration
-  -> m [(String, String)] -- ^ Environment variables loaded
-loadSafeFile mapFormat schemaFile config = do
-  envs <- loadFile config
-  exists <- liftIO $ doesFileExist schemaFile
-  when exists $
-    liftIO (readScheme schemaFile >>= checkConfig mapFormat envs . checkScheme)
-  return envs

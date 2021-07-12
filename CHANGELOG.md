@@ -1,5 +1,11 @@
 ## MASTER
 
+## Dotenv 0.9.0.0
+* Remove `loadSafeFile`. Users must create their own parsers to convert the
+read values from `System.Environment` to another data type. Therefore,
+`loadSafeFile` won't be needed. We'll remove this functionality to reduce
+dependencies.
+
 ## Dotenv 0.8.1.0
 * Correct bounds for base. GHC support for versions older than 8.0 was dropped.
 
