@@ -172,29 +172,6 @@ current environment settings. By invoking the program `env` in place
 of `myprogram` above you can see what the environment will look like
 after evaluating multiple Dotenv files.
 
-The `--schema FILE` will get the envs configuration from the `FILE`. For instance:
-
-```shell
-$ cat .env
-PORT=123a
-$ cat .schema.yml
-- name: PORT
-  required: true
-  type: integer
-```
-
-running `dotenv` will throw:
-
-```shell
-$ dotenv -s .schema.yml "echo $PORT"
-dotenv: 1:4:
-unexpected 'a'
-expecting digit or end of input
-```
-
-**NOTE:** The flag can be omited when the `.schema.yml` is in the current working
-directory. To disable type checking add the flag `--no-schema`.
-
 ## Author
 
 Justin Leitgeb
