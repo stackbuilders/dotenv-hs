@@ -44,8 +44,6 @@ jobs:
           restore-keys: |
             dependencies-${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
             dependencies-${{ runner.os }}-${{ matrix.ghc }}-
-      - name: Install dependencies
-        run: cabal v2-install --only-dependencies
       - name: Build project
         run: cabal v2-build --enable-tests
       - name: Run tests
