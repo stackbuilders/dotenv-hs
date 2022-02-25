@@ -1,5 +1,8 @@
 ## MASTER
 
+## Dotenv 0.9.0.1
+* Allow optparse-applicative-0.17.0.0
+
 ## Dotenv 0.9.0.0
 * Remove `loadSafeFile`. Users must create their own parsers to convert the
 read values from `System.Environment` to another data type. Therefore,
