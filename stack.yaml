@@ -1,4 +1,4 @@
-resolver: nightly-2022-03-17
+resolver: lts-19.0
 packages:
 - '.'
 extra-deps:

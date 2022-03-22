@@ -13,7 +13,7 @@ packages:
     hackage: optparse-applicative-0.17.0.0
 snapshots:
 - completed:
-    size: 617108
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2022/3/17.yaml
-    sha256: a78bbd52a6de7cd16d7ba7590d10a2de57438895e66448ca444bd6f3ae16d946
-  original: nightly-2022-03-17
+    size: 616897
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/19/0.yaml
+    sha256: bbf2be02f17940bac1f87cb462d4fb0c3355de6dcfc53d84f4f9ad3ee2164f65
+  original: lts-19.0
