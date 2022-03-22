@@ -1,6 +1,13 @@
 ## MASTER
+## Dotenv 0.9.0.2
+### Added
+* Support for GHC = 9.0
+
+### Removed
+* Support for GHC < 8.6
 
 ## Dotenv 0.9.0.1
+### Added
 * Allow optparse-applicative-0.17.0.0
 
 ## Dotenv 0.9.0.0
