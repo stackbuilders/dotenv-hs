@@ -11,6 +11,13 @@ packages:
       sha256: 3b4398845ee6718fe2303870a5ab75bd190eb712fed2f22caaae30f790c490fd
   original:
     hackage: optparse-applicative-0.17.0.0
+- completed:
+    hackage: shellwords-0.1.3.0@sha256:baf03b1e80dbc5dffbe6ba5451ee7c389ac39e3e2f9c24030c26a639522a1032,2226
+    pantry-tree:
+      size: 496
+      sha256: ce076c4ec323107f8e84d25147b4f7c865e8cd27d804f384b9d1e2d5706ba0c3
+  original:
+    hackage: shellwords-0.1.3.0
 snapshots:
 - completed:
     size: 616897

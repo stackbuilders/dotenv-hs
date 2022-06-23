@@ -20,11 +20,11 @@ import           Configuration.Dotenv.ParsedVariable
 import           Control.Applicative                 (empty, many, some, (<|>))
 import           Control.Monad                       (void)
 import           Data.Void                           (Void)
+import qualified ShellWords
 import           Text.Megaparsec                     (Parsec, anySingle,
                                                       between, eof, noneOf,
                                                       oneOf, sepEndBy, (<?>))
-import           Text.Megaparsec.Char                (alphaNumChar, char,
-                                                      digitChar, eol,
+import           Text.Megaparsec.Char                (char, digitChar, eol,
                                                       letterChar, spaceChar)
 import qualified Text.Megaparsec.Char.Lexer          as L
 
@@ -76,9 +76,11 @@ interpolatedValueVarInterpolation = VarInterpolation <$>
     symbol                = L.symbol sc
 
 interpolatedValueCommandInterpolation :: Parser VarFragment
-interpolatedValueCommandInterpolation =
-  CommandInterpolation
-    <$> between (symbol "$(") (symbol ")") (many alphaNumChar)
+interpolatedValueCommandInterpolation = do
+  ws <- between (symbol "$(") (symbol ")") ShellWords.parser
+  pure $ case ws of
+      (commandName:arguments) -> CommandInterpolation commandName arguments
+      _ -> CommandInterpolation "echo" [""]
     where
       symbol = L.symbol sc
 

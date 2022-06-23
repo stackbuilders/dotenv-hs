@@ -95,6 +95,7 @@ library
                        , megaparsec >= 7.0.1 && < 10.0
                        , containers
                        , process >= 1.6.3.0 && < 1.7
+                       , shellwords >= 0.1.3.0
                        , text
                        , exceptions >= 0.8 && < 0.11
 
@@ -128,6 +129,7 @@ test-suite dotenv-test
                      , megaparsec
                      , hspec
                      , process
+                     , shellwords
                      , text
                      , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 2.0 && < 3.0

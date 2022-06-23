@@ -19,7 +19,7 @@ module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
 import           Configuration.Dotenv.Environment (lookupEnv)
 import           Control.Monad                    (foldM)
 import           Control.Applicative              ((<|>))
-import           System.Process                   (readCreateProcess, shell)
+import           System.Process                   (readCreateProcess, proc)
 
 data ParsedVariable
   = ParsedVariable VarName VarValue deriving (Show, Eq)
@@ -36,7 +36,7 @@ type VarContents = [VarFragment]
 data VarFragment
   = VarInterpolation String
   | VarLiteral String
-  | CommandInterpolation String deriving (Show, Eq)
+  | CommandInterpolation String [String] deriving (Show, Eq)
 
 interpolateParsedVariables :: [ParsedVariable] -> IO [(String, String)]
 interpolateParsedVariables = fmap reverse . foldM addInterpolated []
@@ -57,11 +57,11 @@ interpolateFragment _        (VarLiteral       value  ) = return value
 interpolateFragment previous (VarInterpolation varname) = fromPreviousOrEnv >>= maybe (return "") return
   where
     fromPreviousOrEnv = (lookup varname previous <|>) <$> lookupEnv varname
-interpolateFragment _ (CommandInterpolation commandName) = init <$> readCreateProcess (shell commandName) ""
+interpolateFragment _ (CommandInterpolation commandName args) = init <$> readCreateProcess (proc commandName args) ""
 
 joinContents :: VarContents -> String
 joinContents = concatMap fragmentToString
   where
-    fragmentToString (CommandInterpolation value) = value
-    fragmentToString (VarInterpolation value)     = value
-    fragmentToString (VarLiteral value)           = value
+    fragmentToString (CommandInterpolation commandName args) = unwords $ commandName : args
+    fragmentToString (VarInterpolation value)                = value
+    fragmentToString (VarLiteral value)                      = value
