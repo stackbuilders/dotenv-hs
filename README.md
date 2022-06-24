@@ -17,7 +17,7 @@ to facilitate loading of configuration options from configuration
 files. This library loads configuration to environment variables for
 programs written in Haskell.
 
-## Installation
+## Install
 
 In most cases you will just add `dotenv` to your cabal file. You can
 also install the library and executable by invoking `stack install dotenv` or
@@ -80,7 +80,7 @@ $ dotenv "echo $DATABASE"
 postgres://myusername@localhost/database
 ```
 
-## Configuration
+### Configuration
 
 The first argument to `loadFile` specifies the configuration. You cans use
 `defaultConfig` which parses the `.env` file in your current directory and
@@ -99,7 +99,7 @@ where you can specify which envs **must be defined** until running a program
 (e.g `[".env.example", ".tokens.example", ".public_keys.example"]`). If you don't
 need this functionality you can set `configExamplePath` to an empty list.
 
-## Advanced Dotenv File Syntax
+### Advanced Dotenv File Syntax
 
 You can add comments to your Dotenv file, on separate lines or after
 values. Values can be wrapped in single or double quotes. Multi-line
@@ -109,7 +109,7 @@ using the "\n" character to represent newlines.
 The [spec file](spec/Configuration/Dotenv/ParseSpec.hs) is the best
 place to understand the nuances of Dotenv file parsing.
 
-## Command-Line Usage
+### Command-Line Usage
 
 You can call dotenv from the command line in order to load settings
 from one or more dotenv file before invoking an executable:
@@ -172,14 +172,14 @@ current environment settings. By invoking the program `env` in place
 of `myprogram` above you can see what the environment will look like
 after evaluating multiple Dotenv files.
 
-## Author
-
-Justin Leitgeb
-
 ## License
 
-MIT
+MIT, see [the LICENSE file](LICENSE).
 
-## Copyright
+## Contributing
 
-(C) 2015-2020 [Stack Builders Inc.](http://www.stackbuilders.com)
+Do you want to contribute to this project? Please take a look at our [contributing guideline](/docs/CONTRIBUTING.md) to know how you can help us build it.
+
+---
+<img src="https://www.stackbuilders.com/media/images/Sb-supports.original.png" alt="Stack Builders" width="50%"></img>
+[Check out our libraries](https://github.com/stackbuilders/) | [Join our team](https://www.stackbuilders.com/join-us/)
