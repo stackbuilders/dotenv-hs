@@ -7,7 +7,7 @@ import Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             VarValue(..),
                                             VarFragment(..))
 import Data.Void (Void)
-import Test.Hspec (it, describe, Spec, hspec)
+import Test.Hspec (it, context, describe, Spec, hspec)
 import Test.Hspec.Megaparsec (shouldParse, shouldFailOn, shouldSucceedOn)
 import Text.Megaparsec (ParseErrorBundle, parse)
 
@@ -142,11 +142,26 @@ spec = describe "parse" $ do
   it "doesn't allow more configuration options after a quoted value" $
     parseConfig `shouldFailOn` "foo='bar'baz='buz'"
 
-  it "parses a command $(command)" $ do
-    parseConfig "FOO=$(command)"
-      `shouldParse` [ParsedVariable "FOO" (Unquoted [CommandInterpolation "command"])]
-    parseConfig "FOO=asdf_$(command)"
-      `shouldParse` [ParsedVariable "FOO" (Unquoted [VarLiteral "asdf_", CommandInterpolation "command"])]
+  context "$(command) interpolation" $ do
+    it "parses a simple command" $ do
+      parseConfig "FOO=$(command)"
+        `shouldParse` [ParsedVariable "FOO" (Unquoted [CommandInterpolation "command" []])]
+
+    it "parses a command anywhere in the value" $ do
+      parseConfig "FOO=asdf_$(command)"
+        `shouldParse` [ParsedVariable "FOO" (Unquoted [VarLiteral "asdf_", CommandInterpolation "command" []])]
+
+    it "parses a command with arguments" $ do
+      parseConfig "FOO=$(foo-bar arg1 arg2)"
+        `shouldParse` [ParsedVariable "FOO" (Unquoted [CommandInterpolation "foo-bar" ["arg1", "arg2"]])]
+
+    it "parses a command with quoted arguments" $ do
+      parseConfig "FOO=$(bin/foo \"arg 1\" arg2)"
+        `shouldParse` [ParsedVariable "FOO" (Unquoted [CommandInterpolation "bin/foo" ["arg 1", "arg2"]])]
+
+    it "parses a command with arguments separated by newlines" $ do
+      parseConfig "FOO=$(foo.sh \"arg 1\"\narg2\n)"
+        `shouldParse` [ParsedVariable "FOO" (Unquoted [CommandInterpolation "foo.sh" ["arg 1", "arg2"]])]
 
   it "parses empty content (when the file is empty)" $
     parseConfig `shouldSucceedOn` ""

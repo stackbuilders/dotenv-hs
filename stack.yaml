@@ -3,3 +3,4 @@ packages:
 - '.'
 extra-deps:
 - optparse-applicative-0.17.0.0
+- shellwords-0.1.3.0
