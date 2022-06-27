@@ -80,7 +80,7 @@ interpolatedValueCommandInterpolation = do
   ws <- between (symbol "$(") (symbol ")") ShellWords.parser
   pure $ case ws of
       (commandName:arguments) -> CommandInterpolation commandName arguments
-      _ -> CommandInterpolation "echo" [""]
+      _ -> VarLiteral "" -- Interpret "$()" as an empty value
     where
       symbol = L.symbol sc
 
