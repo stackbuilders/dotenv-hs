@@ -50,7 +50,7 @@ a blank string will remove the variable from the environment entirely.
 
 ### Variable substitution
 
-In order to use compound env vars use the following sintax within your env vars
+In order to use compound env vars use the following syntax within your env vars
 ${your_env_var}. For instance:
 
 ```
@@ -66,8 +66,7 @@ postgres://myusername@localhost/database
 
 ### Command substitution
 
-In order to use the standard output of a command in your env vars use the following
-sintax $(your_command). For instance:
+In order to use the standard output of a command in your env vars use the following syntax $(your_command). For instance:
 
 ```
 DATABASE=postgres://$(whoami)@localhost/database
@@ -82,7 +81,7 @@ postgres://myusername@localhost/database
 
 ### Configuration
 
-The first argument to `loadFile` specifies the configuration. You cans use
+The first argument to `loadFile` specifies the configuration. You can use
 `defaultConfig` which parses the `.env` file in your current directory and
 doesn't override your envs. You can also define your own configuration with
 the `Config` type.
@@ -118,14 +117,13 @@ from one or more dotenv file before invoking an executable:
 $ dotenv -f mydotenvfile myprogram
 ```
 
-The `-f` flag is optional, by default it looks for the `.env` file in the current
-working directory.
+The `-f` flag is optional, by default it looks for the `.env` file in the current working directory.
 
 ```shell
 $ dotenv myprogram
 ```
 
-Aditionally you can pass arguments and flags to the program passed to
+Additionally, you can pass arguments and flags to the program passed to
 Dotenv:
 
 ```shell
