@@ -102,16 +102,16 @@ spec = do
       liftM (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("UNICODE_TEST", "Manabí")
 
-    it "recognises environment variables" $ do
+    it "recognizes environment variables" $ do
       home <- fromMaybe "" <$> lookupEnv "HOME"
       liftM (!! 2) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("ENVIRONMENT", home)
 
-    it "recognises previous variables" $
+    it "recognizes previous variables" $
       liftM (!! 3) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("PREVIOUS", "true")
 
-    it "recognises commands" $ do
+    it "recognizes commands" $ do
       me <- init <$> readCreateProcess (shell "whoami") ""
       liftM (!! 4) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("ME", me)
