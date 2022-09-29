@@ -13,7 +13,7 @@ import           Paths_dotenv         (version)
 
 import           Control.Monad        (void)
 
-import           Configuration.Dotenv (Config (..), defaultConfig, loadFile)
+import           Configuration.Dotenv (Config(..), defaultConfig, loadFile)
 
 import           System.Exit          (exitWith)
 import           System.Process       (system)
@@ -34,6 +34,7 @@ main = do
         Config
           { configExamplePath = dotenvExampleFiles
           , configOverride = override
+          , configVerbose = verbose
           , configPath =
               if null dotenvFiles
                 then configPath defaultConfig
