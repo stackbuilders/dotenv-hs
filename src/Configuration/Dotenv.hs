@@ -29,7 +29,7 @@ import           Configuration.Dotenv.Parse          (configParser)
 import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
 import           Configuration.Dotenv.Types          (Config (..),
                                                       defaultConfig)
-import           Control.Monad                       (liftM)
+import           Control.Monad                       (liftM, when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
 import           Data.List                           (intersectBy, union,
@@ -69,7 +69,7 @@ loadFile Config{..} = do
               then readedVars `unionEnvs` neededVars
               else error $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++ concatMap ((++) " " . fst) neededVars
           else readedVars
-  mapM (applySetting configOverride) vars
+  mapM (\x -> logVariable configVerbose x >> applySetting configOverride x) vars
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
@@ -94,6 +94,14 @@ applySetting override (key, value) =
       case res of
         Nothing -> liftIO $ setEnv key value >> return (key, value)
         Just _  -> return (key, value)
+
+logVariable ::
+  MonadIO m =>
+  Bool  -- ^ Is verbose flag enabled?
+  -> (String, String)
+  -> m ()
+logVariable verbose (key, value) =
+  when verbose $ liftIO $ putStrLn ("[INFO]: Load env '" ++ key ++ "' with value '" ++ value ++"'")
 
 -- | The helper allows to avoid exceptions in the case of missing files and
 -- perform some action instead.
