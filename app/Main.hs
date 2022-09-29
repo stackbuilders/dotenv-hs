@@ -22,6 +22,7 @@ data Options = Options
   { dotenvFiles        :: [String]
   , dotenvExampleFiles :: [String]
   , override           :: Bool
+  , verbose            :: Bool
   , program            :: String
   , args               :: [String]
   } deriving (Show)
@@ -67,6 +68,9 @@ config = Options
      <*> switch ( long "overload"
                   <> short 'o'
                   <> help "Specify this flag to override existing variables" )
+
+     <*> switch (  long "verbose"
+                  <> help "Specify this flag to print out the variables loaded and other useful insights" )
 
      <*> argument str (metavar "PROGRAM")
 
