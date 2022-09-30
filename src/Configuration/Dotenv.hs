@@ -95,6 +95,7 @@ applySetting override verbose (key, value) =
         Nothing -> logVariable verbose (key,value) >> setAndReturn
         Just _  -> return (key, value)
   where setAndReturn = liftIO (setEnv key value) >> return (key, value)
+
 logVariable ::
   MonadIO m =>
   Bool  -- ^ Is verbose flag enabled?

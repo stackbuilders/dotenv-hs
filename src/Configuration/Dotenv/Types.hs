@@ -10,7 +10,7 @@
 -- Provides the types with extra options for loading a dotenv file.
 
 module Configuration.Dotenv.Types
-  ( Config (..)
+  ( Config(..)
   , defaultConfig
   )
   where
