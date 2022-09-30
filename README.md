@@ -98,6 +98,8 @@ where you can specify which envs **must be defined** until running a program
 (e.g `[".env.example", ".tokens.example", ".public_keys.example"]`). If you don't
 need this functionality you can set `configExamplePath` to an empty list.
 
+A `False` in the `configVerbose` means that Dotenv will not print any message
+when loading the envs. A `True` means that Dotenv will print a message when a variable is loaded.
 ### Advanced Dotenv File Syntax
 
 You can add comments to your Dotenv file, on separate lines or after
