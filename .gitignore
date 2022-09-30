@@ -16,3 +16,4 @@ cabal.config
 *.aux
 *.hp
 .stack-work/
+.env
