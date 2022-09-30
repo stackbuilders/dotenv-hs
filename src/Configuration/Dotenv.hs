@@ -44,7 +44,7 @@ load ::
   Bool -- ^ Override existing settings?
   -> [(String, String)] -- ^ List of values to be set in environment
   -> m ()
-load override = mapM_ (applySetting override)
+load override = mapM_ (applySetting override False)
 
 -- | @loadFile@ parses the environment variables defined in the dotenv example
 -- file and checks if they are defined in the dotenv file or in the environment.
@@ -69,7 +69,7 @@ loadFile Config{..} = do
               then readedVars `unionEnvs` neededVars
               else error $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++ concatMap ((++) " " . fst) neededVars
           else readedVars
-  mapM (\x -> logVariable configVerbose x >> applySetting configOverride x) vars
+  mapM (applySetting configOverride configVerbose) vars
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
@@ -84,17 +84,17 @@ parseFile f = do
     Left e        -> error $ errorBundlePretty e
     Right options -> liftIO $ interpolateParsedVariables options
 
-applySetting :: MonadIO m => Bool -> (String, String) -> m (String, String)
-applySetting override (key, value) =
+applySetting :: MonadIO m => Bool -> Bool -> (String, String) -> m (String, String)
+applySetting override verbose (key, value) =
   if override
-    then liftIO (setEnv key value) >> return (key, value)
+    then logVariable verbose (key,value) >> setAndReturn
     else do
       res <- liftIO $ lookupEnv key
 
       case res of
-        Nothing -> liftIO $ setEnv key value >> return (key, value)
+        Nothing -> logVariable verbose (key,value) >> setAndReturn
         Just _  -> return (key, value)
-
+  where setAndReturn = liftIO (setEnv key value) >> return (key, value)
 logVariable ::
   MonadIO m =>
   Bool  -- ^ Is verbose flag enabled?
