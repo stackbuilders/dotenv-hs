@@ -27,7 +27,7 @@ import           Configuration.Dotenv.Parse          (configParser)
 import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
 import           Configuration.Dotenv.Types          (Config (..), ReaderT, ask,
                                                       defaultConfig,
-                                                      liftReaderT)
+                                                      liftReaderT, runReaderT)
 import           Control.Monad                       (when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
