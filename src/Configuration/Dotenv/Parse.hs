@@ -70,7 +70,7 @@ fragment charsToEscape =
 
 interpolatedValueVarInterpolation :: Parser VarFragment
 interpolatedValueVarInterpolation = VarInterpolation <$>
-                            ((between (symbol "${") (symbol "}") variableName) <|>
+                            (between (symbol "${") (symbol "}") variableName <|>
                             (char '$' >> variableName))
   where
     symbol                = L.symbol sc
