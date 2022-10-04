@@ -18,6 +18,7 @@ module Configuration.Dotenv
   , loadFile
   , parseFile
   , onMissingFile
+  , DotEnv
   -- * Dotenv Types
   , module Configuration.Dotenv.Types
   )
@@ -28,8 +29,13 @@ import           Configuration.Dotenv.Environment    (getEnvironment, lookupEnv,
 import           Configuration.Dotenv.Parse          (configParser)
 import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
 import           Configuration.Dotenv.Types          (Config (..),
-                                                      defaultConfig)
-import           Control.Monad                       (liftM, when)
+                                                      defaultConfig,
+                                                      ReaderT,
+                                                      ask,
+                                                      liftReaderT,
+                                                      runReaderT,
+                                                      mapReaderT)
+import           Control.Monad                       ( when )
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
 import           Data.List                           (intersectBy, union,
@@ -37,14 +43,18 @@ import           Data.List                           (intersectBy, union,
 import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
 
+-- | Monad Stack for the application
+
+type DotEnv m a = ReaderT Config m a
+
 -- | Loads the given list of options into the environment. Optionally
 -- override existing variables with values from Dotenv files.
 load ::
   MonadIO m =>
-  Bool -- ^ Override existing settings?
-  -> [(String, String)] -- ^ List of values to be set in environment
-  -> m ()
-load override = mapM_ (applySetting override False)
+  [(String, String)] -- ^ List of values to be set in environment
+  -> DotEnv m ()
+
+load = mapM_ applySetting
 
 -- | @loadFile@ parses the environment variables defined in the dotenv example
 -- file and checks if they are defined in the dotenv file or in the environment.
@@ -52,12 +62,12 @@ load override = mapM_ (applySetting override False)
 -- with the values defined in the dotenv file.
 loadFile
   :: MonadIO m
-  => Config -- ^ Dotenv configuration
-  -> m [(String, String)] -- ^ Environment variables loaded
-loadFile Config{..} = do
-  environment <- liftIO getEnvironment
-  readedVars <- concat `liftM` mapM parseFile configPath
-  neededVars <- concat `liftM` mapM parseFile configExamplePath
+  => DotEnv m [(String, String)] -- ^ Environment variables loaded
+loadFile = do
+  Config{..} <- ask
+  environment <-  (liftReaderT . liftIO) getEnvironment
+  readedVars <- liftReaderT $ fmap concat (mapM parseFile configPath)
+  neededVars <- liftReaderT $ fmap concat (mapM parseFile configExamplePath)
   let coincidences = (environment `union` readedVars) `intersectEnvs` neededVars
       cmpEnvs env1 env2 = fst env1 == fst env2
       intersectEnvs = intersectBy cmpEnvs
@@ -69,7 +79,7 @@ loadFile Config{..} = do
               then readedVars `unionEnvs` neededVars
               else error $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++ concatMap ((++) " " . fst) neededVars
           else readedVars
-  mapM (applySetting configOverride configVerbose) vars
+  mapM applySetting vars
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
@@ -84,25 +94,26 @@ parseFile f = do
     Left e        -> error $ errorBundlePretty e
     Right options -> liftIO $ interpolateParsedVariables options
 
-applySetting :: MonadIO m => Bool -> Bool -> (String, String) -> m (String, String)
-applySetting override verbose (key, value) =
-  if override
-    then logVariable verbose (key,value) >> setAndReturn
+applySetting :: MonadIO m => (String, String) -> DotEnv m (String, String)
+applySetting kv@(k, v) = do
+  Config {..} <- ask
+  if configOverride
+    then info kv >> setEnv'
     else do
-      res <- liftIO $ lookupEnv key
+      res <- liftReaderT.liftIO $ lookupEnv k
 
       case res of
-        Nothing -> logVariable verbose (key,value) >> setAndReturn
-        Just _  -> return (key, value)
-  where setAndReturn = liftIO (setEnv key value) >> return (key, value)
+        Nothing -> info kv >> setEnv'
+        Just _  -> return kv
+  where setEnv' = liftReaderT.liftIO $ setEnv k v >> return kv
 
-logVariable ::
-  MonadIO m =>
-  Bool  -- ^ Is verbose flag enabled?
-  -> (String, String)
-  -> m ()
-logVariable verbose (key, value) =
-  when verbose $ liftIO $ putStrLn ("[INFO]: Load env '" ++ key ++ "' with value '" ++ value ++"'")
+-- | The function logs in console when a variable is loaded into the
+-- environment.
+info :: MonadIO m => (String, String) -> DotEnv m ()
+info (key, value) = do
+  Config{..} <- ask
+  when configVerbose $ liftReaderT.liftIO $ putStrLn $ "[INFO]: Load env '" ++ key ++ "' with value '" ++ value ++"'"
+
 
 -- | The helper allows to avoid exceptions in the case of missing files and
 -- perform some action instead.
