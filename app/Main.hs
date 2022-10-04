@@ -12,7 +12,9 @@ import           Options.Applicative
 import           Paths_dotenv         (version)
 
 
-import           Configuration.Dotenv (Config(..), defaultConfig, loadFile, runReaderT)
+import           Configuration.Dotenv (Config (..), defaultConfig, loadFile,
+                                       runReaderT)
+import           Control.Monad        (void)
 import           System.Exit          (exitWith)
 import           System.Process       (system)
 
@@ -39,7 +41,7 @@ main = do
                 else dotenvFiles
           }
    in do
-     _ <- runReaderT loadFile configDotenv
+     void $ runReaderT loadFile configDotenv
      system (program ++ concatMap (" " ++) args) >>= exitWith
        where
          opts = info (helper <*> versionOption <*> config)

@@ -12,30 +12,23 @@
 {-# LANGUAGE RecordWildCards #-}
 
 module Configuration.Dotenv
-  (
-  -- * Dotenv Load Functions
-    load
-  , loadFile
-  , parseFile
-  , onMissingFile
-  , DotEnv
-  -- * Dotenv Types
-  , module Configuration.Dotenv.Types
-  )
- where
+    ( -- * Dotenv Load Functions
+      load
+    , loadFile
+    , parseFile
+    , onMissingFile
+    , DotEnv
+      -- * Dotenv Types
+    , module Configuration.Dotenv.Types) where
 
 import           Configuration.Dotenv.Environment    (getEnvironment, lookupEnv,
                                                       setEnv)
 import           Configuration.Dotenv.Parse          (configParser)
 import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
-import           Configuration.Dotenv.Types          (Config (..),
+import           Configuration.Dotenv.Types          (Config (..), ReaderT, ask,
                                                       defaultConfig,
-                                                      ReaderT,
-                                                      ask,
-                                                      liftReaderT,
-                                                      runReaderT,
-                                                      mapReaderT)
-import           Control.Monad                       ( when )
+                                                      liftReaderT)
+import           Control.Monad                       (when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
 import           Data.List                           (intersectBy, union,
@@ -44,16 +37,13 @@ import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
 
 -- | Monad Stack for the application
-
 type DotEnv m a = ReaderT Config m a
 
 -- | Loads the given list of options into the environment. Optionally
 -- override existing variables with values from Dotenv files.
-load ::
-  MonadIO m =>
-  [(String, String)] -- ^ List of values to be set in environment
-  -> DotEnv m ()
-
+load :: MonadIO m
+     => [(String, String)] -- ^ List of values to be set in environment
+     -> DotEnv m ()
 load = mapM_ applySetting
 
 -- | @loadFile@ parses the environment variables defined in the dotenv example
@@ -61,66 +51,68 @@ load = mapM_ applySetting
 -- It also allows to override the environment variables defined in the environment
 -- with the values defined in the dotenv file.
 loadFile
-  :: MonadIO m
-  => DotEnv m [(String, String)] -- ^ Environment variables loaded
+  :: MonadIO m => DotEnv m [(String, String)]
 loadFile = do
-  Config{..} <- ask
-  environment <-  (liftReaderT . liftIO) getEnvironment
+  Config { .. } <- ask
+  environment <- (liftReaderT . liftIO) getEnvironment
   readedVars <- liftReaderT $ fmap concat (mapM parseFile configPath)
   neededVars <- liftReaderT $ fmap concat (mapM parseFile configExamplePath)
-  let coincidences = (environment `union` readedVars) `intersectEnvs` neededVars
+  let coincidences = (environment `union` readedVars)
+        `intersectEnvs` neededVars
       cmpEnvs env1 env2 = fst env1 == fst env2
       intersectEnvs = intersectBy cmpEnvs
       unionEnvs = unionBy cmpEnvs
-      vars =
-        if (not . null) neededVars
-          then
-            if length neededVars == length coincidences
-              then readedVars `unionEnvs` neededVars
-              else error $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++ concatMap ((++) " " . fst) neededVars
-          else readedVars
+      vars = if (not . null) neededVars
+             then if length neededVars == length coincidences
+                  then readedVars `unionEnvs` neededVars
+                  else error
+                    $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:"
+                    ++ concatMap ((++) " " . fst) neededVars
+             else readedVars
   mapM applySetting vars
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
-parseFile ::
-  MonadIO m =>
-  FilePath -- ^ A file containing options to read
-  -> m [(String, String)] -- ^ Variables contained in the file
+parseFile :: MonadIO m
+          => FilePath -- ^ A file containing options to read
+          -> m [(String, String)] -- ^ Variables contained in the file
 parseFile f = do
   contents <- liftIO $ readFile f
-
   case parse configParser f contents of
     Left e        -> error $ errorBundlePretty e
     Right options -> liftIO $ interpolateParsedVariables options
 
-applySetting :: MonadIO m => (String, String) -> DotEnv m (String, String)
+applySetting :: MonadIO m =>
+  (String, String) -- ^ A key-value pair to set in the environment
+  -> DotEnv m (String, String)
 applySetting kv@(k, v) = do
-  Config {..} <- ask
+  Config { .. } <- ask
   if configOverride
     then info kv >> setEnv'
     else do
-      res <- liftReaderT.liftIO $ lookupEnv k
-
+      res <- liftReaderT . liftIO $ lookupEnv k
       case res of
         Nothing -> info kv >> setEnv'
         Just _  -> return kv
-  where setEnv' = liftReaderT.liftIO $ setEnv k v >> return kv
+  where
+    setEnv' = liftReaderT . liftIO $ setEnv k v >> return kv
 
 -- | The function logs in console when a variable is loaded into the
 -- environment.
 info :: MonadIO m => (String, String) -> DotEnv m ()
 info (key, value) = do
-  Config{..} <- ask
-  when configVerbose $ liftReaderT.liftIO $ putStrLn $ "[INFO]: Load env '" ++ key ++ "' with value '" ++ value ++"'"
-
+  Config { .. } <- ask
+  when configVerbose
+    $ liftReaderT . liftIO
+    $ putStrLn
+    $ "[INFO]: Load env '" ++ key ++ "' with value '" ++ value ++ "'"
 
 -- | The helper allows to avoid exceptions in the case of missing files and
 -- perform some action instead.
 --
 -- @since 0.3.1.0
-
-onMissingFile :: MonadCatch m
+onMissingFile
+  :: MonadCatch m
   => m a -- ^ Action to perform that may fail because of missing file
   -> m a               -- ^ Action to perform if file is indeed missing
   -> m a
