@@ -7,7 +7,7 @@ import           Configuration.Dotenv             (load, loadFile,
                                                    onMissingFile, parseFile)
 import           Configuration.Dotenv.Environment (getEnvironment, lookupEnv,
                                                    setEnv, unsetEnv)
-import           Configuration.Dotenv.Types       (Config (..), defaultConfig,
+import           Configuration.Dotenv.Types       (Config (..),
                                                    runReaderT)
 
 
@@ -26,21 +26,21 @@ spec = do
     it "loads the given list of configuration options to the environment" $ do
       lookupEnv "foo" `shouldReturn` Nothing
 
-      runReaderT (load [("foo", "bar")]) defaultConfig
+      load False [("foo", "bar")]
 
       lookupEnv "foo" `shouldReturn` Just "bar"
 
     it "preserves existing settings when overload is false" $ do
       setEnv "foo" "preset"
 
-      runReaderT (load [("foo", "new setting")] ) defaultConfig
+      load False [("foo", "new setting")]
 
       lookupEnv "foo" `shouldReturn` Just "preset"
 
     it "overrides existing settings when overload is true" $ do
       setEnv "foo" "preset"
 
-      runReaderT (load [("foo", "new setting")]) defaultConfig { configOverride = True }
+      load True [("foo", "new setting")]
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
 

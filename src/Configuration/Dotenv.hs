@@ -17,7 +17,6 @@ module Configuration.Dotenv
     , loadFile
     , parseFile
     , onMissingFile
-    , DotEnv
       -- * Dotenv Types
     , module Configuration.Dotenv.Types) where
 
@@ -41,10 +40,12 @@ type DotEnv m a = ReaderT Config m a
 
 -- | Loads the given list of options into the environment. Optionally
 -- override existing variables with values from Dotenv files.
-load :: MonadIO m
-     => [(String, String)] -- ^ List of values to be set in environment
-     -> DotEnv m ()
-load = mapM_ applySetting
+load ::
+  MonadIO m =>
+  Bool -- ^ Override existing settings?
+  -> [(String, String)] -- ^ List of values to be set in environment
+  -> m ()
+load override kv = runReaderT (mapM_ applySetting kv) defaultConfig { configOverride = override }
 
 -- | @loadFile@ parses the environment variables defined in the dotenv example
 -- file and checks if they are defined in the dotenv file or in the environment.
