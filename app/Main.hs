@@ -11,9 +11,8 @@ import           Data.Monoid          ((<>))
 import           Options.Applicative
 import           Paths_dotenv         (version)
 
-
-import           Configuration.Dotenv (Config (..), defaultConfig, loadFile)
 import           Control.Monad        (void)
+import           Configuration.Dotenv (Config (..), defaultConfig, loadFile)
 import           System.Exit          (exitWith)
 import           System.Process       (system)
 

@@ -52,10 +52,10 @@ load override kv = runReaderT (mapM_ applySetting kv) defaultConfig { configOver
 -- It also allows to override the environment variables defined in the environment
 -- with the values defined in the dotenv file.
 loadFile
-  :: MonadIO m =>
-  Config ->
-  m [(String, String)]
-loadFile = runReaderT (do
+  :: MonadIO m
+  => Config -- ^ Dotenv configuration
+  -> m [(String, String)] -- ^ Environment variables loaded
+loadFile = runReaderT $ do
   Config { .. } <- ask
   environment <- (liftReaderT . liftIO) getEnvironment
   readedVars <- liftReaderT $ fmap concat (mapM parseFile configPath)
@@ -72,7 +72,7 @@ loadFile = runReaderT (do
                     $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:"
                     ++ concatMap ((++) " " . fst) neededVars
              else readedVars
-  mapM applySetting vars)
+  mapM applySetting vars
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
