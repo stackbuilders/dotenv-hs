@@ -7,8 +7,7 @@ import           Configuration.Dotenv             (load, loadFile,
                                                    onMissingFile, parseFile)
 import           Configuration.Dotenv.Environment (getEnvironment, lookupEnv,
                                                    setEnv, unsetEnv)
-import           Configuration.Dotenv.Types       (Config (..),
-                                                   runReaderT)
+import           Configuration.Dotenv.Types       (Config (..))
 
 
 import           Test.Hspec
@@ -48,20 +47,21 @@ spec = do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      void $ runReaderT loadFile (Config ["spec/fixtures/.dotenv"] [] False False)
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] False False
+
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"
 
-      void $ runReaderT loadFile (Config ["spec/fixtures/.dotenv"] [] False False)
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] False False
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
       setEnv "DOTENV" "preset"
 
-      void $ runReaderT loadFile (Config ["spec/fixtures/.dotenv"] [] True False)
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] True False
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
@@ -71,7 +71,7 @@ spec = do
       context "when the needed env vars are missing" $
         it "should fail with an error call" $ do
           unsetEnv "ANOTHER_ENV"
-          void $ runReaderT loadFile config `shouldThrow` anyErrorCall
+          void $ loadFile config `shouldThrow` anyErrorCall
 
       context "when the needed env vars are not missing" $
         it "should succeed when loading all of the needed env vars" $ do
@@ -80,7 +80,7 @@ spec = do
           home <- fromMaybe "" <$> lookupEnv "HOME"
 
           -- Load envs
-          void $ runReaderT loadFile config
+          void $ loadFile config
 
           -- Check existing envs
           lookupEnv "ENVIRONMENT" `shouldReturn` Just home
@@ -102,16 +102,16 @@ spec = do
       liftM (!! 1) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("UNICODE_TEST", "Manabí")
 
-    it "recognizes environment variables" $ do
+    it "recognises environment variables" $ do
       home <- fromMaybe "" <$> lookupEnv "HOME"
       liftM (!! 2) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("ENVIRONMENT", home)
 
-    it "recognizes previous variables" $
+    it "recognises previous variables" $
       liftM (!! 3) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("PREVIOUS", "true")
 
-    it "recognizes commands" $ do
+    it "recognises commands" $ do
       me <- init <$> readCreateProcess (shell "whoami") ""
       liftM (!! 4) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
         ("ME", me)
@@ -125,17 +125,17 @@ spec = do
   describe "onMissingFile" $ after_ clearEnvs $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        void $ onMissingFile (runReaderT loadFile  (Config ["spec/fixtures/.dotenv"] [] True False)) (return [])
+        void $ onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True False) (return [])
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     context "when target file is missing" $
       it "executes supplied handler instead" $
-        onMissingFile (True <$ runReaderT loadFile (Config ["spec/fixtures/foo"] [] True False)) (return False)
+        onMissingFile (True <$ loadFile (Config ["spec/fixtures/foo"] [] True False)) (return False)
           `shouldReturn` False
 
 clearEnvs :: IO ()
 clearEnvs =
-  fmap (fmap fst) getEnvironment >>=  mapM_ unsetEnv
+  getEnvironment >>= mapM_ unsetEnv . fmap fst
 
 setupEnv :: IO ()
 setupEnv = do
