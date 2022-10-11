@@ -12,9 +12,7 @@ import           Options.Applicative
 import           Paths_dotenv         (version)
 
 import           Control.Monad        (void)
-
 import           Configuration.Dotenv (Config (..), defaultConfig, loadFile)
-
 import           System.Exit          (exitWith)
 import           System.Process       (system)
 
@@ -22,6 +20,7 @@ data Options = Options
   { dotenvFiles        :: [String]
   , dotenvExampleFiles :: [String]
   , override           :: Bool
+  , verbose            :: Bool
   , program            :: String
   , args               :: [String]
   } deriving (Show)
@@ -33,6 +32,7 @@ main = do
         Config
           { configExamplePath = dotenvExampleFiles
           , configOverride = override
+          , configVerbose = verbose
           , configPath =
               if null dotenvFiles
                 then configPath defaultConfig
@@ -67,6 +67,9 @@ config = Options
      <*> switch ( long "overload"
                   <> short 'o'
                   <> help "Specify this flag to override existing variables" )
+
+     <*> switch (  long "verbose"
+                  <> help "Specify this flag to print out the variables loaded and other useful insights" )
 
      <*> argument str (metavar "PROGRAM")
 
