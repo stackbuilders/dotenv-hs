@@ -14,7 +14,6 @@ module Configuration.Dotenv.Types
   , defaultConfig
   , ask
   , runReaderT
-  , mapReaderT
   , liftReaderT
   , ReaderT
   )
@@ -58,7 +57,6 @@ instance (Monad m) => Monad (ReaderT r m) where
 
 liftReaderT :: m a -> ReaderT r m a
 liftReaderT m = ReaderT (const m)
-{-# INLINE liftReaderT #-}
 
 ask :: (Monad m) => ReaderT r m r
 ask = ReaderT return

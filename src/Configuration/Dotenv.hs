@@ -55,24 +55,23 @@ loadFile
   :: MonadIO m
   => Config -- ^ Dotenv configuration
   -> m [(String, String)] -- ^ Environment variables loaded
-loadFile = runReaderT $ do
-  Config { .. } <- ask
-  environment <- (liftReaderT . liftIO) getEnvironment
-  readedVars <- liftReaderT $ fmap concat (mapM parseFile configPath)
-  neededVars <- liftReaderT $ fmap concat (mapM parseFile configExamplePath)
-  let coincidences = (environment `union` readedVars)
+loadFile config@Config{..} = do
+  environment <- liftIO getEnvironment
+  readVars <- fmap concat (mapM parseFile configPath)
+  neededVars <- fmap concat (mapM parseFile configExamplePath)
+  let coincidences = (environment `union` readVars)
         `intersectEnvs` neededVars
       cmpEnvs env1 env2 = fst env1 == fst env2
       intersectEnvs = intersectBy cmpEnvs
       unionEnvs = unionBy cmpEnvs
       vars = if (not . null) neededVars
              then if length neededVars == length coincidences
-                  then readedVars `unionEnvs` neededVars
+                  then readVars `unionEnvs` neededVars
                   else error
                     $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:"
                     ++ concatMap ((++) " " . fst) neededVars
-             else readedVars
-  mapM applySetting vars
+             else readVars
+  runReaderT (mapM applySetting vars) config
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
