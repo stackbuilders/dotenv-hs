@@ -47,26 +47,26 @@ spec = do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] False False
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] False False False
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"
 
-      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] False False
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] False False False
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
       setEnv "DOTENV" "preset"
 
-      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] True False
+      void $ loadFile $ Config ["spec/fixtures/.dotenv"] [] True False False
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     context "when the .env.example is present" $ do
-      let config = Config ["spec/fixtures/.dotenv"] ["spec/fixtures/.dotenv.example"] False False
+      let config = Config ["spec/fixtures/.dotenv"] ["spec/fixtures/.dotenv.example"] False False False
 
       context "when the needed env vars are missing" $
         it "should fail with an error call" $ do
@@ -125,13 +125,23 @@ spec = do
   describe "onMissingFile" $ after_ clearEnvs $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        void $ onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True False) (return [])
+        void $ onMissingFile (loadFile $ Config ["spec/fixtures/.dotenv"] [] True False False) (return [])
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     context "when target file is missing" $
       it "executes supplied handler instead" $
-        onMissingFile (True <$ loadFile (Config ["spec/fixtures/foo"] [] True False)) (return False)
+        onMissingFile (True <$ loadFile (Config ["spec/fixtures/foo"] [] True False False)) (return False)
           `shouldReturn` False
+
+  describe "onDuplicatedKeys" $ after_ clearEnvs $ do
+    context "when target file has duplicated key and override is true" $
+      it "throws an error" $
+        loadFile (Config ["spec/fixtures/.dotenv", "spec/fixtures/.dotenv"] [] True False True)
+          `shouldThrow` anyIOException
+    context "when target file has duplicated key and override is true" $
+      it "throws an error" $
+        loadFile (Config ["spec/fixtures/.dotenv", "spec/fixtures/.dotenv"] [] False False True)
+          `shouldThrow` anyIOException
 
 clearEnvs :: IO ()
 clearEnvs =

@@ -37,7 +37,7 @@ defaultConfig =
     , configOverride = False
     , configPath = [ ".env" ]
     , configVerbose = False
-    , disallowDuplicates = True
+    , disallowDuplicates = False
     }
 
 

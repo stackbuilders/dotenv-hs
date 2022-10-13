@@ -27,6 +27,7 @@ import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables
 import           Configuration.Dotenv.Types          (Config (..), ReaderT, ask,
                                                       defaultConfig,
                                                       liftReaderT, runReaderT)
+import           Control.Exception                   (throw)
 import           Control.Monad                       (when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
@@ -89,7 +90,7 @@ applySetting :: MonadIO m =>
   -> DotEnv m (String, String)
 applySetting kv@(k, v) = do
   Config { .. } <- ask
-  if configOverride && disallowDuplicates
+  if configOverride && not disallowDuplicates
     then info kv >> setEnv'
     else do
       res <- liftReaderT . liftIO $ lookupEnv k
@@ -128,9 +129,10 @@ onDisallowDuplicates :: MonadIO m => String -> DotEnv m ()
 onDisallowDuplicates key = do
   Config { .. } <- ask
   if disallowDuplicates
-  then error
-    $ "[ERROR]: Env '"++ key ++ "' is duplicated in a dotenv file. Please, fix that (or remove --no-dups)."
-  else
-    liftReaderT . liftIO
-    $ putStrLn
-    $ "[WARN]: Env '"++ key ++ "' is duplicated in a dotenv file."
+    then throw $
+      userError
+      $ "[ERROR]: Env '"++ key ++ "' is duplicated in a dotenv file. Please, fix that (or remove --no-dups)."
+    else
+      liftReaderT . liftIO
+      $ putStrLn
+      $ "[WARN]: Env '"++ key ++ "' is duplicated in a dotenv file."
