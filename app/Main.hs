@@ -34,7 +34,7 @@ main = do
           { configExamplePath = dotenvExampleFiles
           , configOverride = override
           , configVerbose = verbose
-          , configDuplicates = duplicates
+          , disallowDuplicates = duplicates
           , configPath =
               if null dotenvFiles
                 then configPath defaultConfig
@@ -72,6 +72,11 @@ config = Options
 
      <*> switch (  long "verbose"
                   <> help "Specify this flag to print out the variables loaded and other useful insights" )
+
+     <*> switch (  long "no-dups"
+                  <> short 'D'
+                  <> help "Specify this flag to disallow duplicate variables"
+                  )
 
      <*> argument str (metavar "PROGRAM")
 

@@ -89,13 +89,16 @@ applySetting :: MonadIO m =>
   -> DotEnv m (String, String)
 applySetting kv@(k, v) = do
   Config { .. } <- ask
-  if configOverride
+  if configOverride && disallowDuplicates
     then info kv >> setEnv'
     else do
       res <- liftReaderT . liftIO $ lookupEnv k
       case res of
         Nothing -> info kv >> setEnv'
-        Just _  -> return kv
+        Just _  -> onDisallowDuplicates k >>
+                if configOverride
+                  then info kv >> setEnv'
+                  else return kv
   where
     setEnv' = liftReaderT . liftIO $ setEnv k v >> return kv
 
@@ -119,3 +122,15 @@ onMissingFile
   -> m a               -- ^ Action to perform if file is indeed missing
   -> m a
 onMissingFile f h = catchIf isDoesNotExistError f (const h)
+
+-- | The helper throws an exception if the allow duplicate is set to False.
+onDisallowDuplicates :: MonadIO m => String -> DotEnv m ()
+onDisallowDuplicates key = do
+  Config { .. } <- ask
+  if disallowDuplicates
+  then error
+    $ "[ERROR]: Env '"++ key ++ "' is duplicated in a dotenv file. Please, fix that (or remove --no-dups)."
+  else
+    liftReaderT . liftIO
+    $ putStrLn
+    $ "[WARN]: Env '"++ key ++ "' is duplicated in a dotenv file."

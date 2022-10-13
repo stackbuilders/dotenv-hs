@@ -25,7 +25,7 @@ data Config = Config
   , configExamplePath :: [FilePath] -- ^ The paths for the .env.example files
   , configOverride    :: Bool     -- ^ Flag to allow override env variables
   , configVerbose     :: Bool     -- ^ Flag to log the loaded variables and other useful information
-  , configDuplicates :: Bool     -- ^ Flag to allow duplicate variables 
+  , disallowDuplicates   :: Bool     -- ^ Flag to allow duplicate variables
   } deriving (Eq, Show)
 
 -- | Default configuration. Use .env file without .env.example strict envs and
@@ -37,7 +37,7 @@ defaultConfig =
     , configOverride = False
     , configPath = [ ".env" ]
     , configVerbose = False
-    , configDuplicates = True
+    , disallowDuplicates = True
     }
 
 
