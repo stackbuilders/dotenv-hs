@@ -11,8 +11,8 @@ import           Data.Monoid          ((<>))
 import           Options.Applicative
 import           Paths_dotenv         (version)
 
-import           Control.Monad        (void)
 import           Configuration.Dotenv (Config (..), defaultConfig, loadFile)
+import           Control.Monad        (void)
 import           System.Exit          (exitWith)
 import           System.Process       (system)
 
@@ -21,6 +21,7 @@ data Options = Options
   , dotenvExampleFiles :: [String]
   , override           :: Bool
   , verbose            :: Bool
+  , duplicates         :: Bool
   , program            :: String
   , args               :: [String]
   } deriving (Show)
@@ -33,6 +34,7 @@ main = do
           { configExamplePath = dotenvExampleFiles
           , configOverride = override
           , configVerbose = verbose
+          , configDuplicates = duplicates
           , configPath =
               if null dotenvFiles
                 then configPath defaultConfig
