@@ -125,7 +125,7 @@ onMissingFile
   -> m a
 onMissingFile f h = catchIf isDoesNotExistError f (const h)
 
--- | The helper throws an exception if the allow duplicate is set to True.
+-- | The helper throws an exception if the allow duplicate is set to False.
 
 onDisallowDuplicates :: MonadIO m => String -> DotEnv m ()
 onDisallowDuplicates key = do
