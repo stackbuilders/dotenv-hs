@@ -35,6 +35,7 @@ import           Data.List                           (intersectBy, union,
                                                       unionBy)
 import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
+import Control.Monad.Compat (unless)
 
 -- | Monad Stack for the application
 type DotEnv m a = ReaderT Config m a
@@ -90,7 +91,7 @@ applySetting :: MonadIO m =>
   -> DotEnv m (String, String)
 applySetting kv@(k, v) = do
   Config { .. } <- ask
-  if configOverride && not disallowDuplicates
+  if configOverride && allowDuplicates
     then info kv >> setEnv'
     else do
       res <- liftReaderT . liftIO $ lookupEnv k
@@ -124,15 +125,12 @@ onMissingFile
   -> m a
 onMissingFile f h = catchIf isDoesNotExistError f (const h)
 
--- | The helper throws an exception if the allow duplicate is set to False.
+-- | The helper throws an exception if the allow duplicate is set to True.
+
 onDisallowDuplicates :: MonadIO m => String -> DotEnv m ()
 onDisallowDuplicates key = do
   Config { .. } <- ask
-  if disallowDuplicates
-    then throw $
-      userError
-      $ "[ERROR]: Env '"++ key ++ "' is duplicated in a dotenv file. Please, fix that (or remove --no-dups)."
-    else
-      liftReaderT . liftIO
-      $ putStrLn
-      $ "[WARN]: Env '"++ key ++ "' is duplicated in a dotenv file."
+  unless allowDuplicates
+    $ throw
+    $ userError
+    $ "[ERROR]: Env '"++ key ++ "' is duplicated in a dotenv file. Please, fix that (or remove --no-dups)."
