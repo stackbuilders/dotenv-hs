@@ -134,7 +134,7 @@ spec = do
           `shouldReturn` False
 
   describe "onDuplicatedKeys" $ after_ clearEnvs $ do
-    context "when target file has duplicated key" $
+    context "when target file has duplicated key and the duplicate are not allowed" $
       it "throws an error" $
         loadFile (Config ["spec/fixtures/.dotenv", "spec/fixtures/.dotenv"] [] True False False)
           `shouldThrow` anyIOException
