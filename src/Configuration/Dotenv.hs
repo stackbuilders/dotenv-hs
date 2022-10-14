@@ -30,12 +30,12 @@ import           Configuration.Dotenv.Types          (Config (..), ReaderT, ask,
 import           Control.Exception                   (throw)
 import           Control.Monad                       (when)
 import           Control.Monad.Catch
+import           Control.Monad.Compat                (unless)
 import           Control.Monad.IO.Class              (MonadIO (..))
 import           Data.List                           (intersectBy, union,
                                                       unionBy)
 import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
-import Control.Monad.Compat (unless)
 
 -- | Monad Stack for the application
 type DotEnv m a = ReaderT Config m a
