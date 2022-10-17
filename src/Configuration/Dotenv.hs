@@ -67,12 +67,13 @@ loadFile config@Config{..} = do
       intersectEnvs = intersectBy cmpEnvs
       unionEnvs = unionBy cmpEnvs
       vars = if (not . null) neededVars
-             then if length neededVars == length coincidences
+              then if length neededVars == length coincidences
                   then readVars `unionEnvs` neededVars
                   else error
                     $ "Missing env vars! Please, check (this/these) var(s) (is/are) set:"
                     ++ concatMap ((++) " " . fst) neededVars
-             else readVars
+              else readVars
+  runReaderT (mapM_ (onForbidDuplicates . fst) vars ) config
   runReaderT (mapM applySetting vars) config
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
@@ -91,16 +92,13 @@ applySetting :: MonadIO m =>
   -> DotEnv m (String, String)
 applySetting kv@(k, v) = do
   Config { .. } <- ask
-  if configOverride && allowDuplicates
+  if configOverride
     then info kv >> setEnv'
     else do
       res <- liftReaderT . liftIO $ lookupEnv k
       case res of
         Nothing -> info kv >> setEnv'
-        Just _  -> onDisallowDuplicates k >>
-                if configOverride
-                  then info kv >> setEnv'
-                  else return kv
+        Just _  -> return kv
   where
     setEnv' = liftReaderT . liftIO $ setEnv k v >> return kv
 
@@ -127,8 +125,8 @@ onMissingFile f h = catchIf isDoesNotExistError f (const h)
 
 -- | The helper throws an exception if the allow duplicate is set to False.
 
-onDisallowDuplicates :: MonadIO m => String -> DotEnv m ()
-onDisallowDuplicates key = do
+onForbidDuplicates :: MonadIO m => String -> DotEnv m ()
+onForbidDuplicates key = do
   Config { .. } <- ask
   unless allowDuplicates
     $ throw
