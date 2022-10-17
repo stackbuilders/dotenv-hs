@@ -75,7 +75,7 @@ config = Options
 
      <*> flag True False (  long "no-dups"
                   <> short 'D'
-                  <> help "Specify this flag to disallow duplicate variables and throw an error" 
+                  <> help "Specify this flag to forbid duplicate variables"
                   )
 
      <*> argument str (metavar "PROGRAM")
