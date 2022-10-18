@@ -137,7 +137,10 @@ spec = do
       it "throws an error" $
         loadFile sampleConfig { configPath = ["spec/fixtures/.dotenv", "spec/fixtures/.dotenv"], allowDuplicates = False }
           `shouldThrow` anyIOException
-
+    context "when target file does not have duplicated key and the duplicate are forbidden" $
+      it "works as usual" $ do
+        void $ loadFile sampleConfig { allowDuplicates = False }
+        lookupEnv "DOTENV" `shouldReturn` Just "true"
 sampleConfig :: Config
 sampleConfig = Config ["spec/fixtures/.dotenv"] [] False False True
 
