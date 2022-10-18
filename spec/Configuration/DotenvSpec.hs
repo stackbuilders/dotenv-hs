@@ -141,6 +141,7 @@ spec = do
       it "works as usual" $ do
         void $ loadFile sampleConfig { allowDuplicates = False }
         lookupEnv "DOTENV" `shouldReturn` Just "true"
+
 sampleConfig :: Config
 sampleConfig = Config ["spec/fixtures/.dotenv"] [] False False True
 
