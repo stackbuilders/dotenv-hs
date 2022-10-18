@@ -11,8 +11,8 @@
 {-# LANGUAGE RecordWildCards #-}
 
 module Configuration.Dotenv
-      -- * Dotenv Load Functions
-  ( load
+  ( -- * Dotenv Load Functions
+    load
   , loadFile
   , parseFile
   , onMissingFile
@@ -126,8 +126,8 @@ onMissingFile ::
 onMissingFile f h = catchIf isDoesNotExistError f (const h)
 
 -- | The helper throws an exception if the allow duplicate is set to False.
-onForbidDuplicates :: MonadIO m => String -> m ()
-onForbidDuplicates key =
+forbidDuplicates :: MonadIO m => String -> m ()
+forbidDuplicates key =
   throw $
   userError $
   "[ERROR]: Env '" ++
@@ -139,5 +139,5 @@ lookUpDuplicates [] = return ()
 lookUpDuplicates [_] = return ()
 lookUpDuplicates (x:xs) =
   if x `elem` xs
-    then onForbidDuplicates x
+    then forbidDuplicates x
     else lookUpDuplicates xs
