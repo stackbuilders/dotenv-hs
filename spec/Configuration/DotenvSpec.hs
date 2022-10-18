@@ -133,12 +133,11 @@ spec = do
           `shouldReturn` False
 
   describe "onDuplicatedKeys" $ after_ clearEnvs $ do
-    context "when target file has duplicated key and the duplicate are forbidden" $
-      it "throws an error" $
+    context "when duplicates are forbidden" $ do
+      it "throws an error on duplicated keys" $
         loadFile sampleConfig { configPath = ["spec/fixtures/.dotenv", "spec/fixtures/.dotenv"], allowDuplicates = False }
           `shouldThrow` anyIOException
-    context "when target file does not have duplicated key and the duplicate are forbidden" $
-      it "works as usual" $ do
+      it "works as usual when there is no duplicated keys" $ do
         void $ loadFile sampleConfig { allowDuplicates = False }
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
