@@ -12,7 +12,7 @@ import           Configuration.Dotenv.Types       (Config (..))
 
 import           Test.Hspec
 
-import           Control.Monad                    (liftM, void)
+import           Control.Monad                    (liftM)
 import           Data.Maybe                       (fromMaybe)
 import           System.Process                   (readCreateProcess, shell)
 
@@ -47,21 +47,21 @@ spec = do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
 
-      void $ loadFile sampleConfig
+      loadFile sampleConfig
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     it "respects predefined settings when overload is false" $ do
       setEnv "DOTENV" "preset"
 
-      void $ loadFile sampleConfig
+      loadFile sampleConfig
 
       lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
     it "overrides predefined settings when overload is true" $ do
       setEnv "DOTENV" "preset"
 
-      void $ loadFile sampleConfig { configOverride = True }
+      loadFile sampleConfig { configOverride = True }
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
 
@@ -70,7 +70,7 @@ spec = do
       context "when the needed env vars are missing" $
         it "should fail with an error call" $ do
           unsetEnv "ANOTHER_ENV"
-          void $ loadFile config `shouldThrow` anyErrorCall
+          loadFile config `shouldThrow` anyErrorCall
 
       context "when the needed env vars are not missing" $
         it "should succeed when loading all of the needed env vars" $ do
@@ -79,7 +79,7 @@ spec = do
           home <- fromMaybe "" <$> lookupEnv "HOME"
 
           -- Load envs
-          void $ loadFile config
+          loadFile config
 
           -- Check existing envs
           lookupEnv "ENVIRONMENT" `shouldReturn` Just home
@@ -124,7 +124,7 @@ spec = do
   describe "onMissingFile" $ after_ clearEnvs $ do
     context "when target file is present" $
       it "loading works as usual" $ do
-        void $ onMissingFile (loadFile sampleConfig {configOverride = True}) (return [])
+        onMissingFile (loadFile sampleConfig {configOverride = True}) (return ())
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
     context "when target file is missing" $
@@ -138,7 +138,7 @@ spec = do
         loadFile sampleConfig { configPath = ["spec/fixtures/.dotenv", "spec/fixtures/.dotenv"], allowDuplicates = False }
           `shouldThrow` anyIOException
       it "works as usual when there is no duplicated keys" $ do
-        void $ loadFile sampleConfig { allowDuplicates = False }
+        loadFile sampleConfig { allowDuplicates = False }
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
 sampleConfig :: Config

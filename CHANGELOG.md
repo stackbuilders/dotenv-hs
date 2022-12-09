@@ -1,4 +1,8 @@
 ## MASTER
+## Dotenv 0.10.0.0
+### Added
+* `loadFile` change return type (back to `m ()`)
+
 ## Dotenv 0.9.0.3
 ### Added
 * Parse multi-word command interpolations (Kudos to @pbrisbin)

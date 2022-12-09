@@ -57,7 +57,7 @@ load override kv =
 loadFile ::
      MonadIO m
   => Config -- ^ Dotenv configuration
-  -> m [(String, String)] -- ^ Environment variables loaded
+  -> m ()
 loadFile config@Config {..} = do
   environment <- liftIO getEnvironment
   readVars <- fmap concat (mapM parseFile configPath)
@@ -75,7 +75,7 @@ loadFile config@Config {..} = do
                       concatMap ((++) " " . fst) neededVars
           else readVars
   unless allowDuplicates $ (lookUpDuplicates . map fst) vars
-  runReaderT (mapM applySetting vars) config
+  runReaderT (mapM_ applySetting vars) config
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
