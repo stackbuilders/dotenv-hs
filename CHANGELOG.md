@@ -1,6 +1,6 @@
 ## MASTER
 ## Dotenv 0.10.0.0
-### Added
+### Modified
 * `loadFile` change return type (back to `m ()`)
 
 ## Dotenv 0.9.0.3
