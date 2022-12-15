@@ -17,3 +17,4 @@ cabal.config
 *.hp
 .stack-work/
 .env
+dist-newstyle/
