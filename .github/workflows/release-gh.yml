@@ -25,6 +25,7 @@ jobs:
       - name: Build package
         id: build
         run: |
+          ls -lah
           ldd dotenv
 
       - name: Create release with package assets
