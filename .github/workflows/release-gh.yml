@@ -22,7 +22,7 @@ jobs:
       - name: Build package
         id: build
         run: |
-          cabal install --enable-executable-static
+          cabal build --enable-executable-static
           tar -C $(cabal list-bin dotenv) -cvf dotenv-linux-x86_64-static.tar.gz dotenv
       - name: Create release with package assets
         uses: softprops/action-gh-release@v1
