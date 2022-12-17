@@ -1,0 +1,8 @@
+FROM utdemir/ghc-musl:v24-ghc922
+WORKDIR /usr/src/app
+COPY hapistrano.cabal .
+RUN cabal update && \
+    cabal build --only-dependencies --enable-static
+COPY . .
+RUN cabal build --enable-executable-static && \
+    cp $(cabal list-bin dotenv) dotenv
