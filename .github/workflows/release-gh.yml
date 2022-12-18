@@ -22,17 +22,16 @@ jobs:
             cd /mnt
             sh build.static.sh
 
-      - name: Change permissions
-        run: |
-          ls -lha dotenv
-          echo $USER
-          sudo chown $USER:$USER dotenv
-          ls -lha dotenv
+      - name: Change owner before compression
+        run: sudo chown $USER:$USER dotenv
+
+      - name: Rename binary file
+        run: cp dotenv dotenv-${{ github.ref_name }}-linux-x86_64-bin
 
       - name: Compress binary
         uses: svenstaro/upx-action@v2
         with:
-          file: dotenv
+          file: dotenv-${{ github.ref_name }}-linux-x86_64-bin
           args: --best --lzma
           strip: true
 
@@ -41,7 +40,7 @@ jobs:
         with:
           body_path: CHANGELOG.md
           files: |
-            dotenv
+            dotenv-${{ github.ref_name }}-linux-x86_64-bin
           draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
