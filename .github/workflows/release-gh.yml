@@ -25,15 +25,15 @@ jobs:
       - name: Change owner before compression
         run: sudo chown $USER:$USER dotenv
 
-      - name: Rename binary file
-        run: cp dotenv dotenv-${{ github.ref_name }}-linux-x86_64-bin
-
       - name: Compress binary
         uses: svenstaro/upx-action@v2
         with:
-          file: dotenv-${{ github.ref_name }}-linux-x86_64-bin
+          file: dotenv
           args: --best --lzma
           strip: true
+
+      - name: Rename binary file
+        run: cp dotenv dotenv-${{ github.ref_name }}-linux-x86_64-bin
 
       - name: Create release with package assets
         uses: softprops/action-gh-release@v1
