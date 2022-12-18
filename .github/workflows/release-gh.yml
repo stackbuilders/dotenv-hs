@@ -22,6 +22,12 @@ jobs:
             cd /mnt
             sh build.static.sh
 
+      - name: Change permissions
+        run: |
+          ls -lha dotenv
+          chmod +x dotenv
+          ls -lha dotenv
+
       - name: Compress binary
         uses: svenstaro/upx-action@v2
         with:
