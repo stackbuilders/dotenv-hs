@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-    branches:
-      - chore/ci-update
 
 jobs:
   build-binary:

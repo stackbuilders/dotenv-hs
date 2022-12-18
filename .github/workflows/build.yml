@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - master
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - synchronize
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 concurrency:
   group: build-${{ github.ref }}
@@ -18,8 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # ghc: ["8.6.5", "8.8.3", "8.10.1", "9.0.1"]
-        ghc: ["9.2"]
+        ghc: ["9.2", "9.0", "8.10"]
         os: [ubuntu-latest]
         include:
           - os: macos-latest
