@@ -25,7 +25,7 @@ jobs:
       - name: Change permissions
         run: |
           ls -lha dotenv
-          chmod +x dotenv
+          sudo chmod +x dotenv
           ls -lha dotenv
 
       - name: Compress binary
