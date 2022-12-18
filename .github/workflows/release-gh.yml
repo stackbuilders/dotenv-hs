@@ -20,13 +20,7 @@ jobs:
           options: -v ${{ github.workspace }}:/mnt
           run: |
             cd /mnt
-            sh build.sh
-
-      - name: Build package
-        id: build
-        run: |
-          ls -lah
-          ldd dotenv
+            sh build.static.sh
 
       - name: Create release with package assets
         uses: softprops/action-gh-release@v1
