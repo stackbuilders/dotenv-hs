@@ -27,7 +27,10 @@ jobs:
         id: setup-haskell-cabal
         uses: haskell/actions/setup@v2
         with:
-          ghc-version: "9.2"
+          # I faced the following issue with GHC-9.2 and and I managed to solve
+          # it by going back to GHC-8.10.7 just to generate the docs:
+          # - https://github.com/haskell/cabal/issues/8326
+          ghc-version: "8.10.7"
           cabal-version: "3.6"
 
       - name: Generate sdist
