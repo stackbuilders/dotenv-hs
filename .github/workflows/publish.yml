@@ -1,5 +1,3 @@
-# The present workflow was made based on the following references:
-# - https://github.com/stackbuilders/hapistrano/blob/master/.github/workflows/release.yml
 ---
 name: Release
 
@@ -7,11 +5,6 @@ on:
   release:
     types:
       - published
-  # TODO: REMOVE THIS CONSTRAINT:
-  push:
-    tags:
-      - 'v*'
-
 
 concurrency:
   group: release-${{ github.ref }}
@@ -27,7 +20,7 @@ jobs:
         id: setup-haskell-cabal
         uses: haskell/actions/setup@v2
         with:
-          # I faced the following issue with GHC-9.2 and and I managed to solve
+          # I faced the following issue with GHC-9.2 and and I managed to solved
           # it by going back to GHC-8.10.7 just to generate the docs:
           # - https://github.com/haskell/cabal/issues/8326
           ghc-version: "8.10.7"
@@ -39,7 +32,6 @@ jobs:
       - name: Upload candidate package to Hackage
         run: |
           SDIST_PATH=$(ls dist-newstyle/sdist/dotenv-*.tar.gz)
-          echo $SDIST_PATH
           curl -X POST \
            -H 'Accept: text/plain' \
            -H 'Authorization: X-ApiKey ${{ secrets.HACKAGE_API_KEY }}' \
@@ -49,13 +41,11 @@ jobs:
       - name: Generate documentation
         run: cabal haddock --haddock-for-hackage --enable-documentation
 
-      - name: Upload Docs to Hackage
+      - name: Upload Docs for candidateto Hackage
         run: |
           TAG_VERSION=${{ github.ref_name }}
           VERSION=${TAG_VERSION:1}
-          echo $VERSION
           DOCS_PATH=$(ls dist-newstyle/dotenv-*-docs.tar.gz)
-          echo $DOCS_PATH
           curl -X PUT \
            -H 'Content-Type: application/x-tar' \
            -H 'Content-Encoding: gzip' \
