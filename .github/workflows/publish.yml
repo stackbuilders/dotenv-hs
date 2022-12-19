@@ -52,7 +52,7 @@ jobs:
       - name: Upload Docs to Hackage
         run: |
           TAG_VERSION=${{ github.ref_name }}
-          VERSION=${$TAG_VERSION/v/}
+          VERSION=${TAG_VERSION:1}
           echo $VERSION
           DOCS_PATH=$(ls dist-newstyle/dotenv-*-docs.tar.gz)
           echo $DOCS_PATH
