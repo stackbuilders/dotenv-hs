@@ -1,0 +1,22 @@
+# The present workflow was made based on the following references:
+# - https://github.com/stackbuilders/hapistrano/blob/master/.github/workflows/release.yml
+---
+name: Release
+
+on:
+  release:
+    types:
+      - published
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  hackage:
+    uses: stackbuilders/reusable-workflows/.github/workflows/cabal-upload.yml@v0.1.0
+    inputs:
+      ghc_version: "9.2"
+    secrets:
+      HACKAGE_USERNAME: ${{ secrets.HACKAGE_USERNAME }}
+      HACKAGE_PASSWORD: ${{ secrets.HACKAGE_PASSWORD }}
