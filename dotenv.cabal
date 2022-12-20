@@ -90,7 +90,6 @@ library
                       , Configuration.Dotenv.Types
 
   build-depends:         base >= 4.9 && < 5.0
-                       , base-compat >= 0.4
                        , directory
                        , megaparsec >= 7.0.1 && < 10.0
                        , containers

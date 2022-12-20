@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        ghc: ["9.2", "9.0"]
+        ghc: ["9.2", "9.0", "8.10"]
         os: [ubuntu-latest]
         include:
           - os: macos-latest
@@ -26,30 +26,36 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Setup Haskell
         id: setup-haskell-cabal
         uses: haskell/actions/setup@v2
         with:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: "3.6"
+
       - name: Update dependencies with Hackage
         run: cabal update
+
       - name: Build dependencies
         run: cabal freeze --enable-tests
+
       - name: Cache dependencies and dist-newstyle
         uses: actions/cache@v3
         with:
           path: |
-            ~/.cabal/packages
             ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
             dist-newstyle
           key: dependencies-${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
           restore-keys: |
             dependencies-${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
             dependencies-${{ runner.os }}-${{ matrix.ghc }}-
+
       - name: Install dependencies
         run: cabal install --only-dependencies
+
       - name: Build project
         run: cabal build --enable-tests
+
       - name: Run tests
         run: cabal test --enable-tests
