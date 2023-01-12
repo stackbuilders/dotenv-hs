@@ -1,0 +1,44 @@
+name: Release package to Github
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-binary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: addnab/docker-run-action@v3
+        with:
+          image: utdemir/ghc-musl:v24-ghc922
+          options: -v ${{ github.workspace }}:/mnt
+          run: |
+            cd /mnt
+            sh build.static.sh
+
+      - name: Change owner before compression
+        run: sudo chown $USER:$USER dotenv
+
+      - name: Compress binary
+        uses: svenstaro/upx-action@v2
+        with:
+          file: dotenv
+          args: --best --lzma
+          strip: true
+
+      - name: Rename binary file
+        run: cp dotenv dotenv-${{ github.ref_name }}-linux-x86_64-bin
+
+      - name: Create release with package assets
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
+          files: |
+            dotenv-${{ github.ref_name }}-linux-x86_64-bin
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

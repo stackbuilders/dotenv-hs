@@ -28,9 +28,8 @@ import           Configuration.Dotenv.Types          (Config (..), ReaderT, ask,
                                                       defaultConfig,
                                                       liftReaderT, runReaderT)
 import           Control.Exception                   (throw)
-import           Control.Monad                       (when)
+import           Control.Monad                       (unless, when)
 import           Control.Monad.Catch
-import           Control.Monad.Compat                (unless)
 import           Control.Monad.IO.Class              (MonadIO (..))
 import           Data.List                           (intersectBy, union,
                                                       unionBy)
