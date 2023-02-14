@@ -5,7 +5,7 @@ homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
   .
   In most applications,
-  <http://12factor.net/config configuration should be separated from code>.
+  <https://12factor.net/config configuration should be separated from code>.
   While it usually works well to keep configuration in the
   environment, there are cases where you may want to store
   configuration in a file outside of version control.
@@ -14,16 +14,15 @@ description:
   especially in development and test environments. In
   <https://github.com/bkeepers/dotenv Ruby>,
   <https://github.com/theskumar/python-dotenv Python> and
-  <https://www.npmjs.com/package/dotenv Javascript> there are libraries
+  <https://www.npmjs.com/package/dotenv JavaScript> there are libraries
   to facilitate loading of configuration options from configuration
   files. This library loads configuration to environment variables for
   programs written in Haskell.
   .
   To use, call `loadFile` from your application:
   .
-  > import Control.Monad (void)
   > import Configuration.Dotenv
-  > void $ loadFile defaultConfig
+  > loadFile defaultConfig
   .
   This package also includes an executable that can be used
   to inspect the results of applying one or more Dotenv files
@@ -36,7 +35,7 @@ license:             MIT
 license-file:        LICENSE
 author:              Justin Leitgeb
 maintainer:          hackage@stackbuilders.com
-copyright:           2015-2020 Stack Builders Inc.
+copyright:           2015-2023 Stack Builders Inc.
 category:            Configuration
 build-type:          Simple
 extra-source-files:    spec/fixtures/.dotenv
