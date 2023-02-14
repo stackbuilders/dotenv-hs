@@ -10,7 +10,7 @@ description:
   environment, there are cases where you may want to store
   configuration in a file outside of version control.
   .
-  "Dotenv" files have become popular for storing configuration,
+  @Dotenv@ files have become popular for storing configuration,
   especially in development and test environments. In
   <https://github.com/bkeepers/dotenv Ruby>,
   <https://github.com/theskumar/python-dotenv Python> and
@@ -29,13 +29,13 @@ description:
   to the environment, or for invoking your executables with
   an environment after one or more Dotenv files is applied.
   .
-  See the <https://github.com/stackbuilders/dotenv-hs Github>
+  See the <https://github.com/stackbuilders/dotenv-hs#readme Github>
   page for more information on this package.
 license:             MIT
 license-file:        LICENSE
 author:              Justin Leitgeb
 maintainer:          hackage@stackbuilders.com
-copyright:           2015-2023 Stack Builders Inc.
+copyright:           2015-Present Stack Builders Inc.
 category:            Configuration
 build-type:          Simple
 extra-source-files:    spec/fixtures/.dotenv
