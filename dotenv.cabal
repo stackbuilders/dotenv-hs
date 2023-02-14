@@ -87,6 +87,7 @@ library
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
+                      , Configuration.Dotenv.Internal
 
   build-depends:         base >= 4.9 && < 5.0
                        , directory

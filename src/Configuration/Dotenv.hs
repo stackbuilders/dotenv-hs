@@ -24,8 +24,8 @@ import           Configuration.Dotenv.Environment    (getEnvironment, lookupEnv,
                                                       setEnv)
 import           Configuration.Dotenv.Parse          (configParser)
 import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
-import           Configuration.Dotenv.Types          (Config (..), ReaderT, ask,
-                                                      defaultConfig,
+import           Configuration.Dotenv.Types          (Config (..), defaultConfig)
+import           Configuration.Dotenv.Internal       (ReaderT, ask,
                                                       liftReaderT, runReaderT)
 import           Control.Exception                   (throw)
 import           Control.Monad                       (unless, when)
