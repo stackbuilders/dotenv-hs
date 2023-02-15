@@ -132,6 +132,7 @@ test-suite dotenv-test
                      , text
                      , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 2.0 && < 3.0
+                     , mtl
 
   build-tools:        hspec-discover   >= 2.0 && < 3.0
 
