@@ -87,7 +87,6 @@ library
                       , Configuration.Dotenv.ParsedVariable
                       , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
-                      , Configuration.Dotenv.Internal
 
   build-depends:         base >= 4.9 && < 5.0
                        , directory
@@ -97,6 +96,7 @@ library
                        , shellwords >= 0.1.3.0
                        , text
                        , exceptions >= 0.8 && < 0.11
+                       , mtl >= 2.3 && < 2.4
 
   hs-source-dirs:      src
   ghc-options:         -Wall
