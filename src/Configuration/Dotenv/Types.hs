@@ -12,10 +12,6 @@
 module Configuration.Dotenv.Types
   ( Config(..)
   , defaultConfig
-  , ask
-  , runReaderT
-  , liftReaderT
-  , ReaderT
   )
   where
 
@@ -39,26 +35,3 @@ defaultConfig =
     , configVerbose = False
     , allowDuplicates = True
     }
-
-
-newtype ReaderT r m a = ReaderT { runReaderT :: r -> m a }
-mapReaderT :: (m a -> n b) -> ReaderT r m a -> ReaderT r n b
-mapReaderT f m = ReaderT $ f . runReaderT m
-instance (Functor m) => Functor (ReaderT r m) where
-    fmap f  = mapReaderT (fmap f)
-instance (Applicative m) => Applicative (ReaderT r m) where
-    pure    = liftReaderT . pure
-    f <*> v = ReaderT $ \ r -> runReaderT f r <*> runReaderT v r
-
-instance (Monad m) => Monad (ReaderT r m) where
-    return   = liftReaderT . return
-    m >>= k  = ReaderT $ \ r -> do
-      a <- runReaderT m r
-      runReaderT (k a) r
-    m >> k = ReaderT $ \ r -> runReaderT m r >> runReaderT k r
-
-liftReaderT :: m a -> ReaderT r m a
-liftReaderT m = ReaderT (const m)
-
-ask :: (Monad m) => ReaderT r m r
-ask = ReaderT return

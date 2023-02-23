@@ -24,9 +24,9 @@ import           Configuration.Dotenv.Environment    (getEnvironment, lookupEnv,
                                                       setEnv)
 import           Configuration.Dotenv.Parse          (configParser)
 import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
-import           Configuration.Dotenv.Types          (Config (..), ReaderT, ask,
-                                                      defaultConfig,
-                                                      liftReaderT, runReaderT)
+import           Configuration.Dotenv.Types          (Config (..), defaultConfig)
+import           Control.Monad.Trans                 (lift)
+import           Control.Monad.Reader                (ReaderT, ask, runReaderT)
 import           Control.Exception                   (throw)
 import           Control.Monad                       (unless, when)
 import           Control.Monad.Catch
@@ -97,12 +97,12 @@ applySetting kv@(k, v) = do
   if configOverride
     then info kv >> setEnv'
     else do
-      res <- liftReaderT . liftIO $ lookupEnv k
+      res <- lift . liftIO $ lookupEnv k
       case res of
         Nothing -> info kv >> setEnv'
         Just _  -> return kv
   where
-    setEnv' = liftReaderT . liftIO $ setEnv k v >> return kv
+    setEnv' = lift . liftIO $ setEnv k v >> return kv
 
 -- | The function logs in console when a variable is loaded into the
 -- environment.
@@ -110,7 +110,7 @@ info :: MonadIO m => (String, String) -> DotEnv m ()
 info (key, value) = do
   Config {..} <- ask
   when configVerbose $
-    liftReaderT . liftIO $
+    lift . liftIO $
     putStrLn $ "[INFO]: Load env '" ++ key ++ "' with value '" ++ value ++ "'"
 
 -- | The helper allows to avoid exceptions in the case of missing files and

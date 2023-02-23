@@ -1,42 +1,41 @@
 name:                dotenv
-version:             0.10.0.0
+version:             0.10.0.1
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
   .
   In most applications,
-  <http://12factor.net/config configuration should be separated from code>.
+  <https://12factor.net/config configuration should be separated from code>.
   While it usually works well to keep configuration in the
   environment, there are cases where you may want to store
   configuration in a file outside of version control.
   .
-  "Dotenv" files have become popular for storing configuration,
+  @Dotenv@ files have become popular for storing configuration,
   especially in development and test environments. In
   <https://github.com/bkeepers/dotenv Ruby>,
   <https://github.com/theskumar/python-dotenv Python> and
-  <https://www.npmjs.com/package/dotenv Javascript> there are libraries
+  <https://www.npmjs.com/package/dotenv JavaScript> there are libraries
   to facilitate loading of configuration options from configuration
   files. This library loads configuration to environment variables for
   programs written in Haskell.
   .
   To use, call `loadFile` from your application:
   .
-  > import Control.Monad (void)
   > import Configuration.Dotenv
-  > void $ loadFile defaultConfig
+  > loadFile defaultConfig
   .
   This package also includes an executable that can be used
   to inspect the results of applying one or more Dotenv files
   to the environment, or for invoking your executables with
   an environment after one or more Dotenv files is applied.
   .
-  See the <https://github.com/stackbuilders/dotenv-hs Github>
+  See the <https://github.com/stackbuilders/dotenv-hs#readme Github>
   page for more information on this package.
 license:             MIT
 license-file:        LICENSE
 author:              Justin Leitgeb
 maintainer:          hackage@stackbuilders.com
-copyright:           2015-2020 Stack Builders Inc.
+copyright:           2015-Present Stack Builders Inc.
 category:            Configuration
 build-type:          Simple
 extra-source-files:    spec/fixtures/.dotenv
@@ -97,6 +96,7 @@ library
                        , shellwords >= 0.1.3.0
                        , text
                        , exceptions >= 0.8 && < 0.11
+                       , mtl >= 2.3 && < 2.4
 
   hs-source-dirs:      src
   ghc-options:         -Wall
@@ -132,6 +132,7 @@ test-suite dotenv-test
                      , text
                      , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 2.0 && < 3.0
+                     , mtl
 
   build-tools:        hspec-discover   >= 2.0 && < 3.0
 
