@@ -1,4 +1,8 @@
 ## MASTER
+## Dotenv 0.10.0.1
+### Modified
+* Modify docs.
+
 ## Dotenv 0.10.0.0
 ### Modified
 * `loadFile` change return type (back to `m ()`)
