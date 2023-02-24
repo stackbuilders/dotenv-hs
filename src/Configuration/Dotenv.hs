@@ -31,7 +31,8 @@ import           Control.Exception                   (throw)
 import           Control.Monad                       (unless, when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
-import           Data.List                           (intersectBy, unionBy)
+import           Data.Function                       (on)
+import           Data.List                           ((\\), intercalate, union)
 import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
 
@@ -59,21 +60,29 @@ loadFile ::
 loadFile config@Config {..} = do
   environment <- liftIO getEnvironment
   readVars <- fmap concat (mapM parseFile configPath)
-  neededVars <- fmap concat (mapM parseFile configExamplePath)
-  let coincidences = (environment `unionEnvs` readVars) `intersectEnvs` neededVars
-      cmpEnvs env1 env2 = fst env1 == fst env2
-      intersectEnvs = intersectBy cmpEnvs
-      unionEnvs = unionBy cmpEnvs
+  neededKeys <- fmap (map fst . concat) (mapM parseFile configExamplePath)
+
+  let presentKeys = (union `on` map fst) environment readVars
+      missingKeys = neededKeys \\ presentKeys
       vars =
-        if (not . null) neededVars
-          then if length neededVars == length coincidences
-                 then readVars
-                 else error $
-                      "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++
-                      concatMap ((++) " " . fst) neededVars
-          else readVars
+        if null missingKeys
+          then readVars
+          else error $ concat
+            [ "The following variables are present in "
+            , showPaths "one of " configExamplePath
+            , ", but not set in the current environment, or"
+            , showPaths "any of " configPath
+            , ": "
+            , intercalate ", " missingKeys
+            ]
+
   unless allowDuplicates $ (lookUpDuplicates . map fst) vars
   runReaderT (mapM_ applySetting vars) config
+ where
+  showPaths :: String -> [FilePath] -> String
+  showPaths _ [] = "" -- TODO: should not be possible, say that in types
+  showPaths _ [p] = p
+  showPaths prefix ps = prefix <> intercalate ", " ps
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
