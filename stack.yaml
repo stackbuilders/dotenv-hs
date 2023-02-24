@@ -1,6 +1,1 @@
-resolver: lts-19.0
-packages:
-- '.'
-extra-deps:
-- optparse-applicative-0.17.0.0
-- shellwords-0.1.3.0
+resolver: lts-20.11
