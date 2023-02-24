@@ -72,7 +72,7 @@ spec = do
           unsetEnv "ANOTHER_ENV"
           loadFile config `shouldThrow` anyErrorCall
 
-      context "when the needed env vars are not missing" $
+      context "when the needed env vars are not missing" $ do
         it "should succeed when loading all of the needed env vars" $ do
           -- Load extra information
           me <- init <$> readCreateProcess (shell "whoami") ""
@@ -87,6 +87,13 @@ spec = do
           lookupEnv "DOTENV" `shouldReturn` Just "true"
           lookupEnv "UNICODE_TEST" `shouldReturn` Just "Manabí"
           lookupEnv "ANOTHER_ENV" `shouldReturn` Just "hello"
+
+        it "succeeds when variable is preset" $ do
+          setEnv "DOTENV" "preset"
+
+          loadFile config
+
+          lookupEnv "DOTENV" `shouldReturn` Just "preset"
 
   describe "parseFile" $ after_ clearEnvs $ do
     it "returns variables from a file without changing the environment" $ do
