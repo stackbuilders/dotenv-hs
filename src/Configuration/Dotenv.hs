@@ -31,8 +31,7 @@ import           Control.Exception                   (throw)
 import           Control.Monad                       (unless, when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
-import           Data.List                           (intersectBy, union,
-                                                      unionBy)
+import           Data.List                           (intersectBy, unionBy)
 import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
 
@@ -61,7 +60,7 @@ loadFile config@Config {..} = do
   environment <- liftIO getEnvironment
   readVars <- fmap concat (mapM parseFile configPath)
   neededVars <- fmap concat (mapM parseFile configExamplePath)
-  let coincidences = (environment `union` readVars) `intersectEnvs` neededVars
+  let coincidences = (environment `unionEnvs` readVars) `intersectEnvs` neededVars
       cmpEnvs env1 env2 = fst env1 == fst env2
       intersectEnvs = intersectBy cmpEnvs
       unionEnvs = unionBy cmpEnvs
