@@ -67,7 +67,7 @@ loadFile config@Config {..} = do
       vars =
         if (not . null) neededVars
           then if length neededVars == length coincidences
-                 then readVars `unionEnvs` neededVars
+                 then readVars
                  else error $
                       "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++
                       concatMap ((++) " " . fst) neededVars
