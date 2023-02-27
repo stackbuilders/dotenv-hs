@@ -5,6 +5,10 @@ on:
   release:
     types:
       - published
+  # TODO: Remove this object (push):
+  push:
+    branches:
+      - issue-115/fix-ci
 
 concurrency:
   group: release-${{ github.ref }}
@@ -49,6 +53,8 @@ jobs:
           HACKAGE_API_KEY: ${{ secrets.HACKAGE_API_KEY }}
         run: |
           TAG_VERSION=${{ github.ref_name }}
+          # TODO: Remove this env variable set:
+          TAG_VERSION='v0.10.0.1'
           VERSION=${TAG_VERSION:1}
           DOCS_PATH=$(ls dist-newstyle/dotenv-*-docs.tar.gz)
           curl -X PUT \
