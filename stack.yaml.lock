@@ -3,24 +3,10 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    hackage: optparse-applicative-0.17.0.0@sha256:0713e54cbb341e5cae979e2ac441eb3a5ff42e303001f432bd58c19e5638bdda,4967
-    pantry-tree:
-      size: 3124
-      sha256: 3b4398845ee6718fe2303870a5ab75bd190eb712fed2f22caaae30f790c490fd
-  original:
-    hackage: optparse-applicative-0.17.0.0
-- completed:
-    hackage: shellwords-0.1.3.0@sha256:baf03b1e80dbc5dffbe6ba5451ee7c389ac39e3e2f9c24030c26a639522a1032,2226
-    pantry-tree:
-      size: 496
-      sha256: ce076c4ec323107f8e84d25147b4f7c865e8cd27d804f384b9d1e2d5706ba0c3
-  original:
-    hackage: shellwords-0.1.3.0
+packages: []
 snapshots:
 - completed:
-    size: 616897
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/19/0.yaml
-    sha256: bbf2be02f17940bac1f87cb462d4fb0c3355de6dcfc53d84f4f9ad3ee2164f65
-  original: lts-19.0
+    sha256: adbc602422dde10cc330175da7de8609e70afc41449a7e2d6e8b1827aa0e5008
+    size: 649342
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/11.yaml
+  original: lts-20.11

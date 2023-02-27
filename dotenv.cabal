@@ -96,7 +96,7 @@ library
                        , shellwords >= 0.1.3.0
                        , text
                        , exceptions >= 0.8 && < 0.11
-                       , mtl >= 2.3 && < 2.4
+                       , mtl >= 2.2.2 && < 2.4
 
   hs-source-dirs:      src
   ghc-options:         -Wall

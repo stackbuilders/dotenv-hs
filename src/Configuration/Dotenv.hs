@@ -31,8 +31,10 @@ import           Control.Exception                   (throw)
 import           Control.Monad                       (unless, when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
-import           Data.List                           (intersectBy, union,
-                                                      unionBy)
+import           Data.Function                       (on)
+import           Data.List.NonEmpty                  (NonEmpty(..))
+import qualified Data.List.NonEmpty as NE
+import           Data.List                           ((\\), intercalate, union)
 import           System.IO.Error                     (isDoesNotExistError)
 import           Text.Megaparsec                     (errorBundlePretty, parse)
 
@@ -59,22 +61,36 @@ loadFile ::
   -> m ()
 loadFile config@Config {..} = do
   environment <- liftIO getEnvironment
-  readVars <- fmap concat (mapM parseFile configPath)
-  neededVars <- fmap concat (mapM parseFile configExamplePath)
-  let coincidences = (environment `union` readVars) `intersectEnvs` neededVars
-      cmpEnvs env1 env2 = fst env1 == fst env2
-      intersectEnvs = intersectBy cmpEnvs
-      unionEnvs = unionBy cmpEnvs
-      vars =
-        if (not . null) neededVars
-          then if length neededVars == length coincidences
-                 then readVars `unionEnvs` neededVars
-                 else error $
-                      "Missing env vars! Please, check (this/these) var(s) (is/are) set:" ++
-                      concatMap ((++) " " . fst) neededVars
-          else readVars
+
+  vars <- case (NE.nonEmpty configPath, NE.nonEmpty configExamplePath) of
+    (Nothing, _) -> pure []
+    (Just envs, Nothing) -> concat <$> mapM parseFile envs
+    (Just envs, Just envExamples) -> do
+      readVars <- concat <$> mapM parseFile envs
+      neededKeys <- map fst . concat <$> mapM parseFile envExamples
+
+      let
+        presentKeys = (union `on` map fst) environment readVars
+        missingKeys = neededKeys \\ presentKeys
+
+      pure $
+        if null missingKeys
+          then readVars
+          else error $ concat
+            [ "The following variables are present in "
+            , showPaths "one of " envExamples
+            , ", but not set in the current environment, or"
+            , showPaths "any of " envs
+            , ": "
+            , intercalate ", " missingKeys
+            ]
+
   unless allowDuplicates $ (lookUpDuplicates . map fst) vars
   runReaderT (mapM_ applySetting vars) config
+ where
+  showPaths :: String -> NonEmpty FilePath -> String
+  showPaths _ (p:|[]) = p
+  showPaths prefix ps = prefix <> intercalate ", " (NE.toList ps)
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
