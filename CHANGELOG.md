@@ -1,4 +1,9 @@
 ## MASTER
+## Dotenv 0.10.1.0
+### Modified
+* Fix `union`/`unionBy` bug, refactor .env.example check, and improve error
+message (Kudos to @pbrisbin)
+
 ## Dotenv 0.10.0.1
 ### Modified
 * Modify docs.
