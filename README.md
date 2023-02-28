@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build-and-test.yml) [![Hackage](https://img.shields.io/hackage/v/dotenv.svg)](http://hackage.haskell.org/package/dotenv)
+[![Build Status](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build.yml/badge.svg)](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build.yml)[![Hackage](https://img.shields.io/hackage/v/dotenv.svg)](http://hackage.haskell.org/package/dotenv)
 
 # Dotenv files for Haskell
 
