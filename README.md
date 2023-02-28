@@ -161,7 +161,7 @@ $ echo $FOO
 This will fail:
 ```shell
 $ dotenv -f .env --example .env.example "myprogram --myflag myargument"
-> dotenv: Missing env vars! Please, check (this/these) var(s) (is/are) set: BAR
+> dotenv: The following variables are present in .env.example, but not set in the current environment, or .env: BAR
 ```
 
 This will succeed:

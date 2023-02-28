@@ -79,7 +79,7 @@ loadFile config@Config {..} = do
           else error $ concat
             [ "The following variables are present in "
             , showPaths "one of " envExamples
-            , ", but not set in the current environment, or"
+            , ", but not set in the current environment, or "
             , showPaths "any of " envs
             , ": "
             , intercalate ", " missingKeys
