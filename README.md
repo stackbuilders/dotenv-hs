@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build-and-test.yml) [![Hackage](https://img.shields.io/hackage/v/dotenv.svg)](http://hackage.haskell.org/package/dotenv)
+[![Build Status](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build.yml/badge.svg)](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build.yml)[![Hackage](https://img.shields.io/hackage/v/dotenv.svg)](http://hackage.haskell.org/package/dotenv)
 
 # Dotenv files for Haskell
 
@@ -161,7 +161,7 @@ $ echo $FOO
 This will fail:
 ```shell
 $ dotenv -f .env --example .env.example "myprogram --myflag myargument"
-> dotenv: Missing env vars! Please, check (this/these) var(s) (is/are) set: BAR
+> dotenv: The following variables are present in .env.example, but not set in the current environment, or .env: BAR
 ```
 
 This will succeed:

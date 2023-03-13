@@ -35,8 +35,9 @@ jobs:
         run: |
           SDIST_PATH=$(ls dist-newstyle/sdist/dotenv-*.tar.gz)
           curl -X POST \
+           --fail -i \
            -H 'Accept: text/plain' \
-           -H "Authorization: X-ApiKey \"$HACKAGE_API_KEY\"" \
+           -H "Authorization: X-ApiKey ${HACKAGE_API_KEY}" \
            --form "package=@${SDIST_PATH}" \
            "https://hackage.haskell.org/packages/candidates"
 
@@ -51,8 +52,9 @@ jobs:
           VERSION=${TAG_VERSION:1}
           DOCS_PATH=$(ls dist-newstyle/dotenv-*-docs.tar.gz)
           curl -X PUT \
+           --fail -i \
            -H 'Content-Type: application/x-tar' \
            -H 'Content-Encoding: gzip' \
-           -H "Authorization: X-ApiKey \"$HACKAGE_API_KEY\"" \
+           -H "Authorization: X-ApiKey ${HACKAGE_API_KEY}" \
            --data-binary "@${DOCS_PATH}" \
            "https://hackage.haskell.org/package/dotenv-$VERSION/candidate/docs"

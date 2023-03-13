@@ -62,6 +62,7 @@ config = Options
 
      <*> many (strOption (
                   long "example"
+                  <> short 'x'
                   <> metavar "DOTENV_EXAMPLE"
                   <> help "File to read for needed environmental variables" ))
 
