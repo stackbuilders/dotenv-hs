@@ -43,6 +43,15 @@ spec = do
 
       lookupEnv "foo" `shouldReturn` Just "new setting"
 
+    it "loads the last set value in config list with duplicates" $ do
+      lookupEnv "foo" `shouldReturn` Nothing
+      lookupEnv "bar" `shouldReturn` Nothing
+
+      load False [("foo", "first"), ("bar", "second"), ("foo", "third")]
+
+      lookupEnv "foo" `shouldReturn` Just "third"
+      lookupEnv "bar" `shouldReturn` Just "second"
+
   describe "loadFile" $ before_ setupEnv $ after_ clearEnvs $  do
     it "loads the configuration options to the environment from a file" $ do
       lookupEnv "DOTENV" `shouldReturn` Nothing
@@ -64,6 +73,15 @@ spec = do
       loadFile sampleConfig { configOverride = True }
 
       lookupEnv "DOTENV" `shouldReturn` Just "true"
+
+    it "loads the last set value in dotenv file with duplicates" $ do
+      lookupEnv "FOO" `shouldReturn` Nothing
+      lookupEnv "BAR" `shouldReturn` Nothing
+
+      loadFile (Config ["spec/fixtures/.dotenv.dup"] [] False False True)
+
+      lookupEnv "FOO" `shouldReturn` Just "last"
+      lookupEnv "BAR" `shouldReturn` Just "tender"
 
     context "when the .env.example is present" $ do
       let config = sampleConfig { configExamplePath = ["spec/fixtures/.dotenv.example"]}
