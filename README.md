@@ -102,7 +102,8 @@ A `False` in the `configVerbose` means that Dotenv will not print any message
 when loading the envs. A `True` means that Dotenv will print a message when a variable is loaded.
 
 A `False` on `allowDuplicates` means that Dotenv will not allow duplicate keys, and instead it will throw
-an error. A `True` means that Dotenv will allow duplicate keys, and it will use the first one if,`configOverride` is not set to `True`.
+an error. A `True` means that Dotenv will allow duplicate keys, and it will use the last one defined in the file (default behavior).
+
 ### Advanced Dotenv File Syntax
 
 You can add comments to your Dotenv file, on separate lines or after
