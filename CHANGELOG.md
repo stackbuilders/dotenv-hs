@@ -1,4 +1,9 @@
 ## MASTER
+## Dotenv 0.11.0.0
+### Modified (Breaking change - new behavior)
+* Take last rather than first env var in dotenv file (reported by @rudymatela and
+solved by @anddriex). This will be the default behavior for the CLI, too.
+
 ## Dotenv 0.10.1.0
 ### Added
 * Short `-x` for `--example` flag
