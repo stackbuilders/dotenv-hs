@@ -1,6 +1,6 @@
 ## MASTER
 ## Dotenv 0.11.0.0
-### Added
+### Modified (Breaking change - new behavior)
 * Take last rather than first env var in dotenv file (reported by @rudymatela and
 solved by @anddriex). This will be the default behavior for the CLI, too.
 
