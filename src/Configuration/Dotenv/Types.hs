@@ -15,6 +15,8 @@ module Configuration.Dotenv.Types
   )
   where
 
+import           Data.Default.Class
+
 -- | Configuration Data Types with extra options for executing dotenv.
 data Config = Config
   { configPath        :: [FilePath] -- ^ The paths for the .env files
@@ -35,3 +37,5 @@ defaultConfig =
     , configVerbose = False
     , allowDuplicates = True
     }
+
+instance Default Config where def = defaultConfig

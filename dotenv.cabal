@@ -98,6 +98,7 @@ library
                        , text
                        , exceptions >= 0.8 && < 0.11
                        , mtl >= 2.2.2 && < 2.4
+                       , data-default-class >= 0.1.2 && < 0.2
 
   hs-source-dirs:      src
   ghc-options:         -Wall
@@ -134,6 +135,7 @@ test-suite dotenv-test
                      , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 2.0 && < 3.0
                      , mtl
+                     , data-default-class >= 0.1.2 && < 0.2
 
   build-tools:        hspec-discover   >= 2.0 && < 3.0
 
