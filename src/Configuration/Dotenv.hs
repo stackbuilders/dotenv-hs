@@ -26,9 +26,9 @@ import           Configuration.Dotenv.Environment    (getEnvironment, lookupEnv,
                                                       setEnv)
 import           Configuration.Dotenv.Parse          (configParser)
 import           Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
-                                            VarValue(..),
-                                            VarFragment(..),
-                                            interpolateParsedVariables)
+                                                      VarValue(..),
+                                                      VarFragment(..),
+                                                      interpolateParsedVariables)
 import           Configuration.Dotenv.Types          (Config (..),
                                                       defaultConfig)
 import           Control.Exception                   (throw)

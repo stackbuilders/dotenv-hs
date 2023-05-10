@@ -4,7 +4,7 @@
 module Configuration.DotenvSpec (main, spec) where
 
 import           Configuration.Dotenv             (Config(..), load, loadFile,
-                                                   onMissingFile, parseFile, )
+                                                   onMissingFile, parseFile)
 import           Configuration.Dotenv.Environment (getEnvironment, lookupEnv,
                                                    setEnv, unsetEnv)
 
