@@ -17,14 +17,15 @@ module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             interpolateParsedVariables) where
 
 import           Configuration.Dotenv.Environment (lookupEnv)
-import           Control.Monad                    (foldM)
 import           Control.Applicative              ((<|>))
-import           System.Process                   (readCreateProcess, proc)
+import           Control.Monad                    (foldM)
+import           System.Process                   (proc, readCreateProcess)
 
 -- | Name and value pair
 data ParsedVariable
   = ParsedVariable VarName VarValue deriving (Show, Eq)
 
+-- | Variable name
 type VarName = String
 
 -- | Possible state of values
@@ -33,6 +34,7 @@ data VarValue
   | SingleQuoted VarContents
   | DoubleQuoted VarContents deriving (Show, Eq)
 
+-- | List of VarFragment
 type VarContents = [VarFragment]
 
 -- | Placeholder for possible values

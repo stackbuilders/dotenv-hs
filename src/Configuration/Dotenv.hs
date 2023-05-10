@@ -16,19 +16,14 @@ module Configuration.Dotenv
   , loadFile
   , parseFile
   , onMissingFile
-      -- * Dotenv Types
+    -- * Dotenv Types
   , module Configuration.Dotenv.Types
-  , module Configuration.Dotenv.Parse
-  , module Configuration.Dotenv.ParsedVariable
   ) where
 
 import           Configuration.Dotenv.Environment    (getEnvironment, lookupEnv,
                                                       setEnv)
 import           Configuration.Dotenv.Parse          (configParser)
-import           Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
-                                                      VarValue(..),
-                                                      VarFragment(..),
-                                                      interpolateParsedVariables)
+import           Configuration.Dotenv.ParsedVariable (interpolateParsedVariables)
 import           Configuration.Dotenv.Types          (Config (..),
                                                       defaultConfig)
 import           Control.Exception                   (throw)

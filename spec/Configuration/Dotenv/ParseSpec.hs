@@ -2,13 +2,16 @@
 
 module Configuration.Dotenv.ParseSpec (main, spec) where
 
-import Configuration.Dotenv (configParser, ParsedVariable(..),
-                                            VarValue(..),
-                                            VarFragment(..))
-import Data.Void (Void)
-import Test.Hspec (it, context, describe, Spec, hspec)
-import Test.Hspec.Megaparsec (shouldParse, shouldFailOn, shouldSucceedOn)
-import Text.Megaparsec (ParseErrorBundle, parse)
+import           Configuration.Dotenv.Parse          (configParser)
+import           Configuration.Dotenv.ParsedVariable (ParsedVariable (..),
+                                                      VarFragment (..),
+                                                      VarValue (..))
+import           Data.Void                           (Void)
+import           Test.Hspec                          (Spec, context, describe,
+                                                      hspec, it)
+import           Test.Hspec.Megaparsec               (shouldFailOn, shouldParse,
+                                                      shouldSucceedOn)
+import           Text.Megaparsec                     (ParseErrorBundle, parse)
 
 main :: IO ()
 main = hspec spec
