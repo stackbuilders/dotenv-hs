@@ -117,19 +117,12 @@ test-suite dotenv-test
                        , Configuration.Dotenv.ParseSpec
 
   build-depends:       base >= 4.9 && < 5.0
-                     , base-compat >= 0.4
-                     , containers
                      , dotenv
-                     , directory
                      , megaparsec
                      , hspec
                      , process
-                     , shellwords
                      , text
-                     , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 2.0 && < 3.0
-                     , mtl
-                     , data-default-class >= 0.1.2 && < 0.2
 
   build-tools:        hspec-discover   >= 2.0 && < 3.0
 
