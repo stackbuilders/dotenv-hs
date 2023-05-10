@@ -21,11 +21,13 @@ import           Control.Monad                    (foldM)
 import           Control.Applicative              ((<|>))
 import           System.Process                   (readCreateProcess, proc)
 
+-- | Name and value pair
 data ParsedVariable
   = ParsedVariable VarName VarValue deriving (Show, Eq)
 
 type VarName = String
 
+-- | Possible state of values
 data VarValue
   = Unquoted VarContents
   | SingleQuoted VarContents
@@ -33,11 +35,13 @@ data VarValue
 
 type VarContents = [VarFragment]
 
+-- | Placeholder for possible values
 data VarFragment
   = VarInterpolation String
   | VarLiteral String
   | CommandInterpolation String [String] deriving (Show, Eq)
 
+-- | Interpotales parsed variables
 interpolateParsedVariables :: [ParsedVariable] -> IO [(String, String)]
 interpolateParsedVariables = fmap reverse . foldM addInterpolated []
 
