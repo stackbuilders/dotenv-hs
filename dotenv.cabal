@@ -84,9 +84,9 @@ executable dotenv
 library
   exposed-modules:      Configuration.Dotenv
                       , Configuration.Dotenv.Environment
+                      , Configuration.Dotenv.Text
   other-modules:        Configuration.Dotenv.Parse
                       , Configuration.Dotenv.ParsedVariable
-                      , Configuration.Dotenv.Text
                       , Configuration.Dotenv.Types
 
   build-depends:         base >= 4.9 && < 5.0
@@ -110,17 +110,11 @@ library
 
 test-suite dotenv-test
   type: exitcode-stdio-1.0
-  hs-source-dirs: spec, src
+  hs-source-dirs: spec
   main-is: Spec.hs
   other-modules:         Configuration.DotenvSpec
                        , Configuration.Dotenv.TextSpec
                        , Configuration.Dotenv.ParseSpec
-                       , Configuration.Dotenv
-                       , Configuration.Dotenv.Environment
-                       , Configuration.Dotenv.Text
-                       , Configuration.Dotenv.Types
-                       , Configuration.Dotenv.Parse
-                       , Configuration.Dotenv.ParsedVariable
 
   build-depends:       base >= 4.9 && < 5.0
                      , base-compat >= 0.4

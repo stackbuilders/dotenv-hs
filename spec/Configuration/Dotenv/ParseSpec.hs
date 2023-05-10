@@ -2,8 +2,7 @@
 
 module Configuration.Dotenv.ParseSpec (main, spec) where
 
-import Configuration.Dotenv.Parse (configParser)
-import Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
+import Configuration.Dotenv (configParser, ParsedVariable(..),
                                             VarValue(..),
                                             VarFragment(..))
 import Data.Void (Void)
