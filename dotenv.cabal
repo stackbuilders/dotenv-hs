@@ -82,12 +82,13 @@ executable dotenv
   default-language:    Haskell2010
 
 library
-  exposed-modules:      Configuration.Dotenv
-                      , Configuration.Dotenv.Environment
-                      , Configuration.Dotenv.Text
-                      , Configuration.Dotenv.ParsedVariable
-                      , Configuration.Dotenv.Parse
-  other-modules:        Configuration.Dotenv.Types
+  exposed-modules:       Configuration.Dotenv
+                       , Configuration.Dotenv.Internal
+  other-modules:         Configuration.Dotenv.Environment
+                       , Configuration.Dotenv.Parse
+                       , Configuration.Dotenv.ParsedVariable
+                       , Configuration.Dotenv.Text
+                       , Configuration.Dotenv.Types
 
   build-depends:         base >= 4.9 && < 5.0
                        , directory
