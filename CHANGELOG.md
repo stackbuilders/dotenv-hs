@@ -1,4 +1,11 @@
 ## MASTER
+## Dotenv 0.12.0.0
+### Modified (Breaking change - modules)
+* Stop exporting `Configuration.Dotenv.Environment`.
+* Export `configParser` if you want to use the parser.
+* Export internal module `Configuration.Dotenv.Internal` which exports all
+the internal modules.
+
 ## Dotenv 0.11.0.0
 ### Modified (Breaking change - new behavior)
 * Take last rather than first env var in dotenv file (reported by @rudymatela and
