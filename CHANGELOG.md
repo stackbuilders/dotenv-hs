@@ -1,10 +1,9 @@
 ## MASTER
-## Dotenv 0.12.0.0
-### Modified (Breaking change - modules)
-* Stop exporting `Configuration.Dotenv.Environment`.
-* Export `configParser` if you want to use the parser.
+## Dotenv 0.11.0.1
+### Modified
 * Export internal module `Configuration.Dotenv.Internal` which exports all
 the internal modules.
+* Export `configParser` from `Configuration.Dotenv`.
 
 ## Dotenv 0.11.0.0
 ### Modified (Breaking change - new behavior)

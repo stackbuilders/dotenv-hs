@@ -3,17 +3,17 @@
 
 module Configuration.DotenvSpec (main, spec) where
 
-import           Configuration.Dotenv          (Config (..), load, loadFile,
-                                                onMissingFile, parseFile)
-import           Configuration.Dotenv.Internal (getEnvironment, lookupEnv,
-                                                setEnv, unsetEnv)
+import           Configuration.Dotenv             (Config (..), load, loadFile,
+                                                   onMissingFile, parseFile)
+import           Configuration.Dotenv.Environment (getEnvironment, lookupEnv,
+                                                   setEnv, unsetEnv)
 
 
 import           Test.Hspec
 
-import           Control.Monad                 (liftM)
-import           Data.Maybe                    (fromMaybe)
-import           System.Process                (readCreateProcess, shell)
+import           Control.Monad                    (liftM)
+import           Data.Maybe                       (fromMaybe)
+import           System.Process                   (readCreateProcess, shell)
 
 main :: IO ()
 main = hspec spec
