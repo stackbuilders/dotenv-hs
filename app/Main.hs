@@ -20,6 +20,7 @@ data Options = Options
   , dotenvExampleFiles :: [String]
   , override           :: Bool
   , verbose            :: Bool
+  , dryRun             :: Bool
   , duplicates         :: Bool
   , program            :: String
   , args               :: [String]
@@ -33,6 +34,7 @@ main = do
           { configExamplePath = dotenvExampleFiles
           , configOverride = override
           , configVerbose = verbose
+          , configDryRun = dryRun
           , allowDuplicates = duplicates
           , configPath =
               if null dotenvFiles
@@ -72,6 +74,9 @@ config = Options
 
      <*> switch (  long "verbose"
                   <> help "Specify this flag to print out the variables loaded and other useful insights" )
+
+     <*> switch (  long "dry-run"
+                  <> help "Specify this flag to print out the variables loaded before executing the program" )
 
      <*> flag True False (  long "no-dups"
                   <> short 'D'

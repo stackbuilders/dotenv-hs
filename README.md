@@ -101,6 +101,8 @@ need this functionality you can set `configExamplePath` to an empty list.
 A `False` in the `configVerbose` means that Dotenv will not print any message
 when loading the envs. A `True` means that Dotenv will print a message when a variable is loaded.
 
+`configDryRyn` is similar to `confifVerbose`, but it will print out the loaded variables prior to program execution.
+
 A `False` on `allowDuplicates` means that Dotenv will not allow duplicate keys, and instead it will throw
 an error. A `True` means that Dotenv will allow duplicate keys, and it will use the last one defined in the file (default behavior).
 
