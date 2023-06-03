@@ -32,6 +32,7 @@ import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
 import           Control.Monad.Reader                (ReaderT, ask, runReaderT)
 import           Control.Monad.Trans                 (lift)
+import           Data.Foldable                       (traverse_)
 import           Data.Function                       (on)
 import           Data.List                           (intercalate, union, (\\))
 import           Data.List.NonEmpty                  (NonEmpty (..))
@@ -89,12 +90,14 @@ loadFile config@Config {..} = do
 
   unless allowDuplicates $ (lookUpDuplicates . map fst) vars
   if configDryRun
-    then liftIO $ mapM_ (putStrLn . infoStr) vars
+    then do
+      let action = traverse_ (liftIO . putStrLn . infoStr) =<< mapM applySetting (nubByLastVar vars)
+      liftIO $ runReaderT action config
     else runReaderT (mapM_ applySetting (nubByLastVar vars)) config
- where
-  showPaths :: String -> NonEmpty FilePath -> String
-  showPaths _ (p:|[]) = p
-  showPaths prefix ps = prefix <> intercalate ", " (NE.toList ps)
+  where
+    showPaths :: String -> NonEmpty FilePath -> String
+    showPaths _ (p:|[]) = p
+    showPaths prefix ps = prefix <> intercalate ", " (NE.toList ps)
 
 -- | Parses the given dotenv file and returns values /without/ adding them to
 -- the environment.
@@ -111,25 +114,25 @@ parseFile f = do
 applySetting ::
      MonadIO m
   => (String, String) -- ^ A key-value pair to set in the environment
-  -> DotEnv m (String, String)
-applySetting kv@(k, v) = do
-  Config {..} <- ask
-  if configOverride
-    then info kv >> setEnv'
+  -> Config -- ^ Dotenv configuration
+  -> m (String, String)
+applySetting kv@(k, v) config = do
+  if configOverride config
+    then setEnv'
     else do
-      res <- lift . liftIO $ lookupEnv k
+      res <- liftIO $ lookupEnv k
       case res of
-        Nothing -> info kv >> setEnv'
+        Nothing ->  setEnv'
         Just _  -> return kv
   where
-    setEnv' = lift . liftIO $ setEnv k v >> return kv
+   setEnv' = liftIO $ setEnv k v >> return kv
 
 -- | The function logs in console when a variable is loaded into the
 -- environment.
 info :: MonadIO m => (String, String) -> DotEnv m ()
 info (key, value) = do
   Config {..} <- ask
-  when (configVerbose || configDryRun) $
+  when configVerbose $
     lift . liftIO $
     putStrLn $ infoStr (key, value)
 
