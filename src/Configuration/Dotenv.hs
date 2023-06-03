@@ -30,7 +30,8 @@ import           Control.Exception                   (throw)
 import           Control.Monad                       (unless, when)
 import           Control.Monad.Catch
 import           Control.Monad.IO.Class              (MonadIO (..))
-import           Control.Monad.Reader                (ReaderT, runReaderT)
+import           Control.Monad.Reader                (ReaderT, ask, runReaderT)
+import           Control.Monad.Trans                 (lift)
 import           Data.Foldable                       (traverse_)
 import           Data.Function                       (on)
 import           Data.List                           (intercalate, union, (\\))
@@ -51,7 +52,7 @@ load ::
   -> [(String, String)] -- ^ List of values to be set in environment
   -> m ()
 load override kv =
-  runReaderT (mapM_ (`applySetting` defaultConfig {configOverride = override}) (nubByLastVar kv)) defaultConfig {configOverride = override}
+  runReaderT (mapM_ applySetting (nubByLastVar kv)) defaultConfig {configOverride = override}
 
 -- | @loadFile@ parses the environment variables defined in the dotenv example
 -- file and checks if they are defined in the dotenv file or in the environment.
@@ -89,12 +90,10 @@ loadFile config@Config {..} = do
 
   unless allowDuplicates $ (lookUpDuplicates . map fst) vars
   if configDryRun
-    then
-      traverse_ (\kv -> do
-        result <- applySetting kv config
-        liftIO $ putStrLn $ infoStr result
-      ) (nubByLastVar vars)
-    else runReaderT (mapM_ (`applySetting` config) (nubByLastVar vars)) config
+    then do
+      let action = traverse_ (liftIO . putStrLn . infoStr) =<< mapM applySetting (nubByLastVar vars)
+      liftIO $ runReaderT action config
+    else runReaderT (mapM_ applySetting (nubByLastVar vars)) config
   where
     showPaths :: String -> NonEmpty FilePath -> String
     showPaths _ (p:|[]) = p
@@ -119,21 +118,22 @@ applySetting ::
   -> m (String, String)
 applySetting kv@(k, v) config = do
   if configOverride config
-    then info (configVerbose config) kv >> setEnv'
+    then setEnv'
     else do
       res <- liftIO $ lookupEnv k
       case res of
-        Nothing -> info (configVerbose config) kv >> setEnv'
+        Nothing ->  setEnv'
         Just _  -> return kv
   where
-    setEnv' = liftIO $ setEnv k v >> return kv
+   setEnv' = liftIO $ setEnv k v >> return kv
 
 -- | The function logs in console when a variable is loaded into the
 -- environment.
-info :: MonadIO m => Bool -> (String, String) -> m ()
-info configVerbose (key, value) = do
+info :: MonadIO m => (String, String) -> DotEnv m ()
+info (key, value) = do
+  Config {..} <- ask
   when configVerbose $
-    liftIO $
+    lift . liftIO $
     putStrLn $ infoStr (key, value)
 
 -- | The function prints out the variables
