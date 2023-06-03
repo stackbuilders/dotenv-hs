@@ -168,7 +168,8 @@ spec = do
 
   describe "onConfigDryRun" $ after_ clearEnvs $ do
     context "when dry-run is enabled " $ do
-        loadFile sampleConfig { configPath = ["spec/fixtures/.dotenv"], configDryRun = False }
+      it "loads the variables" $ do
+        loadFile sampleConfig { configPath = ["spec/fixtures/.dotenv"], configDryRun = True }
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
 sampleConfig :: Config
