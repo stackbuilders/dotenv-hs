@@ -42,8 +42,10 @@ main = do
                 else dotenvFiles
           }
    in do
-     loadFile configDotenv
-     system (program ++ concatMap (" " ++) args) >>= exitWith
+    loadFile configDotenv
+    if configDryRun configDotenv
+      then putStrLn "[INFO]: Dry run mode enabled. Not executing the program."
+      else system (program ++ concatMap (" " ++) args) >>= exitWith
        where
          opts = info (helper <*> versionOption <*> config)
            ( fullDesc

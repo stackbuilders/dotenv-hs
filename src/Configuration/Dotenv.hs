@@ -88,9 +88,7 @@ loadFile config@Config {..} = do
             ]
 
   unless allowDuplicates $ (lookUpDuplicates . map fst) vars
-  if configDryRun
-    then liftIO $ mapM_ (putStrLn . infoStr) vars
-    else runReaderT (mapM_ applySetting (nubByLastVar vars)) config
+  runReaderT (mapM_ applySetting (nubByLastVar vars)) config
  where
   showPaths :: String -> NonEmpty FilePath -> String
   showPaths _ (p:|[]) = p
