@@ -125,6 +125,8 @@ test-suite dotenv-test
                      , process
                      , text
                      , hspec-megaparsec >= 2.0 && < 3.0
+                     , data-default-class >= 0.1.2 && < 0.2
+                     , QuickCheck >= 2.8 && < 3.0
 
   build-tools:        hspec-discover   >= 2.0 && < 3.0
 
