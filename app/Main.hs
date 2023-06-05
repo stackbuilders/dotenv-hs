@@ -78,7 +78,7 @@ config = Options
                   <> help "Specify this flag to print out the variables loaded and other useful insights" )
 
      <*> switch (  long "dry-run"
-                  <> help "Specify this flag to print out the variables loaded before executing the program" )
+                  <> help "Specify this flag to print out the variables loaded without executing the program" )
 
      <*> flag True False (  long "no-dups"
                   <> short 'D'
