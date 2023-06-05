@@ -50,8 +50,7 @@ a blank string will remove the variable from the environment entirely.
 
 ### Variable substitution
 
-In order to use compound env vars use the following syntax within your env vars
-${your_env_var}. For instance:
+To use compound environment variables, use the following syntax within your environment variables: `${your_env_var}`. For instance:
 
 ```
 DATABASE=postgres://${USER}@localhost/database
@@ -66,7 +65,7 @@ postgres://myusername@localhost/database
 
 ### Command substitution
 
-In order to use the standard output of a command in your env vars use the following syntax $(your_command). For instance:
+To use the standard output of a command in your environment variables, use the following syntax: `$(your_command)`. For instance:
 
 ```
 DATABASE=postgres://$(whoami)@localhost/database
@@ -81,28 +80,65 @@ postgres://myusername@localhost/database
 
 ### Configuration
 
-The first argument to `loadFile` specifies the configuration. You can use
-`defaultConfig` which parses the `.env` file in your current directory and
-doesn't override your envs. You can also define your own configuration with
-the `Config` type.
+The loadFile function accepts a configuration object as its first argument,
+allowing you to customize the behavior of Dotenv.
 
-`False` in `configOverride` means Dotenv will respect
-already-defined variables, and `True` means Dotenv will overwrite
-already-defined variables.
+You can use `defaultConfig` which parses the `.env` file in your current
+directory without overriding your existing environment variables. You can
+also define your own configuration with the `Config` type.
 
-In the `configPath` you can write a list of all the dotenv files where are
-envs defined (e.g `[".env", ".tokens", ".public_keys"]`).
+To define your own configuration, you can use the following configuration:
 
-In the `configExamplePath` you can write a list of all the dotenv example files
-where you can specify which envs **must be defined** until running a program
-(e.g `[".env.example", ".tokens.example", ".public_keys.example"]`). If you don't
-need this functionality you can set `configExamplePath` to an empty list.
+#### configPagh
 
-A `False` in the `configVerbose` means that Dotenv will not print any message
-when loading the envs. A `True` means that Dotenv will print a message when a variable is loaded.
+CLI Option: `f`
+Default: `[".env"]`
 
-A `False` on `allowDuplicates` means that Dotenv will not allow duplicate keys, and instead it will throw
-an error. A `True` means that Dotenv will allow duplicate keys, and it will use the last one defined in the file (default behavior).
+Specify a list of dotenv files where the environment variables are defined. For example:
+
+```hs
+configPath = [".env", ".tokens", ".public_keys"]
+```
+
+#### configOverride
+
+CLI Option: `o` or `overload`
+Default: `False`
+
+Setting configOverride to `False` means Dotenv will respect already-defined variables.
+If set to `True`, Dotenv will overwrite already-defined variables.
+
+#### configExamplePath
+
+CLI Option: `x` or `example`
+Default: `[]`
+
+You can specify a list of dotenv example files where you can define which environment
+variables **must be defined** before running a program. For example:
+
+```hs
+configExamplePath = [".env.example", ".tokens.example", ".public_keys.example"]
+```
+
+If you don't need this functionality, you can set configExamplePath to an empty list.
+
+### configVerbose
+
+CLI Option: `verbose`
+Default: `False`
+
+Setting `configVerbose` to `False` means that Dotenv will not print any messages
+when loading the environment variables. If set to `True`, Dotenv will print a message
+when a variable is loaded.
+
+#### allowDuplicates
+
+CLI Option: `D` or `no-dups`
+Default: `True`
+
+Setting `allowDuplicate` to `False` means that Dotenv will not allow duplicate keys.
+Instead, it will throw an error. If set to `True`, Dotenv will allow duplicate keys and
+use the last one defined in the file (default behavior).
 
 ### Advanced Dotenv File Syntax
 
@@ -142,9 +178,13 @@ or:
 $ dotenv -f mydotenvfile "myprogram --myflag myargument"
 ```
 
-Also, you can use a `--example` flag to use [dotenv-safe functionality](https://www.npmjs.com/package/dotenv-safe)
-so that you can have a list of strict envs that should be defined in the environment
-or in your dotenv files before the execution of your program. For instance:
+In addition to the configuration options mentioned earlier, Dotenv provides a [dotenv-safe functionality](https://www.npmjs.com/package/dotenv-safe)
+that allows you to enforce the presence of specific environment variables before executing your program. You can utilize the `--example` flag to enable this feature.
+
+By using the `--example` flag, you can define a list of strict environment variables
+that must be defined either in the actual environment or in your dotenv files. This ensures that your program only runs when all the required environment variables are present.
+
+For example:
 
 ```shell
 $ cat .env.example
@@ -160,12 +200,14 @@ $ echo $FOO
 ```
 
 This will fail:
+
 ```shell
 $ dotenv -f .env --example .env.example "myprogram --myflag myargument"
 > dotenv: The following variables are present in .env.example, but not set in the current environment, or .env: BAR
 ```
 
 This will succeed:
+
 ```shell
 $ export BAR=123 # Or you can do something like: "echo 'BAR=123' >> .env"
 $ dotenv -f .env --example .env.example "myprogram --myflag myargument"
@@ -185,5 +227,6 @@ MIT, see [the LICENSE file](LICENSE).
 Do you want to contribute to this project? Please take a look at our [contributing guideline](/docs/CONTRIBUTING.md) to know how you can help us build it.
 
 ---
+
 <img src="https://cdn.stackbuilders.com/media/images/Sb-supports.original.png" alt="Stack Builders" width="50%"></img>
 [Check out our libraries](https://github.com/stackbuilders/) | [Join our team](https://www.stackbuilders.com/join-us/)
