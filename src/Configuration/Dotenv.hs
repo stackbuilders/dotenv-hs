@@ -16,7 +16,8 @@ module Configuration.Dotenv
   , loadFile
   , parseFile
   , onMissingFile
-      -- * Dotenv Types
+  , configParser
+    -- * Dotenv Types
   , module Configuration.Dotenv.Types
   ) where
 

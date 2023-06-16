@@ -1,12 +1,12 @@
 module Configuration.Dotenv.TextSpec (main, spec) where
 
-import Configuration.Dotenv.Text (parseFile)
-import Configuration.Dotenv.Environment (lookupEnv, unsetEnv)
+import           Configuration.Dotenv.Environment (lookupEnv, unsetEnv)
+import           Configuration.Dotenv.Internal    (parseFile)
 
-import Test.Hspec
+import           Test.Hspec
 
-import Control.Monad (liftM)
-import qualified Data.Text as T
+import           Control.Monad                    (liftM)
+import qualified Data.Text                        as T
 
 {-# ANN module ("HLint: ignore Reduce duplication" :: String) #-}
 

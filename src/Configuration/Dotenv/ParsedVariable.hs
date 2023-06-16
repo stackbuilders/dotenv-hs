@@ -17,27 +17,33 @@ module Configuration.Dotenv.ParsedVariable (ParsedVariable(..),
                                             interpolateParsedVariables) where
 
 import           Configuration.Dotenv.Environment (lookupEnv)
-import           Control.Monad                    (foldM)
 import           Control.Applicative              ((<|>))
-import           System.Process                   (readCreateProcess, proc)
+import           Control.Monad                    (foldM)
+import           System.Process                   (proc, readCreateProcess)
 
+-- | Name and value pair
 data ParsedVariable
   = ParsedVariable VarName VarValue deriving (Show, Eq)
 
+-- | Variable name
 type VarName = String
 
+-- | Possible state of values
 data VarValue
   = Unquoted VarContents
   | SingleQuoted VarContents
   | DoubleQuoted VarContents deriving (Show, Eq)
 
+-- | List of VarFragment
 type VarContents = [VarFragment]
 
+-- | Placeholder for possible values
 data VarFragment
   = VarInterpolation String
   | VarLiteral String
   | CommandInterpolation String [String] deriving (Show, Eq)
 
+-- | Interpotales parsed variables
 interpolateParsedVariables :: [ParsedVariable] -> IO [(String, String)]
 interpolateParsedVariables = fmap reverse . foldM addInterpolated []
 

@@ -1,5 +1,5 @@
 name:                dotenv
-version:             0.11.0.0
+version:             0.11.0.1
 synopsis:            Loads environment variables from dotenv files
 homepage:            https://github.com/stackbuilders/dotenv-hs
 description:
@@ -82,12 +82,13 @@ executable dotenv
   default-language:    Haskell2010
 
 library
-  exposed-modules:      Configuration.Dotenv
-                      , Configuration.Dotenv.Environment
-  other-modules:        Configuration.Dotenv.Parse
-                      , Configuration.Dotenv.ParsedVariable
-                      , Configuration.Dotenv.Text
-                      , Configuration.Dotenv.Types
+  exposed-modules:       Configuration.Dotenv
+                       , Configuration.Dotenv.Internal
+                       , Configuration.Dotenv.Environment
+  other-modules:         Configuration.Dotenv.Parse
+                       , Configuration.Dotenv.ParsedVariable
+                       , Configuration.Dotenv.Text
+                       , Configuration.Dotenv.Types
 
   build-depends:         base >= 4.9 && < 5.0
                        , directory
@@ -110,32 +111,19 @@ library
 
 test-suite dotenv-test
   type: exitcode-stdio-1.0
-  hs-source-dirs: spec, src
+  hs-source-dirs: spec
   main-is: Spec.hs
   other-modules:         Configuration.DotenvSpec
                        , Configuration.Dotenv.TextSpec
                        , Configuration.Dotenv.ParseSpec
-                       , Configuration.Dotenv
-                       , Configuration.Dotenv.Environment
-                       , Configuration.Dotenv.Text
-                       , Configuration.Dotenv.Types
-                       , Configuration.Dotenv.Parse
-                       , Configuration.Dotenv.ParsedVariable
 
   build-depends:       base >= 4.9 && < 5.0
-                     , base-compat >= 0.4
-                     , containers
                      , dotenv
-                     , directory
                      , megaparsec
                      , hspec
                      , process
-                     , shellwords
                      , text
-                     , exceptions >= 0.8 && < 0.11
                      , hspec-megaparsec >= 2.0 && < 3.0
-                     , mtl
-                     , data-default-class >= 0.1.2 && < 0.2
 
   build-tools:        hspec-discover   >= 2.0 && < 3.0
 
