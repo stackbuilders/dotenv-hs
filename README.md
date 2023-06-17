@@ -79,6 +79,27 @@ $ dotenv "echo $DATABASE"
 postgres://myusername@localhost/database
 ```
 
+### Surrond with quotes
+
+If your value starts with a character that produces a parse error (e.g. `{`) . Surround your value
+with quotes. You can also escape the quotes if they're inside your value. For example:
+
+```
+JSON_SQ='{"a":[1,2,3], "b": "\'asdf\'"}'
+JSON_DQ="{\"a\":[1,2,3], \"b\": \"'asdf'\"}"
+```
+
+Run it:
+
+```
+$ dotenv "echo $JSON_SQ" | jq .a
+[
+  1,
+  2,
+  3
+]
+```
+
 ### Configuration
 
 The first argument to `loadFile` specifies the configuration. You can use
