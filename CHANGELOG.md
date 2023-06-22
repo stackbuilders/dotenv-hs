@@ -1,4 +1,8 @@
 ## MASTER
+## Dotenv 0.11.0.2
+### Modified
+* Allow optparse-applicative 0.18
+
 ## Dotenv 0.11.0.1
 ### Modified
 * Export internal module `Configuration.Dotenv.Internal` which exports all
