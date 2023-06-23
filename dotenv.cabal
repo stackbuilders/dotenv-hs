@@ -34,6 +34,7 @@ description:
 license:             MIT
 license-file:        LICENSE
 author:              Justin Leitgeb
+tested-with:         ghc ==9.0 ghc ==9.4 ghc ==9.6
 maintainer:          hackage@stackbuilders.com
 copyright:           2015-Present Stack Builders Inc.
 category:            Configuration
