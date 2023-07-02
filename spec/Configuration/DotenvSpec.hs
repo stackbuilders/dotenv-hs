@@ -166,8 +166,8 @@ spec = do
         loadFile sampleConfig { allowDuplicates = False }
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
-  describe "onConfigDryRun" $ after_ clearEnvs $ do
-    context "when dry-run is enabled " $ do
+  describe "onConfigDryRun" $ after_ clearEnvs $
+    context "when dry-run is enabled " $
       it "loads the variables" $ do
         loadFile sampleConfig { configPath = ["spec/fixtures/.dotenv"], configDryRun = True }
         lookupEnv "DOTENV" `shouldReturn` Just "true"
