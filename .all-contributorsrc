@@ -117,6 +117,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "habibalamin",
+      "name": "Habib Alamin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1415293?v=4",
+      "profile": "https://git.sr.ht/~habibalamin",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
