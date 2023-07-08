@@ -1,6 +1,6 @@
 [![Build Status](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build.yml/badge.svg)](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build.yml)[![Hackage](https://img.shields.io/hackage/v/dotenv.svg)](http://hackage.haskell.org/package/dotenv)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Dotenv files for Haskell
@@ -247,6 +247,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://brisb.in/"><img src="https://avatars.githubusercontent.com/u/50812?v=4?s=100" width="100px;" alt="Pat Brisbin"/><br /><sub><b>Pat Brisbin</b></sub></a><br /><a href="https://github.com/stackbuilders/dotenv-hs/commits?author=pbrisbin" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/aloussase"><img src="https://avatars.githubusercontent.com/u/84427521?v=4?s=100" width="100px;" alt="Alexander Goussas"/><br /><sub><b>Alexander Goussas</b></sub></a><br /><a href="https://github.com/stackbuilders/dotenv-hs/commits?author=aloussase" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/alexisbcc"><img src="https://avatars.githubusercontent.com/u/38666191?v=4?s=100" width="100px;" alt="Alexis Crespo"/><br /><sub><b>Alexis Crespo</b></sub></a><br /><a href="https://github.com/stackbuilders/dotenv-hs/commits?author=alexisbcc" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
