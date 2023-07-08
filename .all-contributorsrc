@@ -135,6 +135,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "pbrisbin",
+      "name": "Pat Brisbin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50812?v=4",
+      "profile": "https://brisb.in/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
