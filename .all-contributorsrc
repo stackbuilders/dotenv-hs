@@ -72,6 +72,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "dbalseiro",
+      "name": "Diego Balseiro",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2053849?v=4",
+      "profile": "https://dbalseiro.github.io/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
