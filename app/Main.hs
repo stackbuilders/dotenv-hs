@@ -20,6 +20,7 @@ data Options = Options
   , dotenvExampleFiles :: [String]
   , override           :: Bool
   , verbose            :: Bool
+  , dryRun             :: Bool
   , duplicates         :: Bool
   , program            :: String
   , args               :: [String]
@@ -33,6 +34,7 @@ main = do
           { configExamplePath = dotenvExampleFiles
           , configOverride = override
           , configVerbose = verbose
+          , configDryRun = dryRun
           , allowDuplicates = duplicates
           , configPath =
               if null dotenvFiles
@@ -40,8 +42,10 @@ main = do
                 else dotenvFiles
           }
    in do
-     loadFile configDotenv
-     system (program ++ concatMap (" " ++) args) >>= exitWith
+    loadFile configDotenv
+    if configDryRun configDotenv
+      then putStrLn "[INFO]: Dry run mode enabled. Not executing the program."
+      else system (program ++ concatMap (" " ++) args) >>= exitWith
        where
          opts = info (helper <*> versionOption <*> config)
            ( fullDesc
@@ -72,6 +76,9 @@ config = Options
 
      <*> switch (  long "verbose"
                   <> help "Specify this flag to print out the variables loaded and other useful insights" )
+
+     <*> switch (  long "dry-run"
+                  <> help "Specify this flag to print out the variables loaded without executing the program" )
 
      <*> flag True False (  long "no-dups"
                   <> short 'D'

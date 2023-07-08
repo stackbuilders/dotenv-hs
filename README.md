@@ -122,6 +122,8 @@ need this functionality you can set `configExamplePath` to an empty list.
 A `False` in the `configVerbose` means that Dotenv will not print any message
 when loading the envs. A `True` means that Dotenv will print a message when a variable is loaded.
 
+When `configDryRyn` is `True`, Dotenv will print out the loaded environment variables without executing the program.
+
 A `False` on `allowDuplicates` means that Dotenv will not allow duplicate keys, and instead it will throw
 an error. A `True` means that Dotenv will allow duplicate keys, and it will use the last one defined in the file (default behavior).
 
@@ -181,12 +183,14 @@ $ echo $FOO
 ```
 
 This will fail:
+
 ```shell
 $ dotenv -f .env --example .env.example "myprogram --myflag myargument"
 > dotenv: The following variables are present in .env.example, but not set in the current environment, or .env: BAR
 ```
 
 This will succeed:
+
 ```shell
 $ export BAR=123 # Or you can do something like: "echo 'BAR=123' >> .env"
 $ dotenv -f .env --example .env.example "myprogram --myflag myargument"
@@ -206,5 +210,6 @@ MIT, see [the LICENSE file](LICENSE).
 Do you want to contribute to this project? Please take a look at our [contributing guideline](/docs/CONTRIBUTING.md) to know how you can help us build it.
 
 ---
+
 <img src="https://cdn.stackbuilders.com/media/images/Sb-supports.original.png" alt="Stack Builders" width="50%"></img>
 [Check out our libraries](https://github.com/stackbuilders/) | [Join our team](https://www.stackbuilders.com/join-us/)

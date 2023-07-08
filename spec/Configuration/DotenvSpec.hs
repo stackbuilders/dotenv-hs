@@ -77,7 +77,7 @@ spec = do
       lookupEnv "FOO" `shouldReturn` Nothing
       lookupEnv "BAR" `shouldReturn` Nothing
 
-      loadFile (Config ["spec/fixtures/.dotenv.dup"] [] False False True)
+      loadFile (Config ["spec/fixtures/.dotenv.dup"] [] False False False True)
 
       lookupEnv "FOO" `shouldReturn` Just "last"
       lookupEnv "BAR" `shouldReturn` Just "tender"
@@ -165,8 +165,14 @@ spec = do
         loadFile sampleConfig { allowDuplicates = False }
         lookupEnv "DOTENV" `shouldReturn` Just "true"
 
+  describe "onConfigDryRun" $ after_ clearEnvs $
+    context "when dry-run is enabled " $
+      it "loads the variables" $ do
+        loadFile sampleConfig { configPath = ["spec/fixtures/.dotenv"], configDryRun = True }
+        lookupEnv "DOTENV" `shouldReturn` Just "true"
+
 sampleConfig :: Config
-sampleConfig = Config ["spec/fixtures/.dotenv"] [] False False True
+sampleConfig = Config ["spec/fixtures/.dotenv"] [] False False False True
 
 clearEnvs :: IO ()
 clearEnvs =

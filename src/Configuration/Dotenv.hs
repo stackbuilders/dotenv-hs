@@ -128,9 +128,13 @@ applySetting kv@(k, v) = do
 info :: MonadIO m => (String, String) -> DotEnv m ()
 info (key, value) = do
   Config {..} <- ask
-  when configVerbose $
+  when (configVerbose || configDryRun) $
     lift . liftIO $
-    putStrLn $ "[INFO]: Load env '" ++ key ++ "' with value '" ++ value ++ "'"
+    putStrLn $ infoStr (key, value)
+
+-- | The function prints out the variables
+infoStr :: (String, String) -> String
+infoStr (key, value) =  "[INFO]: Load env '" ++ key ++ "' with value '" ++ value ++ "'"
 
 -- | The helper allows to avoid exceptions in the case of missing files and
 -- perform some action instead.
