@@ -36,6 +36,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "juanpaucar",
+      "name": "Juan Paucar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2164411?v=4",
+      "profile": "https://juancarlos.io/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
