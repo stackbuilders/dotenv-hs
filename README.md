@@ -1,6 +1,6 @@
 [![Build Status](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build.yml/badge.svg)](https://github.com/stackbuilders/dotenv-hs/actions/workflows/build.yml)[![Hackage](https://img.shields.io/hackage/v/dotenv.svg)](http://hackage.haskell.org/package/dotenv)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-18-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Dotenv files for Haskell
@@ -249,6 +249,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/aloussase"><img src="https://avatars.githubusercontent.com/u/84427521?v=4?s=100" width="100px;" alt="Alexander Goussas"/><br /><sub><b>Alexander Goussas</b></sub></a><br /><a href="https://github.com/stackbuilders/dotenv-hs/commits?author=aloussase" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/alexisbcc"><img src="https://avatars.githubusercontent.com/u/38666191?v=4?s=100" width="100px;" alt="Alexis Crespo"/><br /><sub><b>Alexis Crespo</b></sub></a><br /><a href="https://github.com/stackbuilders/dotenv-hs/commits?author=alexisbcc" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/anddriex"><img src="https://avatars.githubusercontent.com/u/42983405?v=4?s=100" width="100px;" alt="Andres Perez"/><br /><sub><b>Andres Perez</b></sub></a><br /><a href="https://github.com/stackbuilders/dotenv-hs/commits?author=anddriex" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ibarrae"><img src="https://avatars.githubusercontent.com/u/22796877?v=4?s=100" width="100px;" alt="Esteban Ibarra"/><br /><sub><b>Esteban Ibarra</b></sub></a><br /><a href="https://github.com/stackbuilders/dotenv-hs/commits?author=ibarrae" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
