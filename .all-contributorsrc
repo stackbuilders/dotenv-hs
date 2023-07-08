@@ -54,6 +54,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "fujimura",
+      "name": "Daisuke Fujimura",
+      "avatar_url": "https://avatars.githubusercontent.com/u/134072?v=4",
+      "profile": "http://fujimuradaisuke.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
