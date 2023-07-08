@@ -99,6 +99,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "phadej",
+      "name": "Oleg Grenrus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/51087?v=4",
+      "profile": "https://oleg.fi/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
