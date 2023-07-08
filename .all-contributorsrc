@@ -180,6 +180,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "flandrade",
+      "name": "Fernanda Andrade",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6790161?v=4",
+      "profile": "http://ferandrade.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
