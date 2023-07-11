@@ -85,6 +85,7 @@ library
   exposed-modules:       Configuration.Dotenv
                        , Configuration.Dotenv.Internal
                        , Configuration.Dotenv.Environment
+                       , Configuration.Dotenv.FromEnv
   other-modules:         Configuration.Dotenv.Parse
                        , Configuration.Dotenv.ParsedVariable
                        , Configuration.Dotenv.Text
@@ -116,6 +117,7 @@ test-suite dotenv-test
   other-modules:         Configuration.DotenvSpec
                        , Configuration.Dotenv.TextSpec
                        , Configuration.Dotenv.ParseSpec
+                       , Configuration.Dotenv.FromEnvSpec
 
   build-depends:       base >= 4.9 && < 5.0
                      , dotenv
