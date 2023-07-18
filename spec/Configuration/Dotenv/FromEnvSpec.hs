@@ -27,28 +27,25 @@ spec :: Spec
 spec =
   describe "fromEnv" $ after_ clearEnvs $ do
     it "returns Nothing when the necessary environment variables are not set" $ do
-      config <- fromEnv_ @Config
+      config <- fromEnv @Config
       config `shouldBe` Nothing
 
     it "returns Nothing when only one environment variable is missing" $ do
       setEnv "dbURL" "hello"
-      config <- fromEnv_ @Config
+      config <- fromEnv @Config
       config `shouldBe` Nothing
 
     it "returns the configuration object when all necessary variables are set" $ do
       setEnv "dbURL" "hello"
       setEnv "apiKey" "world"
-      config <- fromEnv_
+      config <- fromEnv
       config `shouldSatisfy` isJust
       fromJust config `shouldBe` Config "hello" "world"
 
     it "returns the configuration object when using different names for the environment variables" $ do
       setEnv "DB_URL" "hello"
       setEnv "API_KEY" "world"
-      let converter "dbURL"  = Just "DB_URL"
-          converter "apiKey" = Just "API_KEY"
-          converter _        = Nothing
-      config <- fromEnv converter
+      config <- gFromEnv (defaultEnvOpts { optsFieldLabelModifier = toUpperSnake })
       config `shouldSatisfy` isJust
       fromJust config `shouldBe` Config "hello" "world"
 

@@ -101,6 +101,7 @@ library
                        , exceptions >= 0.8 && < 0.11
                        , mtl >= 2.2.2 && < 2.4
                        , data-default-class >= 0.1.2 && < 0.2
+                       , casing
 
   hs-source-dirs:      src
   ghc-options:         -Wall
