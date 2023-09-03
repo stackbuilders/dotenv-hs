@@ -1,4 +1,12 @@
 ## MASTER
+## Dotenv 0.12.0.0
+### Modified
+* Ensure support from GHC 8.10 up to GHC 9.6
+
+### Possible breaking change
+* New attribute for `Config` data type to print env vars without actually
+running the command (kudos to @flandrade).
+
 ## Dotenv 0.11.0.2
 ### Modified
 * Allow optparse-applicative 0.18
