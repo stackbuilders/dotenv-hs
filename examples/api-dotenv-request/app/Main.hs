@@ -16,6 +16,7 @@ main = do
     case maybeApiEndpoint of
         Just apiEndpoint -> do
             -- Making the request
+            -- For this example the api used is: jsonplaceholder.typicode.com
             let apiEndpointURL = https (T.pack apiEndpoint) /: T.pack "posts" /: T.pack "1"
             
             --  Fake user agent
