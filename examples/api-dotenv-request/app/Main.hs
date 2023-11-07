@@ -1,7 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import Configuration.Dotenv (loadFile, defaultConfig)
 import System.Environment (lookupEnv)
 import Network.HTTP.Req
-import qualified Data.ByteString.Char8 as B
 import qualified Data.Text as T
 import Data.Aeson
 
@@ -20,7 +21,7 @@ main = do
             --  Fake user agent
             let userAgent = "Mozilla/5.0 (Linux; Android 5.0.1; Nokia 1100 LTE Build/GRK39F) AppleWebKit/536.14 (KHTML, like Gecko)  Chrome/55.0.3442.377 Mobile Safari/600.3"
             let request :: Req (JsonResponse Value)
-                request = req GET apiEndpointURL NoReqBody jsonResponse $ header (B.pack "User-Agent") (B.pack userAgent)
+                request = req GET apiEndpointURL NoReqBody jsonResponse $ header ("User-Agent") (userAgent)
 
 
             -- Obtaining the response
