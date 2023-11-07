@@ -18,6 +18,7 @@ main = do
 
             case eitherEncode of
                 Right jt -> putStrLn $ "Encoded JWT: " <> show jt
+                Left _ -> putStrLn "Nothing to show :("
 
         Nothing -> putStrLn "SECRET environment variable not set."
     
