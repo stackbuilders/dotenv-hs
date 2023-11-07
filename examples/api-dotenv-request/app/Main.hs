@@ -29,5 +29,5 @@ main = do
             response <- runReq defaultHttpConfig $ do
                 responseStatusCode <$> request
 
-            print response
+            putStrLn $ "Response Status: " <> show response
         Nothing -> putStrLn "API_ENDPOINT environment variable not set."
