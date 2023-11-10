@@ -13,8 +13,9 @@ main = do
     --  Loading API URI from dotenv 
     maybeApiEndpoint <- lookupEnv "API_URI"
 
-    case maybeApiEndpoint of
-        Just apiEndpoint -> do
+    maybe
+        (putStrLn "API_ENDPOINT environment variable not set.")
+        (\apiEndpoint -> do
             -- Making the request
             -- For this example the api used is: jsonplaceholder.typicode.com
             let apiEndpointURL = https (T.pack apiEndpoint) /: T.pack "posts" /: T.pack "1"
@@ -31,4 +32,5 @@ main = do
 
             putStrLn $ "Request to: " <> apiEndpoint
             putStrLn $ "Response Status: " <> show response
-        Nothing -> putStrLn "API_ENDPOINT environment variable not set."
+        )
+        maybeApiEndpoint
