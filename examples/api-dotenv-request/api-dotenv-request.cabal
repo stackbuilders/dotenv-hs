@@ -60,23 +60,3 @@ executable api-dotenv-request-exe
     , req
     , text
   default-language: Haskell2010
-
-test-suite api-dotenv-request-test
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
-  other-modules:
-      Paths_api_dotenv_request
-  autogen-modules:
-      Paths_api_dotenv_request
-  hs-source-dirs:
-      test
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      aeson
-    , api-dotenv-request
-    , base >=4.7 && <5
-    , bytestring
-    , dotenv
-    , req
-    , text
-  default-language: Haskell2010
