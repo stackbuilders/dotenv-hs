@@ -18,7 +18,7 @@ jobs:
 
       - name: Setup Haskell
         id: setup-haskell-cabal
-        uses: haskell/actions/setup@v2
+        uses: haskell-actions/setup@v2
         with:
           # I faced the following issue with GHC-9.2 and and I managed to solved
           # it by going back to GHC-8.10.7 just to generate the docs:
