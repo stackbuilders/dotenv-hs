@@ -30,11 +30,12 @@ import Test.QuickCheck
 import Text.Megaparsec (ParseErrorBundle, parse)
 
 main :: IO ()
-main = hspec spec >> hspec specProperty
+main = hspec $ do
+  spec
+  specProperty
 
 spec :: Spec
 spec = describe "parse" $ do
-  specProperty
   it "supports CRLF line breaks" $
     parseConfig "FOO=bar\r\nbaz=fbb"
       `shouldParse` [ ParsedVariable "FOO" (Unquoted [VarLiteral "bar"]),
@@ -237,12 +238,12 @@ validChars str = not (null str) && all (`notElem` ['\\', '$', '\'', '"', '\"', '
 -- text is constructed by repeating a non-empty string multiple times and
 -- appending it with the specified character. The size of the generated text is
 -- limited by the 'maxSize' parameter.
-generateTextWithChar ::
+generateTextWithChar
   -- | The character to include in the generated text
-  String ->
+  :: String
   -- | The expected output character to include in the generated text
-  String ->
-  Gen (String, String)
+  -> String
+  -> Gen (String, String)
 generateTextWithChar input expected = do
   let maxSize = 5
   nonEmptyString <- resize maxSize $ generateInput `suchThat` validChars
