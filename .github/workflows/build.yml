@@ -14,15 +14,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  generate-matrix:
+    name: "Generate matrix from cabal"
+    outputs: 
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract the tested GHC versions
+        id: set-matrix
+        uses: kleidukos/get-tested@v0.1.6.0
+        with:
+          cabal-file: dotenv.cabal
+          ubuntu: true
+          version: 0.1.6.0
+
   build-and-test:
+    name: GHC ${{ matrix.ghc }} on ${{ matrix.os }}
+    needs: generate-matrix
     runs-on: ${{ matrix.os }}
     strategy:
-      matrix:
-        ghc: ["8.10", "9.0", "9.2", "9.4", "9.6"]
-        os: [ubuntu-latest]
-        include:
-          - os: macos-latest
-            ghc: "9.2"
+      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v3
