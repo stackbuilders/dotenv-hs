@@ -26,6 +26,7 @@ jobs:
         with:
           cabal-file: dotenv.cabal
           ubuntu: true
+          macos: true
           version: 0.1.6.0
 
   build-and-test:
