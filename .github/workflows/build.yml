@@ -22,12 +22,12 @@ jobs:
     steps:
       - name: Extract the tested GHC versions
         id: set-matrix
-        uses: kleidukos/get-tested@v0.1.6.0
+        uses: kleidukos/get-tested@v0.1.7.0
         with:
           cabal-file: dotenv.cabal
-          ubuntu: true
-          macos: true
-          version: 0.1.6.0
+          ubuntu-version: latest
+          macos-version: latest
+          version: 0.1.7.0
 
   build-and-test:
     name: GHC ${{ matrix.ghc }} on ${{ matrix.os }}
