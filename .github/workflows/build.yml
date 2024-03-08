@@ -27,7 +27,7 @@ jobs:
           cabal-file: dotenv.cabal
           ubuntu-version: latest
           macos-version: 14
-          version: 0.1.6.0
+          version: 0.1.7.0
 
   build-and-test:
     name: GHC ${{ matrix.ghc }} on ${{ matrix.os }}
