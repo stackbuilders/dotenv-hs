@@ -4,8 +4,9 @@ ENVIRONMENT="$HOME"
 PREVIOUS="$DOTENV"
 ME="$(whoami)"
 BLANK=
-NEWLINE_TEST="Hello\nWorld"
+NEWLINE_TEST="Hello\nWorld\nThis is a test\n"
 MULTILINE_TEST="Roses are red
 Violets are blue
 Code is my art
-And bugs are my glue"
+And bugs are my glue
+"
