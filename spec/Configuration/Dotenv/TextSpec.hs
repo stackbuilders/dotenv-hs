@@ -30,8 +30,8 @@ spec =
 
     it "handles newline characters correctly" $ do
       liftM (!! 6) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
-        (T.pack "NEWLINE_TEST", T.pack "Hello\nWorld")
+        (T.pack "NEWLINE_TEST", T.pack "Hello\nWorld\nThis is a test\n")
 
     it "handles manual line breaks correctly" $ do
       liftM (!! 7) (parseFile "spec/fixtures/.dotenv") `shouldReturn`
-        (T.pack "MULTILINE_TEST", T.pack "Roses are red\nViolets are blue\nCode is my art\nAnd bugs are my glue")
+        (T.pack "MULTILINE_TEST", T.pack "Roses are red\nViolets are blue\nCode is my art\nAnd bugs are my glue\n")
