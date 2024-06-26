@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - main
+      - fm_fix_ci
   pull_request:
     types:
       - opened
