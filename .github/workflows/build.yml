@@ -25,8 +25,8 @@ jobs:
         uses: kleidukos/get-tested@v0.1.7.0
         with:
           cabal-file: dotenv.cabal
-          ubuntu-version: latest
-          macos-version: 13
+          #ubuntu-version: latest
+          macos-version: 14-large
           version: 0.1.7.0
 
   build-and-test:
