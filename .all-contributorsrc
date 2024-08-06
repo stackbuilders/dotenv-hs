@@ -234,6 +234,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "fm7-1",
+      "name": "Fabricio Mera",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55803899?v=4",
+      "profile": "https://github.com/fm7-1",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
