@@ -25,7 +25,7 @@ import           Text.Megaparsec                     (Parsec, anySingle,
                                                       between, eof, noneOf,
                                                       oneOf, sepEndBy, (<?>))
 import           Text.Megaparsec.Char                (char, digitChar, eol,
-                                                      letterChar, spaceChar)
+                                                      letterChar, spaceChar, string)
 import qualified Text.Megaparsec.Char.Lexer          as L
 
 type Parser = Parsec Void String
@@ -85,8 +85,9 @@ interpolatedValueCommandInterpolation = do
       symbol = L.symbol sc
 
 literalValueFragment :: String -> Parser VarFragment
-literalValueFragment charsToEscape = VarLiteral <$> some (escapedChar <|> normalChar)
+literalValueFragment charsToEscape = VarLiteral <$> some (newlineChar <|> escapedChar <|> normalChar)
   where
+    newlineChar  = string "\\n" >> return '\n'
     escapedChar = (char '\\' *> anySingle) <?> "escaped character"
     normalChar  = noneOf charsToEscape <?> "unescaped character"
 
