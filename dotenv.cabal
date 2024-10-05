@@ -70,6 +70,7 @@ executable dotenv
                        , megaparsec
                        , process
                        , text
+                       , directory
   other-modules: Paths_dotenv
 
   hs-source-dirs:      app
