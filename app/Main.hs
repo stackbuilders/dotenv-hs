@@ -14,7 +14,6 @@ import           Paths_dotenv         (version)
 import           Configuration.Dotenv (Config (..), defaultConfig, loadFile)
 import           System.Directory     (doesFileExist)
 import           System.Exit          (exitWith)
-import           System.IO            (readFile')
 import           System.Process       (system)
 
 data Options = Options
@@ -158,7 +157,7 @@ loadFlagsFromConfig = do
     configExists <- doesFileExist configFile
     if not configExists then return defaultFlags
     else do
-        arguments <- words <$> readFile' configFile
+        arguments <- words <$> readFile configFile
         case execParserPure defaultPrefs (mkOpts flagsP) arguments of
             result@(Failure _) -> do
                 putStrLn "There were errors while parsing the configuration file"
