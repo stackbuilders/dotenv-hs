@@ -1,0 +1,38 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  release:
+    name: "Release"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # Workaround for issue: https://github.com/cycjimmy/semantic-release-action/issues/159
+      # Had to pin to version 14
+      - name: "Pin node version"
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      # Use haskell environment to run cabal configure needed for semantic-release-hackage
+      - name: Setup Haskell
+        id: setup-haskell-cabal
+        uses: haskell-actions/setup@v2
+        with:
+          ghc-version: "9.0"
+          cabal-version: "3.8"
+      - name: Semantic Release
+        run: cabal configure --enable-tests
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          extra_plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
+            @semantic-release/github
+            semantic-release-hackage@1.1.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HACKAGE_TOKEN: ${{ secrets.HACKAGE_TOKEN }}

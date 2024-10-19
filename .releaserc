@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/semantic-release",
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "semantic-release-hackage",
+      {
+        "packageName": "dotenv",
+        "versionPrefix": "0.",
+        "publishDocumentation": true
+      }
+    ],
+    "@semantic-release/github"
+  ],
+  "tagFormat": "v0.${version}"
+}
