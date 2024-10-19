@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/semantic-release",
-  "branches": ["main", "chore-semantic-release"],
+  "branches": ["main"],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
