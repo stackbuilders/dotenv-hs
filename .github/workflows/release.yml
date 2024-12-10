@@ -35,4 +35,4 @@ jobs:
             semantic-release-hackage@1.1.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HACKAGE_TOKEN: ${{ secrets.HACKAGE_TOKEN }}
+          HACKAGE_TOKEN: ${{ secrets.HACKAGE_API_KEY }}
