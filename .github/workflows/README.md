@@ -6,8 +6,7 @@
   - Build and test Haskell code
 - [Draft](draft.yml)
   - Create a GH draft release with a static binary
-- [Release](release.yml)
-  - Upload the package and docs to Hackage (release candidate)
+
 
 ## Events
 
