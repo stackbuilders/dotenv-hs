@@ -27,6 +27,31 @@ also install the library and executable by invoking `stack install dotenv` or
 you can download the dotenv binaries from our
 [releases](https://github.com/stackbuilders/dotenv-hs/releases) page.
 
+## Development with devenv
+
+This project includes a [devenv](https://devenv.sh/) setup for reproducible
+local development.
+
+1. Install Nix and devenv.
+2. From the project root, run:
+
+```shell
+direnv allow
+```
+
+Or, if you are not using direnv:
+
+```shell
+devenv shell
+```
+
+Inside the shell you can use the normal project commands, for example:
+
+```shell
+cabal build
+cabal test
+```
+
 ## Usage
 
 Set configuration variables in a file following the format below:
